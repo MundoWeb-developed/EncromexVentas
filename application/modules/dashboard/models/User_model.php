@@ -18,6 +18,7 @@ class User_model extends CI_Model {
             'last_name'  => $data['last_name'],
             'logo'       => $data['image'],
             'status'     => $data['status'],
+			'branchoffice_id'=> $data['branchoffice_id'], // ← AÑADIR ESTA LÍNEA
         );
         $this->db->insert('users', $users);
 		
@@ -53,9 +54,8 @@ class User_model extends CI_Model {
 			")
 			->from('users a')
 			->join('user_login b','b.user_id = a.user_id')
-			->join('branchoffice c', 'a.branchoffice_id = c.id', 'left') // Asegúrate que sea LEFT join
+			->join('branchoffice c', 'a.branchoffice_id = c.id', 'left') // LEFT JOIN
 			->order_by('a.user_id', 'desc')
-			->group_by('a.user_id')
 			->get()
 			->result();
 	}
@@ -64,9 +64,11 @@ class User_model extends CI_Model {
 	{
 		return $this->db->select("
 				a.*,a.logo as image,b.*,b.status as status,b.username as email
+				,c.branchoffice as sucursal_nombre, c.id as branchoffice_id,
 			")
 			->from('users a')
 			->join('user_login b','b.user_id = a.user_id')
+			->join('branchoffice c', 'a.branchoffice_id = c.id', 'left')
 			->where('a.user_id', $id)
 			->order_by('a.user_id', 'desc')
 			->get()
@@ -82,6 +84,7 @@ class User_model extends CI_Model {
             'last_name'  => $data['last_name'],
             'logo'       => $data['image'],
             'status'     => $data['status']
+			,'branchoffice_id'=> $data['branchoffice_id'], // ← AÑADIR ESTA LÍNEA
         );
         $this->db->where('user_id', $data['user_id']);
         $this->db->update('users', $userdata);

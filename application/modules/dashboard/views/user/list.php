@@ -30,7 +30,7 @@
                                 <td><img src="<?php echo (!empty($value->logo)?base_url().$value->logo:base_url('assets/img/icons/default.jpg')) ; ?>" alt="Image" height="50" ></td>
                                 <td><?php echo $value->fullname; ?></td>
                                 <td><?php echo $value->email; ?></td>
-                                <td><?php echo $row->sucursal_nombre ?? 'Sin sucursal' ?></td> <!-- Nueva celda -->
+                                <td><?php echo $value->sucursal_nombre ?? 'Sin sucursal' ?></td> <!-- Corregido: cambia $row por $value -->
                                 <td><?php echo (($value->status==1)?display('active'):display('inactive')); ?></td>
                                 <td>
                                     <?php if ($this->session->userdata('isAdmin') == 1) { ?>

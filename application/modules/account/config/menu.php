@@ -1,6 +1,4 @@
 <?php
-
-// module name
 $HmvcMenu["accounts"] = array(
     //set icon
     "icon"           => "<i class='fa fa-user'></i>", 
@@ -13,7 +11,5 @@ $HmvcMenu["accounts"] = array(
             "permission" => "create"
         ), 
     );
-        
-
 );
    

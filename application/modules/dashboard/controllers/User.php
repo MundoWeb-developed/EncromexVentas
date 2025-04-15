@@ -24,7 +24,6 @@ class User extends MX_Controller {
 		$data['module'] 	= "dashboard";  
 		$data['page']   	= "user/list";   
 		$data['user']       = $this->user_model->read();
-		$data['user']       = $this->user_model->read(); // Esto ya incluye sucursal_nombre
 		echo Modules::run('template/layout', $data); 
     }
 
