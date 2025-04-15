@@ -16,6 +16,19 @@
         <span class="sr-only">Toggle navigation</span>
         <span class="pe-7s-keypad"></span>
     </a>
+    <!-- Mostrar sucursal actual del usuario -->
+    <div class="navbar-brand" style="float: left; color:black; padding: 15px;">
+        <i class="fa fa-store""></i>
+        <?php 
+        $user_branch = $this->db->select('c.branchoffice')
+                              ->from('users a')
+                              ->join('branchoffice c', 'a.branchoffice_id = c.id', 'left')
+                              ->where('a.user_id', $this->session->userdata('id'))
+                              ->get()
+                              ->row();
+        echo $user_branch->branchoffice ?? 'Sin sucursal';
+        ?>
+    </div>
 <span class="top-fixed-link">
       <?php
          
@@ -29,9 +42,9 @@
            <a href="<?php echo base_url('customer_receive')?>" class="btn btn-success btn-outline"><i class="fa fa-money"></i> <?php echo display('customer_receive')?></a>
        <?php } ?>
       
-  <?php if($this->permission1->method('supplier_payment','create')->access()){ ?>
+  <!-- <?php if($this->permission1->method('supplier_payment','create')->access()){ ?>
           <a href="<?php echo base_url('supplier_payment')?>" class="btn btn-success btn-outline"><i class="fa fa-money" aria-hidden="true"></i> <?php echo display('supplier_payment')?></a>
-      <?php } ?>
+      <?php } ?> comentado este boton de pago el proveedor-->
 
 <?php if($this->permission1->method('add_purchase','create')->access()){ ?>
           <a href="<?php echo base_url('add_purchase')?>" class="btn btn-success btn-outline"><i class="ti-shopping-cart"></i> <?php echo display('purchase') ?></a>
