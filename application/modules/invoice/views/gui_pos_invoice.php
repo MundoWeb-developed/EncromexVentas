@@ -96,20 +96,25 @@
 
 									<div class="col-sm-3">
 										<label>Sucursal:</label><br>
-										<select id="boff" name="boff" style="padding-top:8px; padding-bottom:8px;">
-											<?php if ($branchoffice) { ?>
-												<?php foreach ($branchoffice as $bo) { ?>
-													<option value="<?php echo $bo->branchoffice; ?>"><?php echo $bo->branchoffice; ?></option>
-												<?php } ?>
-											<?php } else { ?>
-												<option>No hay sucursales</option>
-											<?php } ?>
-										</select>
-										<script>
-											jQuery(document).ready(function($) {
-												$('#boff').val('Encromex Matriz');
-											});
-										</script>
+										<?php 
+										// Obtener la sucursal del usuario actual
+										$user_branch = $this->db->select('c.branchoffice, c.id')
+															->from('users a')
+															->join('branchoffice c', 'a.branchoffice_id = c.id', 'left')
+															->where('a.user_id', $this->session->userdata('id'))
+															->get()
+															->row();
+										
+										// Mostrar como texto si no hay sucursal
+										if(empty($user_branch) || empty($user_branch->branchoffice)) {
+											echo '<div class="form-control" style="padding-top:8px; padding-bottom:8px;">Sin sucursal asignada</div>';
+										} else {
+											// Mostrar el nombre de la sucursal y guardar el ID en un campo oculto
+											echo '<div class="form-control" style="padding-top:8px; padding-bottom:8px;">'.$user_branch->branchoffice.'</div>';
+											echo '<input type="hidden" id="boff" name="boff" value="'.$user_branch->branchoffice.'">';
+											echo '<input type="hidden" name="branchoffice_id" value="'.$user_branch->id.'">';
+										}
+										?>
 									</div>
 
 									<div class="col-sm-3">
