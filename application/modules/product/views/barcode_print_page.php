@@ -62,20 +62,26 @@
                                                 <tr> 
                                                     <?php $counter = 0; ?>
                                                 <?php } ?>
-                                                <td class="barcode-toptd">      
-
-                                                    <div class="barcode-inner barcode-innerdiv">
-                                                        <div class="product-name barcode-productname">
-                                                            <?php echo $company_name;?>
+                                                
+                                                <td class="" style="font-size: 0.7em;">
+                                                    <div class=" " style="text-align: center;">
+                                                        <div class="product-name-details barcode-productdetails" style="font-size: 0.8em;">
+                                                            <?php echo $product_name;?>
                                                         </div>
-                                                        <span class="model-name barcode-modelname"><?php echo $product_model?></span>
-                                                        <img class="img-responsive center-block barcode-image" alt="" src="<?= base_url('vendor/barcode.php?size=30&text='.$product_id.'&print=true')?>" >
-                                                        <div class="product-name-details barcode-productdetails"><?php echo $product_name;?></div>
-                                                        <div class="price barcode-price"><?php echo (($position == 0) ? "$currency  $price" : "$price $currency") ?> <small class="barcode-vat"><?php echo display('incl_vat') ?>. 
-
+                                                        <img
+                                                            class="img-responsive center-block barcode-image"
+                                                            style="height: auto; display: block;"
+                                                            alt=""
+                                                            src="<?= base_url('vendor/barcode.php?size=30&text='.$product_id.'&print=false') ?>"
+                                                        >
+                                                        <div class="price barcode-price" style="font-size: 0.9em; margin-top: 1px;">
+                                                            <?php echo (($position == 0) ? "$currency  $price" : "$price $currency") ?>
+                                                            <br>
+                                                            <span class="product-name-details barcode-productdetails" style="font-size: 0.85em;">
+                                                                <?php echo $product_model ?>
+                                                            </span>
                                                         </div>
                                                     </div>
-
                                                 </td>
                                                 <?php if ($counter == 5) { ?>
                                                 </tr> 
@@ -105,15 +111,22 @@
                                                 <tr> 
                                                     <?php $counter = 0; ?>
                                                 <?php } ?>
-                                                <td class="barcode-toptd">  
-                                                    <div class="barcode-inner barcode-innerdiv">
-                                                        <div class="product-name barcode-productname">
-                                                            <?php echo $company_name;?>
-                                                        </div>
-                                                        <span class="model-name barcode-modelname"><?php echo $product_model;?></span>
-                                                        <img src="<?php echo base_url('my-assets/image/qr/'.$qr_image) ?>" class="img-responsive center-block qrcode-image" alt="">
-                                                        <div class="product-name-details qrcode-productdetails"><?php echo $product_name?></div>
-                                                        <div class="price barcode-price"><?php echo (($position == 0) ? "$currency $price" : "$price $currency") ?> <small class="barcode-vat"><?php echo display('incl_vat') ?></small>
+                                                <td class="" style="font-size: 0.7em;">
+                                                    <div style="text-align: center; margin: 0; padding: 2px;">
+                                                        <div class="product-name-details qrcode-productdetails" style="font-size: 0.8em;">
+                                                            <?php echo $product_name ?> 
+                                                        </div> 
+                                                        <img
+                                                            src="<?php echo base_url('my-assets/image/qr/'.$qr_image) ?>"
+                                                            class=""
+                                                            style="height: 65px;"
+                                                        >
+                                                        <div class="price barcode-price" style="font-size: 0.9em;">
+                                                            <?php echo (($position == 0) ? "$currency $price" : "$price $currency") ?>
+                                                            <br>
+                                                            <span class="product-name-details qrcode-productdetails" style="font-size: 0.85em;">
+                                                                <?php echo $product_model; ?>
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </td>
