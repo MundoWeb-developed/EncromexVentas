@@ -1040,6 +1040,44 @@
 			$('#quote').val(0);
 		}
 	});
+	$(document).ready(function(){
+		let sucursal = $('#boff').val();
+		$.ajax({
+			type: "POST",
+			method: "POST",
+			dataType: "JSON",
+			url: "<?php echo base_url() ?>gui_pos/inv/"+sucursal,
+			data: {
+				id: $(this).val()
+			},
+			success: function(data) {
+				if (data.invoice_no > 0) {
+					$('#gui_invoice_no').html(data.invoice_no);
+				}
+			},
+			error: function() {}
+		});
+	});
+
+	$(document).on('change','#boff',function(){
+		let sucursal = $('#boff').val();
+		sucursal = sucursal.replace(' ','_');
+		$.ajax({
+			type: "POST",
+			method: "POST",
+			dataType: "JSON",
+			url: "<?php echo base_url() ?>gui_pos/inv/"+sucursal,
+			data: {
+				id: $(this).val()
+			},
+			success: function(data) {
+				if (data.invoice_no > 0) {
+					$('#gui_invoice_no').html(data.invoice_no);
+				}
+			},
+			error: function() {}
+		});
+	});
 	// Comportamiento invertido MEJORADO
 	$(document).ready(function() {
 		// 1. Inicialización con estado invertido (como si estuviera checked)
@@ -1068,4 +1106,20 @@
 		originalOnselectimage(id_product); // Llamar a la función original
 		$('#instore').prop('checked', instoreState).trigger('change'); // Restaurar estado
 	};
+
+	$(document).ready(function() {
+    // Aplicar máscara al campo de teléfono
+    $('.phone').mask('(000) 000-0000');
+    
+    // También puedes aplicar la máscara dinámicamente
+    $('#telefono_cliente').on('input', function() {
+        var phone = $(this).val().replace(/\D/g,'');
+        if(phone.length > 3 && phone.length <= 6) {
+            phone = phone.replace(/(\d{3})(\d{1,3})/, '($1) $2');
+        } else if(phone.length > 6) {
+            phone = phone.replace(/(\d{3})(\d{3})(\d{1,4})/, '($1) $2-$3');
+        }
+        $(this).val(phone);
+    });
+});
 </script>

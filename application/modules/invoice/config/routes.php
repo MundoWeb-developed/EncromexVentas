@@ -4,6 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['add_invoice']         = "invoice/invoice/bdtask_invoice_form";
 $route['pos_invoice']         = "invoice/invoice/bdtask_pos_invoice";
 $route['gui_pos']             = "invoice/invoice/bdtask_gui_pos";
+$route['gui_pos/inv/(:any)']  = 'invoice/number_generator_sucursal/$1';
 $route['invoice_list']        = "invoice/invoice/bdtask_invoice_list";
 
 $route['invoice_list_pc']        = "invoice/invoice/bdtask_invoice_list_pc";

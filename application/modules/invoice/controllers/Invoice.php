@@ -1908,10 +1908,15 @@ class Invoice extends MX_Controller {
       public function bdtask_get_customer_data() {
         $customer_id = $this->input->post('customer_id');
         
-        $this->db->select('customer_name, customer_mobile, customer_email, custom_discount, create_date');
+        $this->db->select('customer_name, customer_mobile, customer_email');
         $this->db->from('customer_information');
         $this->db->where('customer_id', $customer_id);
         $customer = $this->db->get()->row_array();
+        
+        if(!$customer) {
+            echo json_encode(array('error' => 'Cliente no encontrado'));
+            exit;
+        }
         
         echo json_encode($customer);
         exit;
@@ -2330,6 +2335,20 @@ class Invoice extends MX_Controller {
     
     // Si no hay registros, inicia en 1. Si hay, suma +1.
     return ($result->invoice_no) ? $result->invoice_no + 1 : 1;
+}
+
+public function number_generator_sucursal($sucursal_id) {
+    //$sucursal_id = $this->input->post('sucursal_id');
+    $sucursal_id = str_replace('%20',' ',$sucursal_id);
+    $sql = "SELECT COUNT(id) as invoice from invoice where branchoffice = '$sucursal_id'";
+    $query = $this->db->query($sql);
+    //$query = $this->db->get('invoice');
+    $result = $query->row(); // Mejor práctica que result_array()[0]
+    
+    // Si no hay registros, inicia en 1. Si hay, suma +1.
+    echo json_encode([
+        'invoice_no'=>($result->invoice) ? $result->invoice + 1 : 1
+    ]);
 }
 
  public function bdtask_customer_autocomplete(){

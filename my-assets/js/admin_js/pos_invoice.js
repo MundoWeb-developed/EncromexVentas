@@ -2064,51 +2064,56 @@ function cancelprint(){
 
 
 	function check_customer(customer_id) {
-        // Validación básica
-        if (!customer_id || customer_id == 'Seleccionar opción') {
+        // Validar que se haya seleccionado un cliente válido
+        if (!customer_id || customer_id === 'Seleccionar opción') {
+            $('#nombre_cliente').val('');
+            $('#telefono_cliente').val('');
             return;
         }
     
-        var base_url = $('#base_url').val();        
+        var base_url = $('#base_url').val();
+        
+        // Mostrar carga mientras se obtienen los datos
+        $('#nombre_cliente').val('Cargando...');
+        $('#telefono_cliente').val('Cargando...');
+    
         $.ajax({
-            type: "post",
-            url: base_url+'invoice/invoice/bdtask_get_customer_data', // Nuevo endpoint
+            type: "POST",
+            url: base_url + 'invoice/invoice/bdtask_get_customer_data',
             dataType: 'json',
             data: {customer_id: customer_id},
             success: function(response) {
-                // Limpiar datos previos
-                $('#addinvoiceItem').html('');
-                
-                // Llenar datos del cliente
+                // Llenar los campos con los datos del cliente
                 $('#nombre_cliente').val(response.customer_name);
-                $('#telefono_cliente').val(response.customer_mobile);
                 
-                // Opcional: llenar otros campos si existen
-                if(response.customer_email) {
-                    $('#email_cliente').val(response.customer_email); // Si tienes este campo
+                // Formatear el teléfono si existe
+                if(response.customer_mobile) {
+                    var phone = response.customer_mobile.toString();
+                    // Eliminar cualquier formato previo
+                    phone = phone.replace(/\D/g,'');
+                    // Aplicar formato (XXX) XXX-XXXX
+                    if(phone.length === 10) {
+                        phone = phone.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+                    }
+                    $('#telefono_cliente').val(phone);
+                } else {
+                    $('#telefono_cliente').val('');
                 }
-                
-                // Configurar descuento personalizado si existe
-                if(response.custom_discount && response.custom_discount > 0) {
-                    $('#invoice_discount').val(response.custom_discount);
-                    quantity_calculate(1);
-                }
-                
-                // Configurar fecha/hora actual para recogida
+    
+                // Configurar fecha y hora actual por defecto
                 var now = new Date();
-                var fechaHora = now.getFullYear() + '-' + 
-                              String(now.getMonth() + 1).padStart(2, '0') + '-' + 
-                              String(now.getDate()).padStart(2, '0') + ' ' +
-                              String(now.getHours()).padStart(2, '0') + ':' + 
-                              String(now.getMinutes()).padStart(2, '0');
-                $('#dh_instore').val(fechaHora);
+                var formattedDate = now.getFullYear() + '-' + 
+                                  String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+                                  String(now.getDate()).padStart(2, '0') + ' ' +
+                                  String(now.getHours()).padStart(2, '0') + ':' + 
+                                  String(now.getMinutes()).padStart(2, '0');
                 
-                // Resetear otros campos relevantes
-                $('input[name="tipo_venta"][value="Mostrador"]').prop('checked', true);
-                $('#tipo_pago').val('Tarjeta');
+                $('#dh_instore').val(formattedDate);
             },
             error: function() {
                 alert('Error al cargar los datos del cliente');
+                $('#nombre_cliente').val('');
+                $('#telefono_cliente').val('');
             }
         });
     }
