@@ -269,17 +269,18 @@ class Product extends MX_Controller {
         $sup_price = $this->input->post('supplier_price',TRUE);
         $s_id      = $this->input->post('supplier_id',TRUE);
         $product_model = $this->input->post('model',TRUE);
-		
-		
-		$utilidad = $this->input->post('utilidad',TRUE);
-		
-
-		$insumo_cantidad = $this->input->post('insumo_cantidad',TRUE);
-		$insumo_id = $this->input->post('insumo_id',TRUE);
-		$insumo_price = $this->input->post('insumo_price',TRUE);
-		$insumo_total = $this->input->post('insumo_total',TRUE);
-		
-		
+        
+        // Nuevos campos para utilidades y precios
+        $utilidad = $this->input->post('utilidad',TRUE);
+        $utilidad_2 = $this->input->post('utilidad_2',TRUE);
+        $utilidad_3 = $this->input->post('utilidad_3',TRUE);
+        $utilidad_4 = $this->input->post('utilidad_4',TRUE);
+        
+        $insumo_cantidad = $this->input->post('insumo_cantidad',TRUE);
+        $insumo_id = $this->input->post('insumo_id',TRUE);
+        $insumo_price = $this->input->post('insumo_price',TRUE);
+        $insumo_total = $this->input->post('insumo_total',TRUE);
+        
         $taxfield = $this->db->select('tax_name,default_value')
                 ->from('tax_settings')
                 ->get()
@@ -289,10 +290,9 @@ class Product extends MX_Controller {
          $image_url = $this->fileupload->do_upload(
             './my-assets/image/product/', 
             'image'
-
         );
-
-         $image  = (!empty($image_url)?$image_url:$this->input->post('old_image',TRUE));
+    
+        $image  = (!empty($image_url)?$image_url:$this->input->post('old_image',TRUE));
         #-------------------------------#
         $data['product'] = (object)$postData = [
             'product_id'   => (!empty($id)?$id:$product_id),
@@ -302,141 +302,133 @@ class Product extends MX_Controller {
             'tax'          => 0,
             'serial_no'    => $this->input->post('serial_no',TRUE),
             'price'        => $this->input->post('price',TRUE),
+            'price_2'     => $this->input->post('price_2',TRUE), // Nuevo campo
+            'price_3'     => $this->input->post('price_3',TRUE), // Nuevo campo
+            'price_4'     => $this->input->post('price_4',TRUE), // Nuevo campo
             'product_model'=> $this->input->post('model',TRUE),
             'product_details' => $this->input->post('description',TRUE),
             'image'        => (!empty($image) ? $image : 'my-assets/image/product.png'),
-			'utilidad' 	   => $this->input->post('utilidad',TRUE),
+            'utilidad'     => $this->input->post('utilidad',TRUE),
+            'utilidad_2'   => $this->input->post('utilidad_2',TRUE), // Nuevo campo
+            'utilidad_3'   => $this->input->post('utilidad_3',TRUE), // Nuevo campo
+            'utilidad_4'   => $this->input->post('utilidad_4',TRUE), // Nuevo campo
             'status'       => 1,
         ]; 
-
+    
         $tablecolumn = $this->db->list_fields('tax_collection');
         $num_column = count($tablecolumn)-4;
         if($num_column > 0){
-       $txf = [];
-       for($i=0;$i<$num_column;$i++){
-        $txf[$i] = 'tax'.$i;
-       }
-       foreach ($txf as $key => $value) {
-        $postData[$value] = (!empty($this->input->post($value))?$this->input->post($value):0)/100;
-       }
-    }
+            $txf = [];
+            for($i=0;$i<$num_column;$i++){
+                $txf[$i] = 'tax'.$i;
+            }
+            foreach ($txf as $key => $value) {
+                $postData[$value] = (!empty($this->input->post($value))?$this->input->post($value):0)/100;
+            }
+        }
         
         #-------------------------------#
         if ($this->form_validation->run() === true) {
-
             #if empty $id then insert data
             if (empty($id)) {
                 if ($this->product_model->create_product($postData)) {
-                          for ($i = 0, $n = count($s_id); $i < $n; $i++) {
-            $supplier_price = $sup_price[$i];
-            $supp_id = $s_id[$i];
-
-            $supp_prd = array(
-                'product_id'     => $product_id,
-                'supplier_id'    => $supp_id,
-                'supplier_price' => $supplier_price,
-                'products_model' => $product_model,
-            );
-
-            //$this->db->insert('supplier_product', $supp_prd);
-        }
-					
-					$cont_ip = 0;
-					foreach ($insumo_id as $iid){						
-						$price = $insumo_price[$cont_ip];
-						$cantidad = $insumo_cantidad[$cont_ip];
-						$total = $insumo_total[$cont_ip];						
-						$supp_prd = array(
-							'product_id' => $product_id,
-							'insumo_id'  => $iid,
-							'price' 	 => $price,
-							'cantidad' 	 => $cantidad,
-							'total' 	 => $total
-						);
-						$this->db->insert('insumo_product', $supp_prd);
-						$cont_ip++;
-					}				
-					
-					
+                    for ($i = 0, $n = count($s_id); $i < $n; $i++) {
+                        $supplier_price = $sup_price[$i];
+                        $supp_id = $s_id[$i];
+    
+                        $supp_prd = array(
+                            'product_id'     => $product_id,
+                            'supplier_id'    => $supp_id,
+                            'supplier_price' => $supplier_price,
+                            'products_model' => $product_model,
+                        );
+                    }
+                    
+                    $cont_ip = 0;
+                    foreach ($insumo_id as $iid){                        
+                        $price = $insumo_price[$cont_ip];
+                        $cantidad = $insumo_cantidad[$cont_ip];
+                        $total = $insumo_total[$cont_ip];                        
+                        $supp_prd = array(
+                            'product_id' => $product_id,
+                            'insumo_id'  => $iid,
+                            'price'      => $price,
+                            'cantidad'  => $cantidad,
+                            'total'      => $total
+                        );
+                        $this->db->insert('insumo_product', $supp_prd);
+                        $cont_ip++;
+                    }                
+                    
                     #set success message
-                   $this->session->set_flashdata('message', display('save_successfully'));
+                    $this->session->set_flashdata('message', display('save_successfully'));
                 } else {
-                 $this->session->set_flashdata('exception', display('please_try_again'));
+                    $this->session->set_flashdata('exception', display('please_try_again'));
                 }
                 redirect("product_list");
             } else {
                 if ($this->product_model->update_product($postData)) {
-                $this->db->where('product_id', $id)
-                         ->delete("supplier_product");
-            for ($i = 0, $n = count($s_id); $i < $n; $i++) {
-            $supplier_price = $sup_price[$i];
-            $supp_id = $s_id[$i];
-
-            $supp_prd = array(
-                'product_id'     => $id,
-                'supplier_id'    => $supp_id,
-                'supplier_price' => $supplier_price,
-                'products_model' => $product_model,
-            );
-
-            //$this->db->insert('supplier_product', $supp_prd);
-        }
-					
-					$this->db->where('product_id', $id)
-                         ->delete("insumo_product");
-					
-					$cont_ip = 0;
-					foreach ($insumo_id as $iid){						
-						$price = $insumo_price[$cont_ip];
-						$cantidad = $insumo_cantidad[$cont_ip];
-						$total = $insumo_total[$cont_ip];						
-						$supp_prd = array(
-							'product_id' => $id,
-							'insumo_id'  => $iid,
-							'price' 	 => $price,
-							'cantidad' 	 => $cantidad,
-							'total' 	 => $total
-						);
-						$this->db->insert('insumo_product', $supp_prd);
-						
-						$cont_ip++;
-					}
-					
-					
-                   $this->session->set_flashdata('message', display('update_successfully'));
+                    $this->db->where('product_id', $id)
+                             ->delete("supplier_product");
+                    for ($i = 0, $n = count($s_id); $i < $n; $i++) {
+                        $supplier_price = $sup_price[$i];
+                        $supp_id = $s_id[$i];
+    
+                        $supp_prd = array(
+                            'product_id'     => $id,
+                            'supplier_id'    => $supp_id,
+                            'supplier_price' => $supplier_price,
+                            'products_model' => $product_model,
+                        );
+                    }
+                    
+                    $this->db->where('product_id', $id)
+                             ->delete("insumo_product");
+                    
+                    $cont_ip = 0;
+                    foreach ($insumo_id as $iid){                        
+                        $price = $insumo_price[$cont_ip];
+                        $cantidad = $insumo_cantidad[$cont_ip];
+                        $total = $insumo_total[$cont_ip];                        
+                        $supp_prd = array(
+                            'product_id' => $id,
+                            'insumo_id'  => $iid,
+                            'price'      => $price,
+                            'cantidad'  => $cantidad,
+                            'total'      => $total
+                        );
+                        $this->db->insert('insumo_product', $supp_prd);
+                        
+                        $cont_ip++;
+                    }
+                    
+                    $this->session->set_flashdata('message', display('update_successfully'));
                 } else {
-                  $this->session->set_flashdata('exception', display('please_try_again'));
+                    $this->session->set_flashdata('exception', display('please_try_again'));
                 } 
                 redirect("product_list");
             }
-            } else { 
-                if(!empty($id)){
+        } else { 
+            if(!empty($id)){
                 $data['title']    = display('edit_product');
                 $data['product']  = $this->product_model->single_product_data($id);  
-                }
-                $data['supplier'] = $this->product_model->supplier_list();
-                $data['id']       =  $id;
-                $data['category_list']= $this->product_model->active_category();
-                $data['unit_list']= $this->product_model->active_unit();
-                $data['supplier_pr'] = $this->product_model->supplier_product_list($id);
-			
-				$data['insumos'] = $this->product_model->insumo_list();
-			
-				$data['insumos_pr'] = $this->product_model->insumo_product_list($id);
-			
-                $data['taxfield'] = $taxfield;
-                $data['module']   = "product";  
-                $data['page']     = "product_form";  
-                echo Modules::run('template/layout', $data); 
-           
-            } 
-    }
-	
-	
-	
-	
-	
-		
+            }
+            $data['supplier'] = $this->product_model->supplier_list();
+            $data['id']       =  $id;
+            $data['category_list']= $this->product_model->active_category();
+            $data['unit_list']= $this->product_model->active_unit();
+            $data['supplier_pr'] = $this->product_model->supplier_product_list($id);
+        
+            $data['insumos'] = $this->product_model->insumo_list();
+        
+            $data['insumos_pr'] = $this->product_model->insumo_product_list($id);
+        
+            $data['taxfield'] = $taxfield;
+            $data['module']   = "product";  
+            $data['page']     = "product_form";  
+            echo Modules::run('template/layout', $data); 
+        } 
+    }	
 		
 	public function bdtask_get_insumo_data(){		
 		$insumo  = $this->input->post('insumo',TRUE);

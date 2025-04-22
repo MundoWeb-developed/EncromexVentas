@@ -302,17 +302,74 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group row">
-                            <label for="utilidad" class="col-sm-4 col-form-label">Utilidad (%) <i class="text-danger">*</i> </label>
+                            <label for="utilidad" class="col-sm-4 col-form-label">Utilidad 1 (%) <i class="text-danger">*</i> </label>
                             <div class="col-sm-8">
-                                <input class="form-control text-right" id="utilidad" name="utilidad" type="text" required="" placeholder="0.00" tabindex="5" min="0" value="<?php echo $product->utilidad ?>">
+                                <input class="form-control text-right" id="utilidad" name="utilidad" type="text" required placeholder="0.00" tabindex="5" min="0" value="<?php echo $product->utilidad ?>">
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group row">
-                            <label for="sell_price" class="col-sm-4 col-form-label"><?php echo display('sell_price') ?> <i class="text-danger">*</i> </label>
+                            <label for="sell_price_p" class="col-sm-4 col-form-label">Precio 1 <i class="text-danger">*</i> </label>
                             <div class="col-sm-8">
-                                <input class="form-control text-right" id="sell_price_p" name="price" type="text" required="" placeholder="0.00" tabindex="5" min="0" value="<?php echo $product->price ?>" readonly>
+                                <input class="form-control text-right" id="sell_price_p" name="price" type="text" required placeholder="0.00" tabindex="5" min="0" value="<?php echo $product->price ?>" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group row">
+                            <label for="utilidad_2" class="col-sm-4 col-form-label">Utilidad 2 (%) </label>
+                            <div class="col-sm-8">
+                                <input class="form-control text-right" id="utilidad_2" name="utilidad_2" type="text" placeholder="0.00" min="0" value="<?php echo $product->utilidad_2 ?>">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group row">
+                            <label for="sell_price_p_2" class="col-sm-4 col-form-label">Precio 2 </label>
+                            <div class="col-sm-8">
+                                <input class="form-control text-right" id="sell_price_p_2" name="price_2" type="text" placeholder="0.00" value="<?php echo $product->price_2 ?>" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group row">
+                            <label for="utilidad_3" class="col-sm-4 col-form-label">Utilidad 3 (%) </label>
+                            <div class="col-sm-8">
+                                <input class="form-control text-right" id="utilidad_3" name="utilidad_3" type="text" placeholder="0.00" min="0" value="<?php echo $product->utilidad_3 ?>">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group row">
+                            <label for="sell_price_p_3" class="col-sm-4 col-form-label">Precio 3 </label>
+                            <div class="col-sm-8">
+                                <input class="form-control text-right" id="sell_price_p_3" name="price_3" type="text" placeholder="0.00" value="<?php echo $product->price_3 ?>" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group row">
+                            <label for="utilidad_4" class="col-sm-4 col-form-label">Utilidad 4 (%) </label>
+                            <div class="col-sm-8">
+                                <input class="form-control text-right" id="utilidad_4" name="utilidad_4" type="text" placeholder="0.00" min="0" value="<?php echo $product->utilidad_4 ?>">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group row">
+                            <label for="sell_price_p_4" class="col-sm-4 col-form-label">Precio 4 </label>
+                            <div class="col-sm-8">
+                                <input class="form-control text-right" id="sell_price_p_4" name="price_4" type="text" placeholder="0.00" value="<?php echo $product->price_4 ?>" readonly>
                             </div>
                         </div>
                     </div>
