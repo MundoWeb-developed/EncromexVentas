@@ -3481,20 +3481,20 @@ if(!empty($this->input->post('paid_amount',TRUE))){
 	}
 	
 
-	public function all_customers_invoice(){
-		
-		$this->db->select('a.cancelado as cancelado, a.nombre_cliente as nombre_cliente, a.date as date, a.invoice_id as invoice_id');
-		$this->db->from('invoice a');
-		$this->db->where('a.nombre_cliente <>', '');
-		$this->db->having('cancelado', '0');
-		$this->db->order_by('a.invoice', 'desc');
-		$query = $this->db->get();
-		if ($query->num_rows() > 0) {
-			return $query->result_array();
-		}
-		return false;	
-		
-	}
+	public function all_customers_invoice() {
+        $this->db->select('
+            customer_id as invoice_id, 
+            create_date as date, 
+            customer_name as nombre_cliente,
+            customer_mobile,
+            customer_email,
+            custom_discount
+        ');
+        $this->db->from('customer_information');
+        $this->db->order_by('create_date', 'DESC');
+        $this->db->limit(20);
+        return $this->db->get()->result_array();
+    }
 	
 
 	

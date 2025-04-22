@@ -2063,114 +2063,55 @@ function cancelprint(){
 	}
 
 
-	function check_customer(invoice_id){
-			
-		//var id_insumo = $(this).attr('insumo');
-		var base_url = $('#base_url').val();		
+	function check_customer(customer_id) {
+        // Validación básica
+        if (!customer_id || customer_id == 'Seleccionar opción') {
+            return;
+        }
+    
+        var base_url = $('#base_url').val();        
         $.ajax({
             type: "post",
-            url: base_url+'invoice/invoice/bdtask_getdata_invoice',
-			dataType: 'json',
-            data: {invoice_id:invoice_id},
+            url: base_url+'invoice/invoice/bdtask_get_customer_data', // Nuevo endpoint
+            dataType: 'json',
+            data: {customer_id: customer_id},
             success: function(response) {
-				
-				$('#addinvoiceItem').html('');
-				
-				var invoice_details = response.invoice_details;
-				invoice_details.forEach(function(item, index) {
-					setTimeout(function() { onselectimage( item.product_id); }, 500);
-				});
-				invoice_details.forEach(function(item, index) {
-					setTimeout(function() {
-						$('#total_qntt_'+item.product_id).val(item.quantity);
-						quantity_calculate(item.product_id);
-					}, 500);
-				});
-				
-				var invoice_data = response.invoice_data;
-				
-				var delim = invoice_data.delivery_multiple;
-				var instore = invoice_data.instore;
-				var cancelado = invoice_data.cancelado;
-				
-				if(cancelado=='1'){
-					setTimeout(function() {
-						$("#cancel").click();
-						$('#motivo').val(invoice_data.motivo_cancelacion);
-					}, 1000);
-				}
-				
-				
-				
-				if(delim=='1'){					
-					setTimeout(function() {$("#delim").click();}, 1000);					
-				}else{
-					if(instore=='1'){
-						setTimeout(function() {
-							
-							$("#instore").click();							
-							var fecha_entrega = $.datepicker.formatDate("yy-m-d", new Date(invoice_data.fecha_entrega));
-							var hora_entrega = $.datepicker.formatDate("HH:m", new Date(invoice_data.hora_entrega));
-							$('#dh_instore').val(fecha_entrega+" "+hora_entrega);
-							
-						}, 1000);
-					}
-					
-					
-					setTimeout(function() {
-						
-						var fecha_entrega = $.datepicker.formatDate("yy-m-d", new Date(invoice_data.fecha_entrega));
-			
-						$('#tipo_pago').val(invoice_data.tipo_pago);	
-
-						jQuery(document).ready(function($) {
-							$('#boff').val(invoice_data.branchoffice);
-						});
-
-						$('#destinatario').val(invoice_data.destinatario);
-						$('#fecha_entrega').val(fecha_entrega);
-						$('#hora_entrega').val(invoice_data.hora_entrega);
-						$('#direccion').val(invoice_data.direccion);
-						$('#direccion2').val(invoice_data.direccion2);
-						$('#zona').val(invoice_data.zona);
-						$('#descripcion_entrega').val(invoice_data.descripcion_entrega);
-						$('#telefono').val(invoice_data.telefono);
-						$('#nombre_cliente').val(invoice_data.nombre_cliente);
-						$('#telefono_cliente').val(invoice_data.telefono_cliente);
-						$('#florista_taller').val(invoice_data.florista_taller);
-						$('#repartidor_caja').val(invoice_data.repartidor_caja);
-						$('#mensaje').val(invoice_data.mensaje);	
-
-						$('#destinatario_reparto').val(invoice_data.destinatario);
-						$('#fecha_entrega_reparto').val(fecha_entrega);
-						$('#hora_entrega_reparto').val(invoice_data.hora_entrega);
-						$('#direccion_reparto').val(invoice_data.direccion);
-						$('#descripcion_entrega_reparto').val(invoice_data.descripcion_entrega);
-
-						$('#cliente_caja').val(invoice_data.nombre_cliente);
-						$('#fecha_entrega_caja').val(fecha_entrega);
-						$('#hora_entrega_caja').val(invoice_data.hora_entrega);
-						$('#destinatario_caja').val(invoice_data.destinatario);
-						$('#direccion_caja').val(invoice_data.direccion);
-						$('#descripcion_entrega_caja').val(invoice_data.descripcion_entrega);
-
-						$('#fecha_entrega_taller').val(fecha_entrega);
-						$('#hora_entrega_taller').val(invoice_data.hora_entrega);
-
-					}, 1000);
-					
-					
-					
-					
-				}
-				
-				
+                // Limpiar datos previos
+                $('#addinvoiceItem').html('');
+                
+                // Llenar datos del cliente
+                $('#nombre_cliente').val(response.customer_name);
+                $('#telefono_cliente').val(response.customer_mobile);
+                
+                // Opcional: llenar otros campos si existen
+                if(response.customer_email) {
+                    $('#email_cliente').val(response.customer_email); // Si tienes este campo
+                }
+                
+                // Configurar descuento personalizado si existe
+                if(response.custom_discount && response.custom_discount > 0) {
+                    $('#invoice_discount').val(response.custom_discount);
+                    quantity_calculate(1);
+                }
+                
+                // Configurar fecha/hora actual para recogida
+                var now = new Date();
+                var fechaHora = now.getFullYear() + '-' + 
+                              String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+                              String(now.getDate()).padStart(2, '0') + ' ' +
+                              String(now.getHours()).padStart(2, '0') + ':' + 
+                              String(now.getMinutes()).padStart(2, '0');
+                $('#dh_instore').val(fechaHora);
+                
+                // Resetear otros campos relevantes
+                $('input[name="tipo_venta"][value="Mostrador"]').prop('checked', true);
+                $('#tipo_pago').val('Tarjeta');
             },
             error: function() {
-                alert('Request Failed, Please check your code and try again!');
+                alert('Error al cargar los datos del cliente');
             }
         });
-	}
+    }
 
     function getProductById(product_id){
         var base_url = $('#base_url').val();		

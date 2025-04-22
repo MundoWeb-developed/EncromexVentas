@@ -109,6 +109,7 @@ class Customer extends MX_Controller {
         $this->form_validation->set_rules('country',display('country'),'max_length[100]');  
         $this->form_validation->set_rules('customer_address',display('customer_address'),'max_length[255]');
         $this->form_validation->set_rules('address2',display('address2'),'max_length[255]'); 
+        $this->form_validation->set_rules('custom_discount', display('custom_discount'), 'numeric|greater_than_equal_to[0]|less_than_equal_to[100]');
         #-------------------------------#
 
         $data['customer'] = (object)$postData = [
@@ -126,6 +127,7 @@ class Customer extends MX_Controller {
             'country'          => $this->input->post('country', true) ,
             'customer_address' => $this->input->post('customer_address', true) ,
             'address2'         => $this->input->post('address2', true) ,
+            'custom_discount'  => $this->input->post('custom_discount', true) ?: 0, // Nuevo campo
             'status'           => 1,
             'create_by'        => $this->session->userdata('id') ,
             

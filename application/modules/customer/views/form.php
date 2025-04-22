@@ -113,6 +113,18 @@
                                         </div>
                                        
                                     </div>
+                                    <div class="form-group row">
+                                        <label for="custom_discount" class="col-sm-2 text-right col-form-label"><?php echo display('custom_discount')?> (%):</label>
+                                        <div class="col-sm-4">
+                                            <div class="">
+                                                <input name="custom_discount" type="number" class="form-control text-right input-mask-trigger" 
+                                                    id="custom_discount" placeholder="Porcentaje de descuento" 
+                                                    value="<?php echo isset($customer->custom_discount) ? $customer->custom_discount : 0 ?>"
+                                                    min="0" max="100" step="0.01"
+                                                    data-inputmask="'alias': 'decimal', 'groupSeparator': '', 'autoGroup': true" im-insert="true">
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="form-group row">
                                     <label for="state" class="col-sm-2 text-right col-form-label"  style="display:none;"><?php echo display('state')?>:</label>
@@ -158,10 +170,7 @@
                                 <?php }?>
                                     
                                 </div>
-
-                              
-
-                         <div class="form-group row">
+                            <div class="form-group row">
                                    <div class="col-sm-6 text-right">
                                    </div>
                                      <div class="col-sm-6 text-right">

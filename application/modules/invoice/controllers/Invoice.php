@@ -665,13 +665,6 @@ class Invoice extends MX_Controller {
 				
 		
 		}
-		
-		
-        
-		
-		
-		
-		
         $data['module']     = "invoice";
         $data['page']       = "invoice_html"; 
         echo modules::run('template/layout', $data);
@@ -870,24 +863,12 @@ class Invoice extends MX_Controller {
 				'zona'   => $zona,
 				'mensaje'   => $invoice_detail[0]['mensaje'],
 				'creacion'   => $invoice_detail[0]['creacion'],
-				);
-				
-		
+				);	
 		}
-		
-		
-        
-		
-		
-		
-		
         $data['module']     = "invoice";
         $data['page']       = "quote_html"; 
         echo modules::run('template/layout', $data);
     }
-	
-	
-	
 	public function bdtask_invoice_details_cs($invoice_id = null){
          
 		$invoice_detail     = $this->invoice_model->retrieve_invoice_html_data($invoice_id);
@@ -935,8 +916,6 @@ class Invoice extends MX_Controller {
    
             }
         }
-
-
         $totalbal      = $invoice_detail[0]['total_amount']+$invoice_detail[0]['prevous_due'];
         $amount_inword = $totalbal;
         $user_id       = $invoice_detail[0]['sales_by'];
@@ -994,8 +973,6 @@ class Invoice extends MX_Controller {
 				);
 			
 		}else{
-			
-			
 			$data_f = (array)$this->invoice_model->single_florist_data($invoice_detail[0]['florista_taller']);
 			$data_d = (array)$this->invoice_model->single_deliveryman_data($invoice_detail[0]['repartidor_caja']);
 			
@@ -1074,26 +1051,11 @@ class Invoice extends MX_Controller {
 				'tipo_pago'   => $invoice_detail[0]['tipo_pago'],
 				'creacion'   => $invoice_detail[0]['creacion'],
 				);
-				
-		
 		}
-		
-		
-        
-		
-		
-		
-		
         $data['module']     = "invoice";
         $data['page']       = "invoice_cs_html"; 
         echo modules::run('template/layout', $data);
     }
-	
-	
-	
-	
-	
-	
 	public function bdtask_invoice_details_del($invoice_id = null){
          
 		$invoice_detail     = $this->invoice_model->retrieve_invoice_html_data($invoice_id);
@@ -1292,25 +1254,6 @@ class Invoice extends MX_Controller {
 		
 
     }
-	
-
-
-
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-
     public function bdtask_invoice_pad_print($invoice_id){
            $invoice_detail = $this->invoice_model->retrieve_invoice_html_data($invoice_id);
          $taxfield = $this->db->select('*')
@@ -1962,7 +1905,29 @@ class Invoice extends MX_Controller {
             echo modules::run('template/layout', $data); 
       }
 	
+      public function bdtask_get_customer_data() {
+        $customer_id = $this->input->post('customer_id');
+        
+        $this->db->select('customer_name, customer_mobile, customer_email, custom_discount, create_date');
+        $this->db->from('customer_information');
+        $this->db->where('customer_id', $customer_id);
+        $customer = $this->db->get()->row_array();
+        
+        echo json_encode($customer);
+        exit;
+    }
 
+    public function get_customer_details() {
+        $customer_id = $this->input->post('customer_id');
+        
+        $this->db->select('customer_name, customer_mobile, customer_email');
+        $this->db->from('customer_information');
+        $this->db->where('customer_id', $customer_id);
+        $customer = $this->db->get()->row_array();
+        
+        echo json_encode($customer);
+        exit;
+    }
 
 	
 	  public function bdtask_edit_gui_pos($invoice_id = null){
@@ -2061,12 +2026,6 @@ class Invoice extends MX_Controller {
 		  }
 		  
       }
-	
-
-
-
-
-
 	  public function bdtask_get_prodins(){
 		  $id_insumo       = $this->input->post('id_insumo',TRUE);
 		  $getproduct  = $this->invoice_model->searchprodins($id_insumo);		 
@@ -2078,20 +2037,6 @@ class Invoice extends MX_Controller {
 			  $this->load->view('invoice/productnot_found', $title);
 		  }		  
       }
-
-
-
-
-
-
-
-
-	
-
-
-
-
-
      public function getitemlist_byname(){
             $product_name     = $this->input->post('product_name',TRUE);
             $getproduct       = $this->invoice_model->searchprod_byname($product_name);
@@ -2341,8 +2286,6 @@ class Invoice extends MX_Controller {
    
             }
         }
-
-
         $totalbal      = $invoice_detail[0]['total_amount']+$invoice_detail[0]['prevous_due'];
         $amount_inword = $totalbal;
         $user_id       = $invoice_detail[0]['sales_by'];
@@ -2439,9 +2382,6 @@ class Invoice extends MX_Controller {
            echo  $b;
         }
     }
-
-	
-
      public function instant_customer(){
      
         $data = array(
@@ -2486,8 +2426,6 @@ class Invoice extends MX_Controller {
         ];
             //Previous balance adding -> Sending to customer model to adjust the data.
             $this->db->insert('acc_coa',$customer_coa);
-            
-          
             $data['status']        = true;
             $data['message']       = display('save_successfully');
             $data['customer_id']   = $customer_id;
@@ -2498,9 +2436,6 @@ class Invoice extends MX_Controller {
         }
          echo json_encode($data);
         }
-
-
-
         public function bdtask_invoice_details_directprint($invoice_id = null)
         {
             $invoice_detail     = $this->invoice_model->retrieve_invoice_html_data($invoice_id);
@@ -2527,7 +2462,6 @@ class Invoice extends MX_Controller {
                     $subTotal_quantity = $subTotal_quantity + $invoice_detail[$k]['quantity'];
                     $subTotal_ammount = $subTotal_ammount + $invoice_detail[$k]['total_price'];
                 }
-
                 $i = 0;
                 foreach ($invoice_detail as $k => $v) {
                     $i++;
@@ -2544,11 +2478,8 @@ class Invoice extends MX_Controller {
                         $isunit = $isunit+1;
                         
                     }
-    
                 }
             }
-
-
             $totalbal = $invoice_detail[0]['total_amount']+$invoice_detail[0]['prevous_due'];
             $amount_inword     = $totalbal;
             $user_id           = $invoice_detail[0]['sales_by'];
@@ -2590,7 +2521,6 @@ class Invoice extends MX_Controller {
             );
         return $data;
     }
-
     public function bdtask_quote_details_directprint($invoice_id = null)
         {
             $invoice_detail     = $this->quote_model->retrieve_invoice_html_data($invoice_id);
@@ -2617,28 +2547,21 @@ class Invoice extends MX_Controller {
                     $subTotal_quantity = $subTotal_quantity + $invoice_detail[$k]['quantity'];
                     $subTotal_ammount = $subTotal_ammount + $invoice_detail[$k]['total_price'];
                 }
-
                 $i = 0;
                 foreach ($invoice_detail as $k => $v) {
                     $i++;
                     $invoice_detail[$k]['sl'] = $i;
                     if(!empty($invoice_detail[$k]['description'])){
                         $descript = $descript+1;
-                        
                     }
                     if(!empty($invoice_detail[$k]['serial_no'])){
                         $isserial = $isserial+1;
-                        
                     }
                     if(!empty($invoice_detail[$k]['unit'])){
-                        $isunit = $isunit+1;
-                        
+                        $isunit = $isunit+1;  
                     }
-    
                 }
             }
-
-
             $totalbal = $invoice_detail[0]['total_amount']+$invoice_detail[0]['prevous_due'];
             $amount_inword     = $totalbal;
             $user_id           = $invoice_detail[0]['sales_by'];
@@ -2680,17 +2603,13 @@ class Invoice extends MX_Controller {
             );
         return $data;
     }
-
-
        public function generator($lenth)
     {
         $number=array("A","B","C","D","E","F","G","H","I","J","K","L","N","M","O","P","Q","R","S","U","V","T","W","X","Y","Z","1","2","3","4","5","6","7","8","9","0");
-    
         for($i=0; $i<$lenth; $i++)
         {
             $rand_value=rand(0,34);
             $rand_number=$number["$rand_value"];
-        
             if(empty($con))
             { 
             $con=$rand_number;
@@ -2701,8 +2620,6 @@ class Invoice extends MX_Controller {
         }
         return $con;
     }
-
-   /*invoice no generator*/
       public function number_generator_ajax() {
         $this->db->select_max('invoice', 'invoice_no');
         $query      = $this->db->get('invoice');
@@ -2715,75 +2632,41 @@ class Invoice extends MX_Controller {
         }
         echo  $invoice_no;
     }
-	
-	
 	public function bdtask_getdata_deliveryman(){
 		$deliveryman = $this->input->post('deliveryman',true);		
 		$detail = (array)$this->invoice_model->single_deliveryman_data($deliveryman);
 		echo json_encode($detail);
-	}
-	
-			
+	}	
 	public function bdtask_getdata_florist(){
 		$florist = $this->input->post('florist',true);		
 		$detail = (array)$this->invoice_model->single_florist_data($florist);
 		echo json_encode($detail);
 	}
-	
-
-
 	public function bdtask_entregar_invoice(){
-		
 		$invoice  = $this->input->post('invoice',true);
 		$product  = $this->input->post('product',true);	
-		
 		$this->invoice_model->entregar_invoice_product($invoice, $product);
-		
 	}
-	
-
-
 	public function bdtask_pagado_invoice(){
-		
 		$invoice  = $this->input->post('invoice',true);
 		$tipo  = $this->input->post('tipo',true);	
-		
-		$this->invoice_model->mover_pagado_invoice($invoice, $tipo);
-		
+		$this->invoice_model->mover_pagado_invoice($invoice, $tipo);	
 	}
-	
-
-
-
 	public function bdtask_florista_invoice(){
-		
 		$invoice  = $this->input->post('invoice',true);
 		$product  = $this->input->post('product',true);	
-		
 		$this->invoice_model->florista_invoice_product($invoice, $product);
 		
 	}
-	
-
-
-
-	
 	public function bdtask_product_form_arrp($id = null){       
-       
 		$this->form_validation->set_rules('product_name',display('product_name'),'required|max_length[200]');       
-
 		$this->form_validation->set_rules('price', display('price') ,'required|max_length[12]');
-
 		$product_id = (!empty($this->input->post('product_id',TRUE))?$this->input->post('product_id',TRUE):$this->generator(8));
-
 		$utilidad = $this->input->post('utilidad',TRUE);		
-
 		$insumo_cantidad = $this->input->post('insumo_cantidad',TRUE);
 		$insumo_id = $this->input->post('insumo_id',TRUE);
 		$insumo_price = $this->input->post('insumo_price',TRUE);
 		$insumo_total = $this->input->post('insumo_total',TRUE);
-
-
 		$data['product'] = (object)$postData = [
 			'product_id'   => (!empty($id)?$id:$product_id),
 			'product_name' => $this->input->post('product_name',TRUE),
@@ -2800,11 +2683,8 @@ class Invoice extends MX_Controller {
 			'temporal'     => 1,
 			'iva' 	   	   => $this->input->post('iva',TRUE),
 		];
-
 		if ($this->form_validation->run() === true) {           
-
 			if ($this->invoice_model->create_product($postData)) {                  
-
 				$cont_ip = 0;
 				foreach ($insumo_id as $iid){	
 					$price = $insumo_price[$cont_ip];
@@ -2820,63 +2700,44 @@ class Invoice extends MX_Controller {
 					$this->db->insert('insumo_product', $supp_prd);
 					$cont_ip++;
 				}							
-
-
 			   $this->session->set_flashdata('message', display('save_successfully'));
 			} else {
 			 $this->session->set_flashdata('exception', display('please_try_again'));
 			}
-			
 			session_start();
-			
 			$_SESSION["personalizado"]=$product_id; 
-			
 			redirect('gui_pos');
-			
-
 		} 
 	}
-	
-
 	public function delete_invoice(){
 	  $invoice  = $this->input->post('invoice',TRUE);
 	  $insumo_info = $this->invoice_model->delete_invoice($invoice);
 	}
-	
-
-
 	public function CheckInvoiceList_efectivo(){
         $postData = $this->input->post();
         $data     = $this->invoice_model->getInvoiceList_efectivo($postData);
         echo json_encode($data);
     }
-	
-
 	public function CheckInvoiceList_tarjeta(){
         $postData = $this->input->post();
         $data     = $this->invoice_model->getInvoiceList_tarjeta($postData);
         echo json_encode($data);
     }
-	
 	public function CheckInvoiceList_transferencia(){
         $postData = $this->input->post();
         $data     = $this->invoice_model->getInvoiceList_transferencia($postData);
         echo json_encode($data);
     }
-	
 	public function CheckInvoiceList_anticipo(){
         $postData = $this->input->post();
         $data     = $this->invoice_model->getInvoiceList_anticipo($postData);
         echo json_encode($data);
     }
-	
-
 	public function CheckInvoiceList_porcobrar(){
         $postData = $this->input->post();
         $data     = $this->invoice_model->getInvoiceList_porcobrar($postData);
         echo json_encode($data);
     }
-
 	public function getProductDetailsById(){
 		$product_id = $this->input->post('product_id',TRUE);
         $product = $this->invoice_model->pos_invoice_setup($product_id);
@@ -2886,13 +2747,5 @@ class Invoice extends MX_Controller {
 		}else{
 			echo json_encode(["error" => true, "image"=> null]);
 		}
-	}
-
-
-
-
-	
-			
-			
+	}		
 }
-

@@ -168,9 +168,10 @@
 										<label>Últimos clientes:</label><br>
 										<select id="list_bases" class="form-control" onchange="check_customer(this.value)" style="padding-top:8px; padding-bottom:8px; font-size:11px;">
 											<option>Seleccionar opción</option>
-											<?php foreach ($items_customer as $customer) {
-											?>
-												<option value="<?php echo $customer['invoice_id']; ?>">F. Venta: <?php echo date('d/m/Y', strtotime($customer['date'])); ?> | <?php echo $customer['nombre_cliente']; ?></option>
+											<?php foreach ($items_customer as $customer) { ?>
+												<option value="<?php echo $customer['invoice_id']; ?>">
+													Registrado: <?php echo date('d/m/Y', strtotime($customer['date'])); ?> | <?php echo $customer['nombre_cliente']; ?>
+												</option>
 											<?php } ?>
 										</select>
 									</div>
