@@ -3488,7 +3488,7 @@ if(!empty($this->input->post('paid_amount',TRUE))){
             customer_name as nombre_cliente,
             customer_mobile,
             customer_email,
-            custom_discount
+            custom_discount as invoice_discount,
         ');
         $this->db->from('customer_information');
         $this->db->order_by('create_date', 'DESC');

@@ -2054,6 +2054,7 @@ function cancelprint(){
         if (!customer_id || customer_id === 'Seleccionar opción') {
             $('#nombre_cliente').val('');
             $('#telefono_cliente').val('');
+            $('#invoice_discount').val('');
             return;
         }
     
@@ -2062,6 +2063,7 @@ function cancelprint(){
         // Mostrar carga mientras se obtienen los datos
         $('#nombre_cliente').val('Cargando...');
         $('#telefono_cliente').val('Cargando...');
+        $('#invoice_discount').val('Cargando...');
     
         $.ajax({
             type: "POST",
@@ -2071,6 +2073,7 @@ function cancelprint(){
             success: function(response) {
                 // Llenar los campos con los datos del cliente
                 $('#nombre_cliente').val(response.customer_name);
+                $('#invoice_discount').val(response.custom_discount);
                 
                 // Formatear el teléfono si existe
                 if(response.customer_mobile) {
@@ -2100,6 +2103,7 @@ function cancelprint(){
                 alert('Error al cargar los datos del cliente');
                 $('#nombre_cliente').val('');
                 $('#telefono_cliente').val('');
+                $('#invoice_discount').val('');
             }
         });
     }
