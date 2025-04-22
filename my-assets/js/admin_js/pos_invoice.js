@@ -93,7 +93,7 @@ if (quantity > 0 || discount > 0) {
         if (dis_type == 1) {
 			
             var price = quantity * price_item;
-            var dis   = +(price * discount / 100);
+            var dis   = +(price * (discount / 100));
 			
 			
             $("#all_discount_" + item).val(dis);
@@ -153,69 +153,55 @@ if (quantity > 0 || discount > 0) {
 //Calculate Sum
     "use strict";
 function calculateSum() {
-        var taxnumber = $("#txfieldnum").val();
-        var t = 0,
-            a = 0,
-            e = 0,
-            o = 0,
-            p = 0,
-            f = 0,
-            ad = 0,
-            tx = 0,
-            ds = 0,
-            s_cost =  $("#shipping_cost").val();
+    var taxnumber = $("#txfieldnum").val();
+    var t = 0, a = 0, e = 0, o = 0, p = 0, f = 0, ad = 0, tx = 0, ds = 0;
+    var s_cost = $("#shipping_cost").val();
 
     //Total Tax
-   for(var i=0;i<taxnumber;i++){
-      
-var j = 0;
-    $(".total_tax"+i).each(function () {
-        isNaN(this.value) || 0 == this.value.length || (j += parseFloat(this.value))
-    });
-            $("#total_tax_ammount"+i).val(j.toFixed(2, 2));
-             
+    for(var i=0;i<taxnumber;i++){
+        var j = 0;
+        $(".total_tax"+i).each(function () {
+            isNaN(this.value) || 0 == this.value.length || (j += parseFloat(this.value))
+        });
+        $("#total_tax_ammount"+i).val(j.toFixed(2, 2));
     }
-            //Total Discount
-            $(".total_discount").each(function () {
+    
+    //Total Discount
+    $(".total_discount").each(function () {
         isNaN(this.value) || 0 == this.value.length || (p += parseFloat(this.value))
     }),
-            $("#total_discount_ammount").val(p.toFixed(2, 2)),
+    $("#total_discount_ammount").val(p.toFixed(2, 2)),
 
-
-        $(".totalTax").each(function () {
+    $(".totalTax").each(function () {
         isNaN(this.value) || 0 == this.value.length || (f += parseFloat(this.value))
     }),
-            $("#total_tax_amount").val(f.toFixed(2, 2)),
+    $("#total_tax_amount").val(f.toFixed(2, 2)),
          
-            //Total Price
-            $(".total_price").each(function () {
+    //Total Price
+    $(".total_price").each(function () {
         isNaN(this.value) || 0 == this.value.length || (t += parseFloat(this.value))
     }),
 
-     $(".dppr").each(function () {
+    $(".dppr").each(function () {
         isNaN(this.value) || 0 == this.value.length || (ad += parseFloat(this.value))
     }),
                   
-            o  = a.toFixed(2, 2),
-            e  = t.toFixed(2, 2),
-            tx = f.toFixed(2, 2),
-         ds = p.toFixed(2, 2);	
+    o = a.toFixed(2, 2),
+    e = t.toFixed(2, 2),
+    tx = f.toFixed(2, 2),
+    ds = p.toFixed(2, 2);	
 
-	
-	var test = +tx + +s_cost + +e + -ds + + ad;
-	
+    var invoice_discount_percent = $("#invoice_discount").val();
+    var subtotal = +tx + +s_cost + +e + +ad;
+    
+    // Aplicar descuento general de la factura (si es porcentual)
+    if(invoice_discount_percent > 0) {
+        var discount_amount = subtotal * (invoice_discount_percent / 100);
+        $("#total_discount_ammount").val(discount_amount.toFixed(2));
+        subtotal -= discount_amount;
+    }
 
-    /*var test = +tx + +s_cost + +e + + ad;
-    var porcds = ds/100;
-	var qds = test*porcds
-    test = test - qds;	
-	$("#total_discount_ammount").val(qds.toFixed(2, 2))*/
-	
-
-
-
-    $("#grandTotal").val(test.toFixed(2, 2));
-
+    $("#grandTotal").val(subtotal.toFixed(2, 2));
 
     var gt = $("#grandTotal").val();
     var invdis = $("#invoice_discount").val();
