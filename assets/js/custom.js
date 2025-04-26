@@ -2037,11 +2037,22 @@ $(document).ready(function() {
 },    
             },
           'columns': [
-             { data: 'sl' },
+            {
+              "data": "customer_id",
+              "render": function(data, type, row, meta) {
+                  return meta.row + 1;
+              }
+          },
              { data: 'customer_name' },
              { data: 'address'},
              { data: 'mobile' },
              { data: 'email'},
+             {
+              "data": "custom_discount",
+              "render": function(data, type, row) {
+                  return data ? data + '%' : '0%';
+              }
+          },
              { data: 'city'},
              { data: 'state'},
              { data: 'zip'},

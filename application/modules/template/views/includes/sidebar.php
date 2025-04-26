@@ -136,14 +136,14 @@
 
 
                         <?php if ($this->permission1->method('manage_customer', 'read')->access()) { ?>
-                            <li class="<?php echo (($this->uri->segment(1) == "customer_list") ? "active" : '') ?>">
+                            <!-- <li class="<?php echo (($this->uri->segment(1) == "customer_list") ? "active" : '') ?>">
                                 <a href="<?php echo base_url('customer_nlist') ?>">
 
                                     <?php echo display('customer_list') ?>
 
                                 </a>
 
-                            </li>
+                            </li> -->
                         <?php } ?>
 
 
@@ -151,27 +151,27 @@
 
                         <?php if ($this->permission1->method('credit_customer', 'read')->access()) { ?>
 
-                            <li class="<?php echo (($this->uri->segment(1) == "credit_customer") ? "active" : '') ?>">
+                            <!-- <li class="<?php echo (($this->uri->segment(1) == "credit_customer") ? "active" : '') ?>">
                                 <a href="<?php echo base_url('credit_customer') ?>">
 
                                     <?php echo display('credit_customer') ?>
 
                                 </a>
 
-                            </li>
+                            </li> -->
                         <?php } ?>
                         <?php if ($this->permission1->method('paid_customer', 'read')->access()) { ?>
                             <li class="<?php echo (($this->uri->segment(1) == "paid_customer") ? "active" : '') ?>">
                                 <a href="<?php echo base_url('paid_customer') ?>">
 
-                                    <?php echo display('paid_customer') ?>
+                                    <?php echo display('customer_list') ?>
 
                                 </a>
 
                             </li>
                         <?php } ?>
                         <?php if ($this->permission1->method('customer_ledger', 'read')->access()) { ?>
-                            <li class="<?php echo (($this->uri->segment(1) == "customer_ledger" || $this->uri->segment(1) == "customer_ledgerdata") ? "active" : '') ?>">
+                            <!-- <li class="<?php echo (($this->uri->segment(1) == "customer_ledger" || $this->uri->segment(1) == "customer_ledgerdata") ? "active" : '') ?>">
                                 <a href="<?php echo base_url('customer_ledger') ?>">
 
                                     <?php echo display('customer_ledger') ?>
@@ -188,7 +188,7 @@
 
                                 </a>
 
-                            </li>
+                            </li> -->
                         <?php } ?>
                     </ul>
 
