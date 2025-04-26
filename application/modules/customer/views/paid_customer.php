@@ -49,7 +49,6 @@
                             <th><?php echo display('mobile_no') ?></th>
                             <th>No. Compras</th>
                             <th>Monto de compras</th>
-                            <th>Opciones</th>
                         </tr>
                     </thead>
                     <tbody id="customer_tablebody2">

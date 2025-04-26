@@ -275,7 +275,6 @@ class Customer_model extends CI_Model
         'total_purchases' => $record->total_purchases,
         'nombre_cliente'  => $record->nombre_cliente,
         'telefono_cliente' => $record->telefono_cliente,
-        'options'        => '<button type="button" class="btn btn-primary edit_customer" nombre_cliente="' . $record->nombre_cliente . '" telefono_cliente="' . $record->telefono_cliente . '" data-toggle="modal" data-target="#view_customer"><i class="fa fa-edit" aria-hidden="true"></i> Editar</button>',
       );
     }
     ## Response

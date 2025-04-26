@@ -1816,7 +1816,7 @@ $(document).ready(function () {
   var mydatatable2 = $("#CustomerList2").DataTable({
     responsive: true,
     aaSorting: [[1, "asc"]],
-    columnDefs: [{ bSortable: false, aTargets: [0, 2, 3, 4] }],
+    columnDefs: [{ bSortable: false, aTargets: [0, 2, 3] }],//define el numero de columnas  aaaaaaaaaa
     processing: true,
     serverSide: true,
     lengthMenu: [
@@ -1837,7 +1837,6 @@ $(document).ready(function () {
       { data: "telefono_cliente" },
       { data: "n_purchases" },
       { data: "total_purchases" },
-      { data: "options" },
     ],
   });
 
