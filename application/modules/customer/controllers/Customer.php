@@ -71,6 +71,7 @@ class Customer extends MX_Controller
         $data['page']              = "paid_customer";
         $data["customer_dropdown"] = $this->customer_model->bdtask_paid_customer_dropdown();
         $data['all_customer']      = $this->customer_model->bdtask_all_paid_customer();
+        // $this->load->view('customer/paid_customer', $data);
         echo modules::run('template/layout', $data);
     }
 

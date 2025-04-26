@@ -199,8 +199,8 @@ class Customer_model extends CI_Model
     foreach ($records as $record) {
       $button = '';
       $base_url = base_url();
-      $button .= ' <a href="' . $base_url . 'edit_customer/' . $record->customer_id . '" class="btn btn-info btn-xs m-b-5 custom_btn" data-toggle="tooltip" data-placement="left" title="Update"><i class="pe-7s-note" aria-hidden="true"></i></a>';
-      $button .= ' <a onclick="customerdelete(' . $record->customer_id . ')" href="javascript:void(0)"  class="btn btn-danger btn-xs m-b-5 custom_btn" data-toggle="tooltip" data-placement="right" title="Delete "><i class="pe-7s-trash" aria-hidden="true"></i></a>';
+      $button .= '<a href="'.$base_url.'edit_customer/'.$record->customer_id.'" class="btn btn-info btn-sm" title="Editar"><i class="fa fa-edit"></i></a>';
+      $button .= ' <a onclick="customerdelete('.$record->customer_id.')" href="javascript:void(0)" class="btn btn-danger btn-sm" title="Eliminar"><i class="fa fa-trash"></i></a>';
       $data[] = array(
         'sl'               => $sl,
         'customer_name'    => $record->customer_name,
@@ -508,7 +508,7 @@ class Customer_model extends CI_Model
         'contact'          => $record->contact,
         'fax'              => $record->fax,
         'city'             => $record->city,
-        'state'            => $record->state,
+        // 'state'            => $record->state,
         'zip'              => $record->zip,
         'country'          => $record->country,
         'custom_discount'  => $record->custom_discount, // Campo del descuento a clientes

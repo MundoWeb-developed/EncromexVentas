@@ -2002,27 +2002,37 @@ $(document).ready(function () {
     },
     columns: [
       {
-        data: "customer_id",
-        render: function (data, type, row, meta) {
-          return meta.row + 1;
-        },
+          data: "sl",
+          render: function(data, type, row, meta) {
+              return meta.row + meta.settings._iDisplayStart + 1;
+          }
       },
       { data: "customer_name" },
-      { data: "address" },
-      { data: "mobile" },
+      { data: "address" },  // Asegúrate que coincide con el nombre en $data[]
+      { data: "mobile" },   // Cambiado de "customer_mobile" a "mobile"
       { data: "email" },
       {
-        data: "custom_discount",
-        render: function (data, type, row) {
-          return data ? data + "%" : "0%";
-        },
+          data: "custom_discount",
+          render: function(data, type, row) {
+              return data ? data + "%" : "0%";
+          }
       },
       { data: "city" },
-      { data: "state" },
+      // { data: "state" },
       { data: "zip" },
       { data: "country" },
-      { data: "balance", class: "balance" },
-      { data: "button" },
+      // { 
+      //     data: "balance",
+      //     class: "balance",
+      //     render: function(data, type, row) {
+      //         return parseFloat(data).toFixed(2);
+      //     }
+      // },
+      { 
+          data: "button",
+          orderable: false,
+          searchable: false
+      }
     ],
 
     footerCallback: function (row, data, start, end, display) {
