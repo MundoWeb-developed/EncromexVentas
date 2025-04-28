@@ -1816,7 +1816,7 @@ $(document).ready(function () {
   var mydatatable2 = $("#CustomerList2").DataTable({
     responsive: true,
     aaSorting: [[1, "asc"]],
-    columnDefs: [{ bSortable: false, aTargets: [0, 2, 3] }],//define el numero de columnas  aaaaaaaaaa
+    columnDefs: [{ bSortable: false, aTargets: [0, 2, 3] }], //define el numero de columnas  aaaaaaaaaa
     processing: true,
     serverSide: true,
     lengthMenu: [
@@ -2001,37 +2001,37 @@ $(document).ready(function () {
     },
     columns: [
       {
-          data: "sl",
-          render: function(data, type, row, meta) {
-              return meta.row + meta.settings._iDisplayStart + 1;
-          }
+        data: "sl",
+        render: function (data, type, row, meta) {
+          return meta.row + meta.settings._iDisplayStart + 1;
+        },
       },
       { data: "customer_name" },
-      { data: "address" },  // Asegúrate que coincide con el nombre en $data[]
-      { data: "mobile" },   // Cambiado de "customer_mobile" a "mobile"
+      { data: "address" }, // Asegúrate que coincide con el nombre en $data[]
+      { data: "mobile" }, // Cambiado de "customer_mobile" a "mobile"
       { data: "email" },
       {
-          data: "custom_discount",
-          render: function(data, type, row) {
-              return data ? data + "%" : "0%";
-          }
+        data: "custom_discount",
+        render: function (data, type, row) {
+          return data ? data + "%" : "0%";
+        },
       },
       { data: "city" },
       // { data: "state" },
       { data: "zip" },
       { data: "country" },
-      // { 
+      // {
       //     data: "balance",
       //     class: "balance",
       //     render: function(data, type, row) {
       //         return parseFloat(data).toFixed(2);
       //     }
       // },
-      { 
-          data: "button",
-          orderable: false,
-          searchable: false
-      }
+      {
+        data: "button",
+        orderable: false,
+        searchable: false,
+      },
     ],
 
     footerCallback: function (row, data, start, end, display) {

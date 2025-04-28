@@ -9,8 +9,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha512-uURl+ZXMBrF4AwGaWmEetzrd+J5/8NRkWAvJx5sbPSSuOb0bZLqf+tOzniObO00BjHa/dD7gub9oCGMLPQHtQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha512-H9jrZiiopUdsLpg94A333EfumgUBpO9MdbxStdeITo+KEIMaNfHNvwyjjDJb+ERPaRS6DpyRlKbvPUasNItRyw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-<script type="text/javascript" src="https://maps.google.com/maps/api/js?key=AIzaSyB8GjGl9Vn6mtqpVcWViLT4cucBIYiDYgQ&sensor=false&libraries=places"></script>
-<script src="https://mwon.net/kasumi/assets/js/locationpicker.js" type="text/javascript"></script>
 
 <link href="<?php echo base_url('assets/css/gui_pos.css') ?>" rel="stylesheet" type="text/css" />
 <script src="<?php echo base_url() ?>my-assets/js/admin_js/pos_invoice.js?v=1.0.0" type="text/javascript"></script>
@@ -96,23 +94,23 @@
 
 									<div class="col-sm-3">
 										<label>Sucursal:</label><br>
-										<?php 
+										<?php
 										// Obtener la sucursal del usuario actual
 										$user_branch = $this->db->select('c.branchoffice, c.id')
-															->from('users a')
-															->join('branchoffice c', 'a.branchoffice_id = c.id', 'left')
-															->where('a.user_id', $this->session->userdata('id'))
-															->get()
-															->row();
-										
+											->from('users a')
+											->join('branchoffice c', 'a.branchoffice_id = c.id', 'left')
+											->where('a.user_id', $this->session->userdata('id'))
+											->get()
+											->row();
+
 										// Mostrar como texto si no hay sucursal
-										if(empty($user_branch) || empty($user_branch->branchoffice)) {
+										if (empty($user_branch) || empty($user_branch->branchoffice)) {
 											echo '<div class="form-control" style="padding-top:8px; padding-bottom:8px;">Sin sucursal asignada</div>';
 										} else {
 											// Mostrar el nombre de la sucursal y guardar el ID en un campo oculto
-											echo '<div class="form-control" style="padding-top:8px; padding-bottom:8px;">'.$user_branch->branchoffice.'</div>';
-											echo '<input type="hidden" id="boff" name="boff" value="'.$user_branch->branchoffice.'">';
-											echo '<input type="hidden" name="branchoffice_id" value="'.$user_branch->id.'">';
+											echo '<div class="form-control" style="padding-top:8px; padding-bottom:8px;">' . $user_branch->branchoffice . '</div>';
+											echo '<input type="hidden" id="boff" name="boff" value="' . $user_branch->branchoffice . '">';
+											echo '<input type="hidden" name="branchoffice_id" value="' . $user_branch->id . '">';
 										}
 										?>
 									</div>
@@ -127,43 +125,7 @@
 									</div>
 								</div>
 
-
 								<div class="row" style="margin-bottom:20px;">
-
-									<!-- <div class="col-sm-4">
-										<label>Piezas:</label>
-										<select id="list_flores" class="" onchange="check_insumo(this.value)" style="padding-top:8px; padding-bottom:8px; font-size:11px;">
-											<option value="">- Productos -</option>
-
-											<?php foreach ($flores as $bf) {
-											?>
-												<option value="<?php echo $bf['id']; ?>"><?php echo $bf['product_name']; ?> (<?php echo $bf['product_model']; ?>)</option>
-											<?php } ?>
-										</select>
-										<script>
-											jQuery(document).ready(function($) {
-												$('#list_flores').val('');
-											});
-										</script>
-									</div>
-									<div class="col-sm-4">
-										<label>Bases:</label><br>
-										<select id="list_bases" class="" onchange="check_insumo(this.value)" style="padding-top:8px; padding-bottom:8px; font-size:11px;">
-											<option value="">- Bases -</option>
-
-											<?php foreach ($bases as $bf) {
-											?>
-												<option value="<?php echo $bf['id']; ?>"><?php echo $bf['product_name']; ?> (<?php echo $bf['product_model']; ?>)</option>
-											<?php } ?>
-										</select>
-										<script>
-											jQuery(document).ready(function($) {
-												$('#list_bases').val('');
-											});
-										</script>
-									</div> -->
-
-
 									<div class="col-sm-4">
 										<label>Últimos clientes:</label><br>
 										<select id="list_bases" class="form-control" onchange="check_customer(this.value)" style="padding-top:8px; padding-bottom:8px; font-size:11px;">
@@ -175,15 +137,6 @@
 											<?php } ?>
 										</select>
 									</div>
-
-
-
-									<!-- 									
-		<?php foreach ($flores_bases as $bf) {
-		?>
-				<button style="margin:0px 0px 3px 0px; font-size: 9px; font-weight: bold; padding: 5px; border-radius: 5px;" class="client-add-btn btn btn-success getprodins" type="button" insumo="<?php echo $bf['id']; ?>"><?php echo $bf['product_name']; ?> (<?php echo $bf['product_model']; ?>)</button>
-		<?php } ?>
-		 -->
 								</div>
 								<div class="product-grid" style="height: 250px;">
 									<div class="row row-m-3" id="product_search">
@@ -201,48 +154,6 @@
 											</a>
 										</div>
 									</div>
-
-
-
-									<!--<div class="row row-m-3" id="product_search">
-        <?php $i = 0;
-		if ($itemlist) {
-			foreach ($itemlist as $item) {
-		?>
-		<div class="col-xs-6 col-sm-4 col-md-2 col-lg-2 col-p-2" style="padding-right: 5px;padding-left: 5px;">
-        <div class="product-panel overflow-hidden border-0 shadow-sm" id="image-active_<?php echo $item->product_id ?>">
-            <div class="item-image position-relative overflow-hidden">
-                <div class="" id="image-active_count_<?php echo $item->product_id ?>"><span id="active_pro_<?php echo $item->product_id ?>" class="active_qty"></span></div>
-                <img src="<?php echo !empty($item->image) ? $item->image : 'assets/img/icons/default.jpg'; ?>" onclick="onselectimage('<?php echo $item->product_id ?>')" alt="" class="img-responsive">
-            </div>
-            <div class="panel-footer border-0 bg-white" onclick="onselectimage('<?php echo $item->product_id ?>')">
-                <h3 class="item-details-title"> <?php echo  $text = html_escape($item->product_name); ?></h3>
-				
-            </div>
-        </div>
-        </div>
-
-        <?php }
-		} ?>
-        <?php $i = 0;
-		if ($itemlist) {
-			foreach ($itemlist as $item) {
-		?>
-		<div class="col-xs-6 col-sm-4 col-md-2 col-lg-2 col-p-2"  style="padding-right: 5px;padding-left: 5px;">
-			<div class="product-panel overflow-hidden border-0 shadow-sm" id="image-active_<?php echo $item->product_id ?>">
-				<div class="item-image position-relative overflow-hidden">
-					<div class="" id="image-active_count_<?php echo $item->product_id ?>"><span id="active_pro_<?php echo $item->product_id ?>" class="active_qty"></span></div>
-					<img src="<?php echo !empty($item->image) ? $item->image : 'assets/img/icons/default.jpg'; ?>" onclick="onselectimage('<?php echo $item->product_id ?>')" alt="" class="img-responsive">
-				</div>
-				<div class="panel-footer border-0 bg-white" onclick="onselectimage('<?php echo $item->product_id ?>')">
-					<h3 class="item-details-title"><?php echo  $text = html_escape($item->product_name); ?></h3>
-				</div>
-			</div>
-        </div>
-
-        <?php }
-		} ?>
-        </div>-->
 								</div>
 							</div>
 						</div>
@@ -343,14 +254,6 @@
 								<tbody id="addinvoiceItem"></tbody>
 							</table>
 						</div>
-						<!-- <div id="div_deli_multiple" style="display:none;">
-							<div class="form-check">
-								<input class="form-check-input" type="checkbox" id="delim" name="delim">
-								<label class="form-check-label" for="delim">
-									Dividir entrega
-								</label>
-							</div>
-						</div> -->
 						<div class="footer">
 							<div class="form-group row guifooterpanel">
 								<div class="col-sm-12">
@@ -534,36 +437,6 @@
 								</label>
 								<input type="hidden" name="quote" id="quote">
 							</div>
-
-							<!-- <div id="facturacionForm" class="bg-light p-4 rounded-3" style="display: none;">
-								<h5 class="mb-4 pb-2 border-bottom">Datos de Facturación</h5>
-								<div class="row g-3">
-									<div class="col-md-6">
-										<label for="rfc" class="form-label">RFC <span class="text-danger">*</span></label>
-										<input type="text" class="form-control" id="rfc" placeholder="Ingrese RFC" required>
-									</div>
-									<div class="col-md-6">
-										<label for="razonSocial" class="form-label">Razón Social <span class="text-danger">*</span></label>
-										<input type="text" class="form-control" id="razonSocial" placeholder="Ingrese Razón Social" required>
-									</div>
-									<div class="col-md-6">
-										<label for="correoFactura" class="form-label">Correo Electrónico <span class="text-danger">*</span></label>
-										<input type="email" class="form-control" id="correoFactura" placeholder="correo@ejemplo.com" required>
-									</div>
-									<div class="col-md-6">
-										<label for="cfdi" class="form-label">Uso del CFDI <span class="text-danger">*</span></label>
-										<select class="form-select" id="cfdi" required>
-											<option value="" selected disabled>Seleccione una opción</option>
-											<option value="G03">Gastos en general (G03)</option>
-											<option value="P01">Por definir (P01)</option>
-										</select>
-									</div>
-									<div class="col-12">
-										<label for="direccionFiscal" class="form-label">Dirección Fiscal <span class="text-danger">*</span></label>
-										<input type="text" class="form-control" id="direccionFiscal" placeholder="Calle, número, colonia, ciudad, estado, CP" required>
-									</div>
-								</div>
-							</div> -->
 						</div>
 
 						<script>
@@ -1028,25 +901,23 @@
 	});
 
 	$(document).on('change', '#cotizacion', function(e) {
-		if($('#cotizacion').prop('checked'))
-		{
+		if ($('#cotizacion').prop('checked')) {
 			console.log('xd');
 			$('#add_invoice').val('Guardar cotización');
 
 			//$('#gui_sale_insert').val('<?php echo base_url("invoice/invoice/bdtask_manual_sales_insert") ?>');
 			$('#quote').val(1);
-		}else
-		{
+		} else {
 			$('#quote').val(0);
 		}
 	});
-	$(document).ready(function(){
+	$(document).ready(function() {
 		let sucursal = $('#boff').val();
 		$.ajax({
 			type: "POST",
 			method: "POST",
 			dataType: "JSON",
-			url: "<?php echo base_url() ?>gui_pos/inv/"+sucursal,
+			url: "<?php echo base_url() ?>gui_pos/inv/" + sucursal,
 			data: {
 				id: $(this).val()
 			},
@@ -1059,14 +930,14 @@
 		});
 	});
 
-	$(document).on('change','#boff',function(){
+	$(document).on('change', '#boff', function() {
 		let sucursal = $('#boff').val();
-		sucursal = sucursal.replace(' ','_');
+		sucursal = sucursal.replace(' ', '_');
 		$.ajax({
 			type: "POST",
 			method: "POST",
 			dataType: "JSON",
-			url: "<?php echo base_url() ?>gui_pos/inv/"+sucursal,
+			url: "<?php echo base_url() ?>gui_pos/inv/" + sucursal,
 			data: {
 				id: $(this).val()
 			},
@@ -1075,7 +946,7 @@
 					$('#gui_invoice_no').html(data.invoice_no);
 				}
 			},
-			error: function() {}
+			error: function() {}
 		});
 	});
 	// Comportamiento invertido MEJORADO
@@ -1108,18 +979,18 @@
 	};
 
 	$(document).ready(function() {
-    // Aplicar máscara al campo de teléfono
-    $('.phone').mask('(000) 000-0000');
-    
-    // También puedes aplicar la máscara dinámicamente
-    $('#telefono_cliente').on('input', function() {
-        var phone = $(this).val().replace(/\D/g,'');
-        if(phone.length > 3 && phone.length <= 6) {
-            phone = phone.replace(/(\d{3})(\d{1,3})/, '($1) $2');
-        } else if(phone.length > 6) {
-            phone = phone.replace(/(\d{3})(\d{3})(\d{1,4})/, '($1) $2-$3');
-        }
-        $(this).val(phone);
-    });
-});
+		// Aplicar máscara al campo de teléfono
+		$('.phone').mask('(000) 000-0000');
+
+		// También puedes aplicar la máscara dinámicamente
+		$('#telefono_cliente').on('input', function() {
+			var phone = $(this).val().replace(/\D/g, '');
+			if (phone.length > 3 && phone.length <= 6) {
+				phone = phone.replace(/(\d{3})(\d{1,3})/, '($1) $2');
+			} else if (phone.length > 6) {
+				phone = phone.replace(/(\d{3})(\d{3})(\d{1,4})/, '($1) $2-$3');
+			}
+			$(this).val(phone);
+		});
+	});
 </script>
