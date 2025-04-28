@@ -43,7 +43,7 @@ class Customer_model extends CI_Model
     if (!empty($this->input->post('previous_balance'))) {
       $this->previous_balance_add($this->input->post('previous_balance'), $customer_id);
     }
-    return true;
+    return $customer_id; // Esto es lo más importante - devolver el ID real
   }
 
   public function customer_dropdown()

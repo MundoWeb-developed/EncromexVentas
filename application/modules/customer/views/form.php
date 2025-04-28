@@ -122,6 +122,61 @@
                          </div>
                      <?php } ?>
                  </div>
+                 <!-- Nueva sección para descuentos por categoría -->
+                <div class="form-group row">
+                    <label class="col-sm-2 text-right col-form-label">Descuentos por Categoría:</label>
+                    <div class="col-sm-9">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Asignar descuentos específicos</div>
+                            <div class="panel-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Categoría</th>
+                                            <th>Descuento (%)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php 
+                                        // Obtener todas las categorías
+                                        $categories = $this->db->select('*')
+                                            ->from('product_category')
+                                            ->where('status', 1)
+                                            ->get()
+                                            ->result();
+                                            
+                                        // Obtener descuentos existentes si es edición
+                                        $category_discounts = [];
+                                        if (!empty($customer->customer_id)) {
+                                            $discounts = $this->db->select('*')
+                                                ->from('customer_category_discount')
+                                                ->where('customer_id', $customer->customer_id)
+                                                ->get()
+                                                ->result();
+                                                
+                                            foreach ($discounts as $discount) {
+                                                $category_discounts[$discount->category_id] = $discount->discount_percentage;
+                                            }
+                                        }
+                                        
+                                        foreach ($categories as $category): ?>
+                                        <tr>
+                                            <td><?php echo $category->category_name ?></td>
+                                            <td>
+                                                <input type="number" 
+                                                    name="category_discounts[<?php echo $category->category_id ?>]" 
+                                                    class="form-control text-right" 
+                                                    min="0" max="100" step="0.01"
+                                                    value="<?php echo isset($category_discounts[$category->category_id]) ? $category_discounts[$category->category_id] : '' ?>">
+                                            </td>
+                                        </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                  <div class="form-group row">
                      <div class="col-sm-6 text-right">
                      </div>

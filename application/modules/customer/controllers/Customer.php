@@ -122,13 +122,31 @@ class Customer extends MX_Controller
             'custom_discount'  => $this->input->post('custom_discount', true) ?: 0, // Nuevo campo
             'status'           => 1,
             'create_by'        => $this->session->userdata('id'),
-
         ];
+
+        // Obtener todas las categorías para el formulario
+        $data['categories'] = $this->db->select('*')
+                                    ->from('product_category')
+                                    ->where('status', 1)
+                                    ->get()
+                                    ->result();
+
+        // Si es edición, obtener los descuentos por categoría existentes
+        if (!empty($id)) {
+            $data['category_discounts'] = $this->db->select('*')
+                                                ->from('customer_category_discount')
+                                                ->where('customer_id', $id)
+                                                ->get()
+                                                ->result();
+        }
         #-------------------------------#
         if ($this->form_validation->run() === true) {
             #if empty $id then insert data
             if (empty($postData['customer_id'])) {
-                if ($this->customer_model->create($postData)) {
+                if ($customer_id = $this->customer_model->create($postData)) {
+                    // Guardar descuentos por categoría para nuevo cliente
+                    $this->save_category_discounts($customer_id, $this->input->post('category_discounts'));
+                    
                     #set success message
                     $info['msg']    = display('save_successfully');
                     $info['status'] = 1;
@@ -139,6 +157,9 @@ class Customer extends MX_Controller
                 }
             } else {
                 if ($this->customer_model->update($postData)) {
+                    // Actualizar descuentos por categoría para cliente existente
+                    $this->save_category_discounts($postData['customer_id'], $this->input->post('category_discounts'));
+                    
                     #set success message
                     $info['msg']    = display('update_successfully');
                     $info['status'] = 1;
@@ -155,15 +176,48 @@ class Customer extends MX_Controller
                 if (!empty($id)) {
                     $data['title']    = display('edit_customer');
                     $data['customer'] = $this->customer_model->singledata($id);
+                    
+                    // Cargar descuentos por categoría para edición
+                    $discounts = $this->db->select('*')
+                                        ->from('customer_category_discount')
+                                        ->where('customer_id', $id)
+                                        ->get()
+                                        ->result();
+                    
+                    $data['category_discounts'] = [];
+                    foreach ($discounts as $discount) {
+                        $data['category_discounts'][$discount->category_id] = $discount->discount_percentage;
+                    }
                 }
                 $data['module']   = "customer";
                 $data['page']     = "form";
                 echo Modules::run('template/layout', $data);
             } else {
-
                 $info['msg']    = validation_errors();
                 $info['status'] = 0;
                 echo json_encode($info);
+            }
+        }
+    }
+
+    // Función auxiliar para guardar los descuentos por categoría
+    private function save_category_discounts($customer_id, $category_discounts)
+    {
+        // Primero eliminar todos los descuentos existentes para este cliente
+        $this->db->where('customer_id', $customer_id)
+                ->delete('customer_category_discount');
+        
+        // Insertar los nuevos descuentos si existen y son mayores a 0
+        if (!empty($category_discounts)) {
+            foreach ($category_discounts as $category_id => $discount) {
+                $discount = (float)$discount;
+                if ($discount > 0) {
+                    $this->db->insert('customer_category_discount', [
+                        'customer_id' => $customer_id,
+                        'category_id' => $category_id,
+                        'discount_percentage' => $discount
+                    ]);
+                }
             }
         }
     }
