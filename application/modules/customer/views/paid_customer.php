@@ -20,8 +20,8 @@
                             <!-- <th><?php echo display('state'); ?></th> -->
                             <th><?php echo display('zip'); ?></th>
                             <th><?php echo display('country'); ?></th>
-                            <!-- <th><?php echo display('action') ?></th> -->
-                            <th width="100px;"><?php echo display('action') ?></th>
+                            <th><?php echo display('action') ?></th>
+                            <!-- <th width="100px;"><?php echo display('action') ?></th> -->
                         </tr>
                     </thead>
                     <tbody id="customer_tablebody">
