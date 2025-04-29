@@ -2252,11 +2252,11 @@ function applyCategoryDiscount(productId) {
   console.log("Producto seleccionado:", productId);
 
   if (!selected_customer_id) {
-    console.warn("⚠️ No hay cliente seleccionado todavía, esperar evento...");
+    console.warn("⚠️ No hay cliente seleccionado todavía.");
     return;
   }
 
-  var base_url = $("#baseurl").val(); // <<--- AQUÍ ES CORRECTO
+  var base_url = $("#baseurl").val();
   var category_id = $('#prlist option[value="' + productId + '"]').data(
     "category-id"
   );
@@ -2278,17 +2278,23 @@ function applyCategoryDiscount(productId) {
     success: function (response) {
       console.log("Respuesta del descuento:", response);
       if (response && response.discount !== undefined) {
-        $("#discount" + productId);
-        quantity_calculate(1);
-      } else {
-        console.log(
-          "No hay descuento especial, usando descuento normal del cliente"
-        );
-        // Aquí podrías poner algún comportamiento extra si quieres
+        // Esperar a que el producto esté en el DOM
+        setTimeout(function () {
+          // Busca el input donde se pone el descuento por pieza
+          var discountInput = $("#discount_" + productId);
+          if (discountInput.length) {
+            discountInput.val(response.discount);
+            quantity_calculate(productId);
+            calculateSum();
+            invoice_paidamount();
+          } else {
+            console.warn("No se encontró el input #discount_" + productId);
+          }
+        }, 200); // darle un poco de tiempo a que se renderice la fila
       }
     },
     error: function (xhr, status, error) {
-      console.error("Error al consultar el descuento por categoría.");
+      console.error("Error al consultar el descuento por categoría:", error);
     },
   });
 }
