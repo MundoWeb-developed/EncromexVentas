@@ -1882,7 +1882,7 @@ class Invoice extends MX_Controller
 
     public function bdtask_get_customer_data()
     {
-        $customer_id = $this->input->post('customer_id'); 
+        $customer_id = $this->input->post('customer_id');
 
         $this->db->select('customer_name, customer_mobile, customer_email, custom_discount');
         $this->db->from('customer_information');
