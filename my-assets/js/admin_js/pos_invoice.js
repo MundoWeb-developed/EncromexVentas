@@ -1,122 +1,148 @@
 var elems = [];
+discountsByCategory = response.discounts_by_category || {};
 
 //Add Input Field Of Row
 ("use strict");
 function addInputField(t) {
-  console.log(t);
-  var row = $("#addinvoice tbody tr").length;
-  var count = row + 1;
-  var tab1 = 0;
-  var tab2 = 0;
-  var tab3 = 0;
-  var tab4 = 0;
-  var tab5 = 0;
-  var tab6 = 0;
-  var tab7 = 0;
-  var tab8 = 0;
-  var tab9 = 0;
-  var limits = 500;
-  var taxnumber = $("#txfieldnum").val();
-  var tbfild = "";
-  for (var i = 0; i < taxnumber; i++) {
-    var taxincrefield =
-      '<input id="total_tax' +
-      i +
-      "_" +
-      count +
-      '" class="total_tax' +
-      i +
-      "_" +
-      count +
-      '" type="hidden"><input id="all_tax' +
-      i +
-      "_" +
-      count +
-      '" class="total_tax' +
-      i +
-      '" type="hidden" name="tax[]">';
-    tbfild += taxincrefield;
-  }
-  if (count == limits)
-    alert("You have reached the limit of adding " + count + " inputs");
-  else {
-    var a = "product_name_" + count,
-      tabindex = count * 5,
-      e = document.createElement("tr");
-    tab1 = tabindex + 1;
-    tab2 = tabindex + 2;
-    tab3 = tabindex + 3;
-    tab4 = tabindex + 4;
-    tab5 = tabindex + 5;
-    tab6 = tabindex + 6;
-    tab7 = tabindex + 7;
-    tab8 = tabindex + 8;
-    tab9 = tabindex + 9;
-    (e.innerHTML =
-      "<td><input type='text' name='product_name' onkeypress='invoice_productList(" +
-      count +
-      ");' class='form-control productSelection common_product' placeholder='Product Name' id='" +
-      a +
-      "' required tabindex='" +
-      tab1 +
-      "'><input type='hidden' class='common_product autocomplete_hidden_value  product_id_" +
-      count +
-      "' name='product_id[]' id='SchoolHiddenId'/></td><td><input type='text' name='desc[]'' class='form-control text-right ' /></td><td><select class='form-control' id='serial_no_" +
-      count +
-      "' name='serial_no[]'><option></option></select></td> <td><input type='text' name='available_quantity[]' id='' class='form-control text-right common_avail_qnt available_quantity_" +
-      count +
-      "' value='0' readonly='readonly' /></td><td><input class='form-control text-right common_name unit_" +
-      count +
-      " valid' value='None' readonly='' aria-invalid='false' type='text'></td><td> <input type='text' name='product_quantity[]' required='required' onkeyup='quantity_calculate(" +
-      count +
-      ");' onchange='quantity_calculate(" +
-      count +
-      ");' id='total_qntt_" +
-      count +
-      "' class='common_qnt total_qntt_" +
-      count +
-      " form-control text-right'  placeholder='0.00' min='0' tabindex='" +
-      tab2 +
-      "' value='1'/></td><td><input type='text' name='product_rate[]' onkeyup='quantity_calculate(" +
-      count +
-      ");' onchange='quantity_calculate(" +
-      count +
-      ");' id='price_item_" +
-      count +
-      "' class='common_rate price_item" +
-      count +
-      " form-control text-right' required placeholder='0.00' min='0' tabindex='" +
-      tab3 +
-      "'/></td><td><input type='text' name='discount[]' onkeyup='quantity_calculate(" +
-      count +
-      ");' onchange='quantity_calculate(" +
-      count +
-      ");' id='discount_" +
-      count +
-      "' class='form-control text-right common_discount' placeholder='0.00' min='0' tabindex='" +
-      tab4 +
-      "' /><input type='hidden' value='' name='discount_type' id='discount_type_" +
-      count +
-      "'></td><td class='text-right'><input class='common_total_price total_price form-control text-right' type='text' name='total_price[]' id='total_price_" +
-      count +
-      "' value='0.00' readonly='readonly'/></td><td>" +
-      tbfild +
-      "<input type='hidden' id='all_discount_" +
-      count +
-      "' class='total_discount' name='discount_amount[]'/><button tabindex='" +
-      tab5 +
-      "' style='text-align: center;' class='btn btn-danger btn-xs' type='button'  onclick='deleteRow(this)'><i class='fa fa-close'></i></button></td>"),
-      document.getElementById(t).appendChild(e),
-      document.getElementById(a).focus(),
-      document
-        .getElementById("add_invoice_item")
-        .setAttribute("tabindex", tab6);
-    document.getElementById("paidAmount").setAttribute("tabindex", tab7);
-    document.getElementById("full_paid_tab").setAttribute("tabindex", tab8);
-    document.getElementById("add_invoice").setAttribute("tabindex", tab9);
-    count++;
-  }
+    console.log(t);
+    var row = $("#addinvoice tbody tr").length;
+    var count = row + 1;
+    var tab1 = 0;
+    var tab2 = 0;
+    var tab3 = 0;
+    var tab4 = 0;
+    var tab5 = 0;
+    var tab6 = 0;
+    var tab7 = 0;
+    var tab8 = 0;
+    var tab9 = 0;
+    var limits = 500;
+    var taxnumber = $("#txfieldnum").val();
+    var tbfild = "";
+    
+    for (var i = 0; i < taxnumber; i++) {
+        var taxincrefield =
+            '<input id="total_tax' +
+            i +
+            "_" +
+            count +
+            '" class="total_tax' +
+            i +
+            "_" +
+            count +
+            '" type="hidden"><input id="all_tax' +
+            i +
+            "_" +
+            count +
+            '" class="total_tax' +
+            i +
+            '" type="hidden" name="tax[]">';
+        tbfild += taxincrefield;
+    }
+
+    if (count == limits) {
+        alert("You have reached the limit of adding " + count + " inputs");
+    } else {
+        var a = "product_name_" + count,
+            tabindex = count * 5,
+            e = document.createElement("tr");
+        
+        tab1 = tabindex + 1;
+        tab2 = tabindex + 2;
+        tab3 = tabindex + 3;
+        tab4 = tabindex + 4;
+        tab5 = tabindex + 5;
+        tab6 = tabindex + 6;
+        tab7 = tabindex + 7;
+        tab8 = tabindex + 8;
+        tab9 = tabindex + 9;
+
+        e.innerHTML =
+            "<td><input type='text' name='product_name' onkeypress='invoice_productList(" +
+            count +
+            ");' class='form-control productSelection common_product' placeholder='Product Name' id='" +
+            a +
+            "' required tabindex='" +
+            tab1 +
+            "'><input type='hidden' class='common_product autocomplete_hidden_value  product_id_" +
+            count +
+            "' name='product_id[]' id='SchoolHiddenId'/></td><td><input type='text' name='desc[]'' class='form-control text-right ' /></td><td><select class='form-control' id='serial_no_" +
+            count +
+            "' name='serial_no[]'><option></option></select></td> <td><input type='text' name='available_quantity[]' id='' class='form-control text-right common_avail_qnt available_quantity_" +
+            count +
+            "' value='0' readonly='readonly' /></td><td><input class='form-control text-right common_name unit_" +
+            count +
+            " valid' value='None' readonly='' aria-invalid='false' type='text'></td><td> <input type='text' name='product_quantity[]' required='required' onkeyup='quantity_calculate(" +
+            count +
+            ");' onchange='quantity_calculate(" +
+            count +
+            ");' id='total_qntt_" +
+            count +
+            "' class='common_qnt total_qntt_" +
+            count +
+            " form-control text-right'  placeholder='0.00' min='0' tabindex='" +
+            tab2 +
+            "' value='1'/></td><td><input type='text' name='product_rate[]' onkeyup='quantity_calculate(" +
+            count +
+            ");' onchange='quantity_calculate(" +
+            count +
+            ");' id='price_item_" +
+            count +
+            "' class='common_rate price_item" +
+            count +
+            " form-control text-right' required placeholder='0.00' min='0' tabindex='" +
+            tab3 +
+            "'/></td><td><input type='text' name='discount[]' onkeyup='quantity_calculate(" +
+            count +
+            ");' onchange='quantity_calculate(" +
+            count +
+            ");' id='discount_" +
+            count +
+            "' class='form-control text-right common_discount' placeholder='0.00' min='0' tabindex='" +
+            tab4 +
+            "' /><input type='hidden' value='' name='discount_type' id='discount_type_" +
+            count +
+            "'></td><td class='text-right'><input class='common_total_price total_price form-control text-right' type='text' name='total_price[]' id='total_price_" +
+            count +
+            "' value='0.00' readonly='readonly'/></td><td>" +
+            tbfild +
+            "<input type='hidden' id='all_discount_" +
+            count +
+            "' class='total_discount' name='discount_amount[]'/><button tabindex='" +
+            tab5 +
+            "' style='text-align: center;' class='btn btn-danger btn-xs' type='button'  onclick='deleteRow(this)'><i class='fa fa-close'></i></button></td>";
+
+        document.getElementById(t).appendChild(e);
+        document.getElementById(a).focus();
+
+        // Agregar un pequeño retraso para asegurar que los valores estén listos antes de aplicar el descuento
+        setTimeout(function() {
+            // Obtener el ID de categoría del producto
+            var categoryId = response.category_id; // Esto viene de retrieve_product_data_inv
+
+            // Buscar el descuento correspondiente
+            var discount = 0;
+            if (discountsByCategory.hasOwnProperty(categoryId)) {
+                discount = discountsByCategory[categoryId];
+            }
+
+            // Si existe descuento y el input del descuento está en el DOM, lo aplicamos
+            var discountInput = document.getElementById("discount_" + count);
+            if (discountInput) {
+                discountInput.value = discount;
+            }
+        }, 200); // Espera 200 ms para que el DOM esté listo
+        
+        document
+            .getElementById("add_invoice_item")
+            .setAttribute("tabindex", tab6);
+        document.getElementById("paidAmount").setAttribute("tabindex", tab7);
+        document.getElementById("full_paid_tab").setAttribute("tabindex", tab8);
+        document.getElementById("add_invoice").setAttribute("tabindex", tab9);
+        count++;
+    }
 }
+
 //Quantity calculat
 ("use strict");
 function quantity_calculate(item) {

@@ -1884,6 +1884,7 @@ class Invoice extends MX_Controller
     {
         $customer_id = $this->input->post('customer_id');
 
+        // Primero, obtenemos los datos del cliente
         $this->db->select('customer_name, customer_mobile, customer_email, custom_discount');
         $this->db->from('customer_information');
         $this->db->where('customer_id', $customer_id);
@@ -1894,10 +1895,43 @@ class Invoice extends MX_Controller
             exit;
         }
 
+        // Ahora obtenemos los descuentos por categoría del cliente
+        $this->db->select('category_id, discount_percentage');
+        $this->db->from('customer_category_discount');
+        $this->db->where('customer_id', $customer_id);
+        $discounts_query = $this->db->get();
+
+        $discounts_by_category = array();
+
+        foreach ($discounts_query->result_array() as $discount) {
+            $discounts_by_category[$discount['category_id']] = $discount['discount_percentage'];
+        }
+
+        // Agregamos los descuentos por categoría al array del cliente
+        $customer['discounts_by_category'] = $discounts_by_category;
+
+        // Devolvemos todo en el JSON
         echo json_encode($customer);
         exit;
     }
-
+    
+    public function obtener_categoria_producto()
+    {
+        $product_id = $this->input->post('product_id');
+    
+        $this->db->select('category_id');
+        $this->db->from('product_information'); // o como se llame tu tabla de productos
+        $this->db->where('product_id', $product_id);
+        $producto = $this->db->get()->row_array();
+    
+        if (!$producto) {
+            echo json_encode(array('error' => 'Producto no encontrado'));
+            return;
+        }
+    
+        echo json_encode($producto);
+    }
+    
     public function get_customer_details()
     {
         $customer_id = $this->input->post('customer_id');
