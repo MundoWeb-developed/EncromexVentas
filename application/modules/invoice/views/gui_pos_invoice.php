@@ -239,7 +239,7 @@
 										<!--<th class="text-center"><?php echo display('available_qnty') ?></th>-->
 										<th class="text-center"><?php echo display('quantity') ?> <i class="text-danger">*</i></th>
 										<th class="text-center"><?php echo display('rate') ?> <i class="text-danger">*</i></th>
-										<th class="text-center"><?php echo display('discount') ?></th>
+										<th class="text-center">Descuento por producto (%)</th>
 										<th class="text-center"><?php echo display('total') ?></th>
 										<th class="text-center"><?php echo display('action') ?></th>
 									</tr>
@@ -254,7 +254,7 @@
 						<div class="footer">
 							<div class="form-group row guifooterpanel">
 								<div class="col-sm-12">
-									<label for="date" class="col-sm-6 col-lg-6 col-xl-7 col-form-label"><?php echo display('invoice_discount') ?> (%):</label>
+									<label for="date" class="col-sm-6 col-lg-6 col-xl-7 col-form-label">Descuento general (%):</label>
 									<div class="col-sm-6 col-lg-5 col-xl-4">
 										<input
 											type="text"

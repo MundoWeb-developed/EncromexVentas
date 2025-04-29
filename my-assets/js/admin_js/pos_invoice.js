@@ -217,81 +217,59 @@ function quantity_calculate(item) {
   calculateSum();
   invoice_paidamount();
 }
-//Calculate Sum
+//Calculate Sum - VERSIÓN CORREGIDA
 ("use strict");
 function calculateSum() {
   var taxnumber = $("#txfieldnum").val();
-  var t = 0,
-    a = 0,
-    e = 0,
-    o = 0,
-    p = 0,
-    f = 0,
-    ad = 0,
-    tx = 0,
-    ds = 0;
-  var s_cost = $("#shipping_cost").val();
+  var subtotal = 0;
+  var total_product_discounts = 0;
+  var total_tax = 0;
+  var shipping_cost = parseFloat($("#shipping_cost").val()) || 0;
+  var invoice_discount_percent = parseFloat($("#invoice_discount").val()) || 0;
 
-  //Total Tax
+  // 1. Calcular subtotal bruto (suma de precios de productos sin descuentos)
+  $(".total_price").each(function() {
+    subtotal += parseFloat(this.value) || 0;
+  });
+
+  // 2. Calcular descuentos por producto
+  $(".all_discount").each(function() {
+    total_product_discounts += parseFloat(this.value) || 0;
+  });
+
+  // 3. Calcular subtotal neto (después de descuentos por producto)
+  var subtotal_after_product_discounts = subtotal - total_product_discounts;
+
+  // 4. Calcular impuestos (sobre el subtotal neto)
   for (var i = 0; i < taxnumber; i++) {
-    var j = 0;
-    $(".total_tax" + i).each(function () {
-      isNaN(this.value) ||
-        0 == this.value.length ||
-        (j += parseFloat(this.value));
+    var tax_for_type = 0;
+    $(".total_tax" + i).each(function() {
+      tax_for_type += parseFloat(this.value) || 0;
     });
-    $("#total_tax_ammount" + i).val(j.toFixed(2, 2));
+    $("#total_tax_ammount" + i).val(tax_for_type.toFixed(2));
+    total_tax += tax_for_type;
   }
+  $("#total_tax_amount").val(total_tax.toFixed(2));
 
-  //Total Discount
-  $(".total_discount").each(function () {
-    isNaN(this.value) ||
-      0 == this.value.length ||
-      (p += parseFloat(this.value));
-  }),
-    $("#total_discount_ammount").val(p.toFixed(2, 2)),
-    $(".totalTax").each(function () {
-      isNaN(this.value) ||
-        0 == this.value.length ||
-        (f += parseFloat(this.value));
-    }),
-    $("#total_tax_amount").val(f.toFixed(2, 2)),
-    //Total Price
-    $(".total_price").each(function () {
-      isNaN(this.value) ||
-        0 == this.value.length ||
-        (t += parseFloat(this.value));
-    }),
-    $(".dppr").each(function () {
-      isNaN(this.value) ||
-        0 == this.value.length ||
-        (ad += parseFloat(this.value));
-    }),
-    (o = a.toFixed(2, 2)),
-    (e = t.toFixed(2, 2)),
-    (tx = f.toFixed(2, 2)),
-    (ds = p.toFixed(2, 2));
+  // 5. Aplicar descuento general (sobre subtotal neto antes de impuestos)
+  var general_discount_amount = subtotal_after_product_discounts * (invoice_discount_percent / 100);
+  $("#total_discount_ammount").val(general_discount_amount.toFixed(2));
 
-  var invoice_discount_percent = $("#invoice_discount").val();
-  var subtotal = +tx + +s_cost + +e + +ad;
-
-  // Aplicar descuento general de la factura (si es porcentual)
-  if (invoice_discount_percent > 0) {
-    var discount_amount = subtotal * (invoice_discount_percent / 100);
-    $("#total_discount_ammount").val(discount_amount.toFixed(2));
-    subtotal -= discount_amount;
-  }
-
-  $("#grandTotal").val(subtotal.toFixed(2, 2));
-
-  var gt = $("#grandTotal").val();
-  var invdis = $("#invoice_discount").val();
-  var total_discount_ammount = $("#total_discount_ammount").val();
-  var ttl_discount = +total_discount_ammount;
-  $("#total_discount_ammount").val(ttl_discount.toFixed(2, 2));
-  var grnt_totals = gt;
-  invoice_paidamount();
-  $("#grandTotal").val(grnt_totals);
+  // 6. Calcular total final
+  var grand_total = (subtotal_after_product_discounts - general_discount_amount) + total_tax + shipping_cost;
+  
+  // 7. Actualizar campos en la interfaz
+  $("#grandTotal").val(grand_total.toFixed(2));
+  $("#n_total").val(subtotal.toFixed(2)); // Subtotal bruto (sin descuentos)
+  
+  // Debug (opcional)
+  console.log("Subtotal:", subtotal);
+  console.log("Descuentos producto:", total_product_discounts);
+  console.log("Subtotal neto:", subtotal_after_product_discounts);
+  console.log("Descuento general:", general_discount_amount);
+  console.log("Impuestos:", total_tax);
+  console.log("Envío:", shipping_cost);
+  console.log("TOTAL:", grand_total);
 }
 
 //Invoice Paid Amount
@@ -2359,5 +2337,47 @@ function check_customer(customer_id) {
     },
   });
 }
+function updateTotals() {
+  var total = 0;
+  var discount = parseFloat($("#invoice_discount").val()) || 0;
+  var shippingCost = parseFloat($("#shipping_cost").val()) || 0;
+
+  // Recorre cada producto en la tabla y calcula su total
+  $(".product-row").each(function () {
+    var price = parseFloat($(this).find(".price").text()) || 0;
+    var quantity = parseFloat($(this).find(".quantity").val()) || 0;
+    var productDiscount = parseFloat($(this).find(".discount").val()) || 0;
+
+    // Suma el total de los productos considerando el descuento
+    total += (price - productDiscount) * quantity;
+  });
+
+  // Aplica el descuento general (si existe)
+  total = total - (total * discount) / 100;
+
+  // Considera el costo de envío
+  total += shippingCost;
+
+  // Si hay impuestos, añádelos al total
+  $(".totalTax").each(function () {
+    total += parseFloat($(this).val()) || 0;
+  });
+
+  // Formatea el total con separadores de miles y dos decimales
+  var formattedTotal = total.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,");
+
+  // Actualiza los campos en el footer
+  $("#grandTotal").val(formattedTotal);
+  $("#previous").val(formattedTotal); // Asumo que este es el campo total acumulado
+  $("#change").val("0.00"); // Si es necesario, actualiza el cambio (este es solo un ejemplo)
+}
+
+// Ejecutar el cálculo al cambiar los valores de los campos relevantes
+$("#invoice_discount, #shipping_cost, .quantity, .discount, .totalTax").on(
+  "input",
+  function () {
+    updateTotals();
+  }
+);
 
 //});
