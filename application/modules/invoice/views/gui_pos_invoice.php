@@ -84,9 +84,10 @@
 										<label>Buscar producto:</label>
 										<!--<input type="text" class="form-control" id="add_item_m" placeholder="Ingreso manual de Código de barras">-->
 										<select class="form-control" id="prlist">
+											<option>Seleccionar opción</option>
 											<?php foreach ($itemlist as $item) { ?>
-												<option 
-													value="<?php echo $item->product_id ?>" 
+												<option
+													value="<?php echo $item->product_id ?>"
 													data-category-id="<?php echo $item->category_id ?>">
 													<?php echo html_escape($item->product_name); ?> (<?php echo html_escape($item->product_model); ?>)
 												</option>
@@ -130,7 +131,7 @@
 
 								<div class="row" style="margin-bottom:20px;">
 									<div class="col-sm-4">
-										<label>Últimos clientes:</label><br> 
+										<label>Últimos clientes:</label><br>
 										<select id="list_bases" class="form-control" onchange="check_customer(this.value)" style="padding-top:8px; padding-bottom:8px; font-size:11px;">
 											<option>Seleccionar opción</option>
 											<?php foreach ($items_customer as $customer) { ?>

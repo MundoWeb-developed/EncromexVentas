@@ -68,8 +68,8 @@
                                     <?php if ($category_list) { ?>
                                         <?php foreach ($category_list as $categories) { ?>
                                             <option value="<?php echo $categories['category_id'] ?>" <?php if ($product->category_id == $categories['category_id']) {
-                                                                                                        echo 'selected';
-                                                                                                    } ?>><?php echo $categories['category_name'] ?></option>
+                                                                                                            echo 'selected';
+                                                                                                        } ?>><?php echo $categories['category_name'] ?></option>
 
                                     <?php }
                                     } ?>
@@ -389,11 +389,11 @@
             </div>
             <?php echo form_close() ?>
         </div>
-        <input type="hidden" id="supplier_list" value='<?php if ($supplier) { ?><?php foreach ($supplier as $suppliers) { ?><option value="<?php echo $suppliers['supplier_id'] ?>"><?php echo $suppliers['supplier_name'] ?></option><?php }
-                                                                                                                                                                                                                            } ?>' name="">
+        <!-- <input type="hidden" id="supplier_list" value='<?php if ($supplier) { ?><?php foreach ($supplier as $suppliers) { ?><option value="<?php echo $suppliers['supplier_id'] ?>"><?php echo $suppliers['supplier_name'] ?></option><?php }
+                                                                                                                                                                                                                                    } ?>' name=""> -->
 
 
-        <input type="hidden" id="insumo_list" value='<?php if ($insumos) { ?><?php foreach ($insumos as $insumo) { ?><option value="<?php echo $insumo['id'] ?>"><?php echo $insumo['product_name'] ?> (<?php echo $insumo['product_model'] ?>)</option><?php }
-                                                                                                                                                                                                                                            } ?>' name="">
+        <!-- <input type="hidden" id="insumo_list" value='<?php if ($insumos) { ?><?php foreach ($insumos as $insumo) { ?><option value="<?php echo $insumo['id'] ?>"><?php echo $insumo['product_name'] ?> (<?php echo $insumo['product_model'] ?>)</option><?php }
+                                                                                                                                                                                                                                                        } ?>' name=""> -->
     </div>
 </div>
