@@ -1882,9 +1882,8 @@ class Invoice extends MX_Controller
 
     public function bdtask_get_customer_data()
     {
-        $customer_id = $this->input->post('customer_id');
+        $customer_id = $this->input->post('customer_id'); 
 
-        // Primero, obtenemos los datos del cliente
         $this->db->select('customer_name, customer_mobile, customer_email, custom_discount');
         $this->db->from('customer_information');
         $this->db->where('customer_id', $customer_id);
@@ -1895,43 +1894,10 @@ class Invoice extends MX_Controller
             exit;
         }
 
-        // Ahora obtenemos los descuentos por categoría del cliente
-        $this->db->select('category_id, discount_percentage');
-        $this->db->from('customer_category_discount');
-        $this->db->where('customer_id', $customer_id);
-        $discounts_query = $this->db->get();
-
-        $discounts_by_category = array();
-
-        foreach ($discounts_query->result_array() as $discount) {
-            $discounts_by_category[$discount['category_id']] = $discount['discount_percentage'];
-        }
-
-        // Agregamos los descuentos por categoría al array del cliente
-        $customer['discounts_by_category'] = $discounts_by_category;
-
-        // Devolvemos todo en el JSON
         echo json_encode($customer);
         exit;
     }
-    
-    public function obtener_categoria_producto()
-    {
-        $product_id = $this->input->post('product_id');
-    
-        $this->db->select('category_id');
-        $this->db->from('product_information'); // o como se llame tu tabla de productos
-        $this->db->where('product_id', $product_id);
-        $producto = $this->db->get()->row_array();
-    
-        if (!$producto) {
-            echo json_encode(array('error' => 'Producto no encontrado'));
-            return;
-        }
-    
-        echo json_encode($producto);
-    }
-    
+
     public function get_customer_details()
     {
         $customer_id = $this->input->post('customer_id');
@@ -2086,27 +2052,24 @@ class Invoice extends MX_Controller
 
     public function gui_pos_invoice()
     {
-
         $product_id = $this->input->post('product_id', TRUE);
         $product_details = $this->invoice_model->pos_invoice_setup($product_id);
-
-
+        $category_id = $this->db
+            ->select('category_id')
+            ->from('product_information')
+            ->where('product_id', $product_id)
+            ->get()
+            ->row('category_id');
         $taxfield       = $this->db->select('tax_name,default_value')
             ->from('tax_settings')
             ->get()
             ->result_array();
         $prinfo = $this->db->select('*')->from('product_information')->where('product_id', $product_id)->get()->result_array();
-
         $tr = " ";
         if (!empty($product_details)) {
-            $product_id = $this->generator(5);
+            // $product_id = $this->generator(5);
             $serialdata = explode(',', $product_details->serial_no);
-            if ($product_details->total_product > 0) {
-                $qty = 1;
-            } else {
-                $qty = 1;
-            }
-
+            $qty = 1; // Siempre 1 por defecto
             $html = "";
             if (empty($serialdata)) {
                 $html .= "No Serial Found !";
@@ -2122,10 +2085,9 @@ class Invoice extends MX_Controller
 
             $tr .= "<tr id=\"row_" . $product_details->product_id . "\" >
                         <td class=\"\" style=\"width:220px\">
-                            
-                            <input type=\"text\" name=\"product_name\" onkeypress=\"invoice_productList('" . $product_details->product_id . "');\" class=\"form-control productSelection \" value='" . $product_details->product_name . "- (" . $product_details->product_model . ")" . "' placeholder='" . display('product_name') . "' required=\"\"  tabindex=\"\" readonly>
-
-                            <input type=\"hidden\" class=\"form-control autocomplete_hidden_value product_id_" . $product_details->product_id . "\" name=\"product_id[]\" id=\"SchoolHiddenId_" . $product_details->product_id . "\" value = \"$product_details->product_id\"/>
+                            <input type=\"text\" name=\"product_name\" onkeypress=\"invoice_productList('" . $product_details->product_id . "');\" class=\"form-control productSelection\" value=\"" . $product_details->product_name . "- (" . $product_details->product_model . ")\" placeholder=\"" . display('product_name') . "\" required readonly>
+                            <input type=\"hidden\" class=\"form-control autocomplete_hidden_value product_id_" . $product_details->product_id . "\" name=\"product_id[]\" id=\"SchoolHiddenId_" . $product_details->product_id . "\" value=\"" . $product_details->product_id . "\"/>
+                            <input type=\"hidden\" id=\"SchoolHiddenCatId_" . $product_details->product_id . "\" value=\"" . $category_id . "\"/>
                         </td>
                         <td style=\"display:none;\">" . $html . "</td>
                         <td style=\"display:none;\">
@@ -2793,6 +2755,53 @@ class Invoice extends MX_Controller
             echo json_encode(["error" => false, "image" => $product->image, "name" => $product->product_name]);
         } else {
             echo json_encode(["error" => true, "image" => null]);
+        }
+    }
+
+    public function get_customer_category_discount()
+    {
+        $this->load->database();
+
+        $customer_id = $this->input->post('customer_id');
+        $category_id = $this->input->post('category_id');
+
+        if ($customer_id && $category_id) {
+            $discount = $this->db->select('discount_percentage')
+                ->from('customer_category_discount')
+                ->where('customer_id', $customer_id)
+                ->where('category_id', $category_id)
+                ->get()
+                ->row();
+
+            if ($discount) {
+                echo json_encode(['success' => true, 'discount' => (float) $discount->discount_percentage]);
+            } else {
+                echo json_encode(['success' => false, 'discount' => 0]);
+            }
+        } else {
+            echo json_encode(['success' => false, 'discount' => 0]);
+        }
+    }
+    public function get_product_category()
+    {
+        $this->load->database();
+
+        $product_id = $this->input->post('product_id');
+
+        if ($product_id) {
+            $product = $this->db->select('category_id')
+                ->from('product_information')
+                ->where('product_id', $product_id)
+                ->get()
+                ->row();
+
+            if ($product) {
+                echo json_encode(['success' => true, 'category_id' => (int)$product->category_id]);
+            } else {
+                echo json_encode(['success' => false]);
+            }
+        } else {
+            echo json_encode(['success' => false]);
         }
     }
 }

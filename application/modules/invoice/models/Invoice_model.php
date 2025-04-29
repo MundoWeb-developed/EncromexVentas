@@ -2773,7 +2773,7 @@ class Invoice_model extends CI_Model
         $this->db->where('b.product_id', $product_id);
         $total_sale = $this->db->get()->row();
 
-        $this->db->select('a.*, b.*, a.category_id');
+        $this->db->select('a.*,b.*');
         $this->db->from('product_information a');
         $this->db->join('supplier_product b', 'a.product_id=b.product_id');
         $this->db->where(array('a.product_id' => $product_id, 'a.status' => 1));
@@ -2815,7 +2815,6 @@ class Invoice_model extends CI_Model
         $data2['tax']            = $product_information->tax;
         $data2['serial']         = $html;
         $data2['txnmber']        = $num_column;
-        $data2['category_id']    = $product_information->category_id; // Agregado la categoria para descuento
 
 
         return $data2;
@@ -3501,7 +3500,7 @@ class Invoice_model extends CI_Model
 
     public function all_customers_invoice()
     {
-        $this->db->select('
+        $this->db->select(' 
             customer_id as invoice_id, 
             create_date as date, 
             customer_name as nombre_cliente,

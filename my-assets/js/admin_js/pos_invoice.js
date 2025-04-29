@@ -1,148 +1,123 @@
 var elems = [];
-discountsByCategory = response.discounts_by_category || {};
+var selected_customer_id = null;
 
 //Add Input Field Of Row
 ("use strict");
 function addInputField(t) {
-    console.log(t);
-    var row = $("#addinvoice tbody tr").length;
-    var count = row + 1;
-    var tab1 = 0;
-    var tab2 = 0;
-    var tab3 = 0;
-    var tab4 = 0;
-    var tab5 = 0;
-    var tab6 = 0;
-    var tab7 = 0;
-    var tab8 = 0;
-    var tab9 = 0;
-    var limits = 500;
-    var taxnumber = $("#txfieldnum").val();
-    var tbfild = "";
-    
-    for (var i = 0; i < taxnumber; i++) {
-        var taxincrefield =
-            '<input id="total_tax' +
-            i +
-            "_" +
-            count +
-            '" class="total_tax' +
-            i +
-            "_" +
-            count +
-            '" type="hidden"><input id="all_tax' +
-            i +
-            "_" +
-            count +
-            '" class="total_tax' +
-            i +
-            '" type="hidden" name="tax[]">';
-        tbfild += taxincrefield;
-    }
-
-    if (count == limits) {
-        alert("You have reached the limit of adding " + count + " inputs");
-    } else {
-        var a = "product_name_" + count,
-            tabindex = count * 5,
-            e = document.createElement("tr");
-        
-        tab1 = tabindex + 1;
-        tab2 = tabindex + 2;
-        tab3 = tabindex + 3;
-        tab4 = tabindex + 4;
-        tab5 = tabindex + 5;
-        tab6 = tabindex + 6;
-        tab7 = tabindex + 7;
-        tab8 = tabindex + 8;
-        tab9 = tabindex + 9;
-
-        e.innerHTML =
-            "<td><input type='text' name='product_name' onkeypress='invoice_productList(" +
-            count +
-            ");' class='form-control productSelection common_product' placeholder='Product Name' id='" +
-            a +
-            "' required tabindex='" +
-            tab1 +
-            "'><input type='hidden' class='common_product autocomplete_hidden_value  product_id_" +
-            count +
-            "' name='product_id[]' id='SchoolHiddenId'/></td><td><input type='text' name='desc[]'' class='form-control text-right ' /></td><td><select class='form-control' id='serial_no_" +
-            count +
-            "' name='serial_no[]'><option></option></select></td> <td><input type='text' name='available_quantity[]' id='' class='form-control text-right common_avail_qnt available_quantity_" +
-            count +
-            "' value='0' readonly='readonly' /></td><td><input class='form-control text-right common_name unit_" +
-            count +
-            " valid' value='None' readonly='' aria-invalid='false' type='text'></td><td> <input type='text' name='product_quantity[]' required='required' onkeyup='quantity_calculate(" +
-            count +
-            ");' onchange='quantity_calculate(" +
-            count +
-            ");' id='total_qntt_" +
-            count +
-            "' class='common_qnt total_qntt_" +
-            count +
-            " form-control text-right'  placeholder='0.00' min='0' tabindex='" +
-            tab2 +
-            "' value='1'/></td><td><input type='text' name='product_rate[]' onkeyup='quantity_calculate(" +
-            count +
-            ");' onchange='quantity_calculate(" +
-            count +
-            ");' id='price_item_" +
-            count +
-            "' class='common_rate price_item" +
-            count +
-            " form-control text-right' required placeholder='0.00' min='0' tabindex='" +
-            tab3 +
-            "'/></td><td><input type='text' name='discount[]' onkeyup='quantity_calculate(" +
-            count +
-            ");' onchange='quantity_calculate(" +
-            count +
-            ");' id='discount_" +
-            count +
-            "' class='form-control text-right common_discount' placeholder='0.00' min='0' tabindex='" +
-            tab4 +
-            "' /><input type='hidden' value='' name='discount_type' id='discount_type_" +
-            count +
-            "'></td><td class='text-right'><input class='common_total_price total_price form-control text-right' type='text' name='total_price[]' id='total_price_" +
-            count +
-            "' value='0.00' readonly='readonly'/></td><td>" +
-            tbfild +
-            "<input type='hidden' id='all_discount_" +
-            count +
-            "' class='total_discount' name='discount_amount[]'/><button tabindex='" +
-            tab5 +
-            "' style='text-align: center;' class='btn btn-danger btn-xs' type='button'  onclick='deleteRow(this)'><i class='fa fa-close'></i></button></td>";
-
-        document.getElementById(t).appendChild(e);
-        document.getElementById(a).focus();
-
-        // Agregar un pequeño retraso para asegurar que los valores estén listos antes de aplicar el descuento
-        setTimeout(function() {
-            // Obtener el ID de categoría del producto
-            var categoryId = response.category_id; // Esto viene de retrieve_product_data_inv
-
-            // Buscar el descuento correspondiente
-            var discount = 0;
-            if (discountsByCategory.hasOwnProperty(categoryId)) {
-                discount = discountsByCategory[categoryId];
-            }
-
-            // Si existe descuento y el input del descuento está en el DOM, lo aplicamos
-            var discountInput = document.getElementById("discount_" + count);
-            if (discountInput) {
-                discountInput.value = discount;
-            }
-        }, 200); // Espera 200 ms para que el DOM esté listo
-        
-        document
-            .getElementById("add_invoice_item")
-            .setAttribute("tabindex", tab6);
-        document.getElementById("paidAmount").setAttribute("tabindex", tab7);
-        document.getElementById("full_paid_tab").setAttribute("tabindex", tab8);
-        document.getElementById("add_invoice").setAttribute("tabindex", tab9);
-        count++;
-    }
+  console.log(t);
+  var row = $("#addinvoice tbody tr").length;
+  var count = row + 1;
+  var tab1 = 0;
+  var tab2 = 0;
+  var tab3 = 0;
+  var tab4 = 0;
+  var tab5 = 0;
+  var tab6 = 0;
+  var tab7 = 0;
+  var tab8 = 0;
+  var tab9 = 0;
+  var limits = 500;
+  var taxnumber = $("#txfieldnum").val();
+  var tbfild = "";
+  for (var i = 0; i < taxnumber; i++) {
+    var taxincrefield =
+      '<input id="total_tax' +
+      i +
+      "_" +
+      count +
+      '" class="total_tax' +
+      i +
+      "_" +
+      count +
+      '" type="hidden"><input id="all_tax' +
+      i +
+      "_" +
+      count +
+      '" class="total_tax' +
+      i +
+      '" type="hidden" name="tax[]">';
+    tbfild += taxincrefield;
+  }
+  if (count == limits)
+    alert("You have reached the limit of adding " + count + " inputs");
+  else {
+    var a = "product_name_" + count,
+      tabindex = count * 5,
+      e = document.createElement("tr");
+    tab1 = tabindex + 1;
+    tab2 = tabindex + 2;
+    tab3 = tabindex + 3;
+    tab4 = tabindex + 4;
+    tab5 = tabindex + 5;
+    tab6 = tabindex + 6;
+    tab7 = tabindex + 7;
+    tab8 = tabindex + 8;
+    tab9 = tabindex + 9;
+    (e.innerHTML =
+      "<td><input type='text' name='product_name' onkeypress='invoice_productList(" +
+      count +
+      ");' class='form-control productSelection common_product' placeholder='Product Name' id='" +
+      a +
+      "' required tabindex='" +
+      tab1 +
+      "'><input type='hidden' class='common_product autocomplete_hidden_value  product_id_" +
+      count +
+      "' name='product_id[]' id='SchoolHiddenId'/></td><td><input type='text' name='desc[]'' class='form-control text-right ' /></td><td><select class='form-control' id='serial_no_" +
+      count +
+      "' name='serial_no[]'><option></option></select></td> <td><input type='text' name='available_quantity[]' id='' class='form-control text-right common_avail_qnt available_quantity_" +
+      count +
+      "' value='0' readonly='readonly' /></td><td><input class='form-control text-right common_name unit_" +
+      count +
+      " valid' value='None' readonly='' aria-invalid='false' type='text'></td><td> <input type='text' name='product_quantity[]' required='required' onkeyup='quantity_calculate(" +
+      count +
+      ");' onchange='quantity_calculate(" +
+      count +
+      ");' id='total_qntt_" +
+      count +
+      "' class='common_qnt total_qntt_" +
+      count +
+      " form-control text-right'  placeholder='0.00' min='0' tabindex='" +
+      tab2 +
+      "' value='1'/></td><td><input type='text' name='product_rate[]' onkeyup='quantity_calculate(" +
+      count +
+      ");' onchange='quantity_calculate(" +
+      count +
+      ");' id='price_item_" +
+      count +
+      "' class='common_rate price_item" +
+      count +
+      " form-control text-right' required placeholder='0.00' min='0' tabindex='" +
+      tab3 +
+      "'/></td><td><input type='text' name='discount[]' onkeyup='quantity_calculate(" +
+      count +
+      ");' onchange='quantity_calculate(" +
+      count +
+      ");' id='discount_" +
+      count +
+      "' class='form-control text-right common_discount' placeholder='0.00' min='0' tabindex='" +
+      tab4 +
+      "' /><input type='hidden' value='' name='discount_type' id='discount_type_" +
+      count +
+      "'></td><td class='text-right'><input class='common_total_price total_price form-control text-right' type='text' name='total_price[]' id='total_price_" +
+      count +
+      "' value='0.00' readonly='readonly'/></td><td>" +
+      tbfild +
+      "<input type='hidden' id='all_discount_" +
+      count +
+      "' class='total_discount' name='discount_amount[]'/><button tabindex='" +
+      tab5 +
+      "' style='text-align: center;' class='btn btn-danger btn-xs' type='button'  onclick='deleteRow(this)'><i class='fa fa-close'></i></button></td>"),
+      document.getElementById(t).appendChild(e),
+      document.getElementById(a).focus(),
+      document
+        .getElementById("add_invoice_item")
+        .setAttribute("tabindex", tab6);
+    document.getElementById("paidAmount").setAttribute("tabindex", tab7);
+    document.getElementById("full_paid_tab").setAttribute("tabindex", tab8);
+    document.getElementById("add_invoice").setAttribute("tabindex", tab9);
+    count++;
+  }
 }
-
 //Quantity calculat
 ("use strict");
 function quantity_calculate(item) {
@@ -374,7 +349,7 @@ function invoice_paidamount() {
 function stockLimit(t) {
   var a = $("#total_qntt_" + t).val(),
     e = $(".product_id_" + t).val(),
-    o = $(".baseUrl").val();
+    o = $(".baseurl").val();
 
   $.ajax({
     type: "POST",
@@ -400,7 +375,7 @@ function stockLimit(t) {
 function stockLimitAjax(t) {
   var a = $("#total_qntt_" + t).val(),
     e = $(".product_id_" + t).val(),
-    o = $(".baseUrl").val();
+    o = $(".baseurl").val();
 
   $.ajax({
     type: "POST",
@@ -497,24 +472,24 @@ function deleteRow(t) {
   }
 
   /*$(".item_product_invoice").each(function( index ) {					 
-	 	var np = $(this).attr('np');
-	 	var idp = $(this).attr('idp');
-	 	var e = {nombre:np, id:idp};	
-	 	elems.push(e);						 
-	 	items_p_inv++;						 
- 	});
+      var np = $(this).attr('np');
+      var idp = $(this).attr('idp');
+      var e = {nombre:np, id:idp};	
+      elems.push(e);						 
+      items_p_inv++;						 
+    });
 	
-	if(items_p_inv> 1){
-		$('#div_deli_multiple').attr('style', 'display:inline-block;');
-		$('#delim').prop('checked', false);
-		render_pos_inv(0);
-	}else{
-		$('#delim').prop('checked', false);
-		$('#div_deli_multiple').attr('style', 'display:none;');
-		render_pos_inv(0);
-	}
+  if(items_p_inv> 1){
+    $('#div_deli_multiple').attr('style', 'display:inline-block;');
+    $('#delim').prop('checked', false);
+    render_pos_inv(0);
+  }else{
+    $('#delim').prop('checked', false);
+    $('#div_deli_multiple').attr('style', 'display:none;');
+    render_pos_inv(0);
+  }
 	
-	console.log(elems);	*/
+  console.log(elems);	*/
 }
 var count = 2,
   limits = 500;
@@ -727,6 +702,27 @@ function onselectimage(id) {
   var qty = $("#total_qntt_" + product_id).val();
   var add_qty = parseInt(qty) + 1;
 
+  // 🔵 VERIFICAR CLIENTE SELECCIONADO
+  var customer_id = $("#autocomplete_customer_id").val();
+  console.log("Cliente seleccionado:", customer_id);
+  console.log("Producto seleccionado:", product_id);
+
+  if (!customer_id) {
+    console.log("⚠️ No hay cliente seleccionado todavía, esperar evento...");
+
+    $(document).one("clienteSeleccionado", function () {
+      var confirmed_customer_id = $("#autocomplete_customer_id").val();
+      console.log("✅ Cliente confirmado después del evento:", confirmed_customer_id);
+
+      if (confirmed_customer_id) {
+        applyCategoryDiscount(product_id);
+      }
+    });
+  } else {
+    applyCategoryDiscount(product_id);
+  }
+
+  // 🔵 DESPUÉS sigue todo tu flujo normal
   if (product_id == exist) {
     $("#total_qntt_" + product_id).val(add_qty);
     quantity_calculate(product_id);
@@ -751,17 +747,41 @@ function onselectimage(id) {
           invoice_paidamount();
           image_activation(product_id);
         } else {
-          document.getElementById("add_item").value = "";
-          document.getElementById("add_item").focus();
-          $("#addinvoice tbody").append(data);
-          quantity_calculate(product_id);
-          calculateSum();
-          invoice_paidamount();
-          image_activation(product_id);
-          setTimeout(function () {
-            $("#hidden_tr").css("display", "none");
-          }, 1000);
-        }
+            document.getElementById("add_item").value = "";
+            document.getElementById("add_item").focus();
+            $("#addinvoice tbody").append(data); // ⬅️ Aquí se añade el producto a la tabla
+          
+            // 🔽 Obtener category_id del producto
+            var category_id = $("#SchoolHiddenCatId_" + product_id).val();
+            var base_url = $("#base_url").val();
+          
+            // 🔽 Obtener el descuento por categoría
+            $.ajax({
+              url: base_url + "invoice/invoice/get_customer_category_discount",
+              type: "POST",
+              dataType: "json",
+              data: {
+                customer_id: $("#autocomplete_customer_id").val(),
+                category_id: category_id
+              },
+              success: function (response) {
+                if (response && response.discount !== undefined) {
+                  // 🔽 Insertar el descuento al input correspondiente del producto
+                  $("#discount_" + product_id).val(response.discount);
+          
+                  // 🔄 Recalcular totales
+                  quantity_calculate(product_id);
+                  calculateSum();
+                  invoice_paidamount();
+                }
+              }
+            });
+            image_activation(product_id);
+            setTimeout(function () {
+              $("#hidden_tr").css("display", "none");
+            }, 1000);
+          }
+          
       },
       error: function () {
         alert("Request Failed, Please check your code and try again!");
@@ -1222,7 +1242,7 @@ function invoice_productList(sl) {
       var sl = $(this).parent().parent().find(".sl").val();
       var id = ui.item.value;
       var dataString = "product_id=" + id;
-      var base_url = $(".baseUrl").val();
+      var base_url = $("#baseurl").val();  // <-- todo en minúscula
 
       $.ajax({
         type: "POST",
@@ -2164,88 +2184,163 @@ function check_insumo(id_insumo) {
   $("#list_categories").val("");
 }
 
+// function applyCategoryDiscount(productId) {
+//     var selected_customer_id = $("#autocomplete_customer_id").val();
+//     var base_url = $("#baseurl").val();
+//     var category_id = $("#SchoolHiddenCatId_" + productId).val();
+
+//     console.log("Cliente seleccionado:", selected_customer_id);
+//     console.log("Producto seleccionado:", productId);
+//     console.log("Categoría detectada:", category_id);
+
+//     if (!selected_customer_id || !category_id) {
+//         console.warn("⚠️ Cliente o categoría no definidos.");
+//         return;
+//     }
+
+//     $.ajax({
+//         url: base_url + "invoice/invoice/get_customer_category_discount",
+//         type: "POST",
+//         dataType: "json",
+//         data: {
+//             customer_id: selected_customer_id,
+//             category_id: category_id
+//         },
+//         success: function(response) {
+//             console.log("Respuesta del descuento:", response);
+//             if (response && response.discount !== undefined) {
+//                 var discountInput = $("#discount_" + productId);
+//                 if (discountInput.length) {
+//                     discountInput.val(response.discount);
+        
+//                     // Primero aplicar el descuento por categoría
+//                     applyCategoryDiscount(productId);
+        
+//                     // Después recalcular los totales
+//                     quantity_calculate(productId); // Recalcular solo este producto
+//                     calculateSum(); // Actualizar total
+//                     invoice_paidamount(); // Actualizar monto a pagar
+//                 }
+//             } else {
+//                 console.log("No hay descuento especial para este cliente/categoría.");
+//             }
+//         },        
+//         error: function(xhr, status, error) {
+//             console.error("Error al consultar el descuento por categoría:", error);
+//         }
+//     });
+// }
+
+$('#prlist').change(function(event) {
+  var id_product = $(this).val();
+  if (id_product != null) {
+      onselectimage(id_product);
+    //   getProductById(id_product);
+
+      // NUEVO: Buscar y aplicar descuento por categoría después de seleccionar el producto
+      setTimeout(function() {
+          applyCategoryDiscount(id_product);
+      }, 500);
+  }
+});
+
+// NUEVA FUNCION para aplicar descuento de categoría
+function applyCategoryDiscount(productId) {
+  console.log("Cliente seleccionado:", selected_customer_id);
+  console.log("Producto seleccionado:", productId);
+
+  if (!selected_customer_id) {
+      console.warn("⚠️ No hay cliente seleccionado todavía, esperar evento...");
+      return;
+  }
+
+  var base_url = $("#baseurl").val();  // <<--- AQUÍ ES CORRECTO
+  var category_id = $('#prlist option[value="' + productId + '"]').data('category-id');
+  console.log("Categoría detectada:", category_id);
+
+  if (!category_id) {
+      console.warn("⚠️ No se pudo obtener categoría del producto.");
+      return;
+  }
+
+  $.ajax({
+      url: base_url + "invoice/invoice/get_customer_category_discount",
+      type: "POST",
+      dataType: "json",
+      data: {
+          customer_id: selected_customer_id,
+          category_id: category_id
+      },
+      success: function(response) {
+          console.log("Respuesta del descuento:", response);
+          if (response && response.discount !== undefined) {
+              $("#discount" + productId)
+              quantity_calculate(1);
+          } else {
+              console.log("No hay descuento especial, usando descuento normal del cliente");
+              // Aquí podrías poner algún comportamiento extra si quieres
+          }
+      },
+      error: function(xhr, status, error) {
+          console.error("Error al consultar el descuento por categoría.");
+      }
+  });
+}
+
+
 function check_customer(customer_id) {
-  // Validar que se haya seleccionado un cliente válido
+  console.log("Cliente seleccionado:", customer_id);
+
+  selected_customer_id = customer_id; // ✅ ACTUALIZAR cliente global
+
   if (!customer_id || customer_id === "Seleccionar opción") {
-    $("#nombre_cliente").val("");
-    $("#telefono_cliente").val("");
-    $("#invoice_discount").val("");
-    return;
+      $("#nombre_cliente").val("");
+      $("#telefono_cliente").val("");
+      $("#invoice_discount").val("");
+      return;
   }
 
   var base_url = $("#base_url").val();
 
-  // Mostrar carga mientras se obtienen los datos
   $("#nombre_cliente").val("Cargando...");
   $("#telefono_cliente").val("Cargando...");
   $("#invoice_discount").val("Cargando...");
 
   $.ajax({
-    type: "POST",
-    url: base_url + "invoice/invoice/bdtask_get_customer_data",
-    dataType: "json",
-    data: { customer_id: customer_id },
-    success: function (response) {
-      // Llenar los campos con los datos del cliente
-      $("#nombre_cliente").val(response.customer_name);
-      $("#invoice_discount").val(response.custom_discount);
+      type: "POST",
+      url: base_url + "invoice/invoice/bdtask_get_customer_data",
+      dataType: "json",
+      data: { customer_id: customer_id },
+      success: function (response) {
+          $("#nombre_cliente").val(response.customer_name);
+          $("#invoice_discount").val(response.custom_discount);
 
-      // Formatear el teléfono si existe
-      if (response.customer_mobile) {
-        var phone = response.customer_mobile.toString();
-        // Eliminar cualquier formato previo
-        phone = phone.replace(/\D/g, "");
-        // Aplicar formato (XXX) XXX-XXXX
-        if (phone.length === 10) {
-          phone = phone.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
-        }
-        $("#telefono_cliente").val(phone);
-      } else {
-        $("#telefono_cliente").val("");
-      }
+          if (response.customer_mobile) {
+              var phone = response.customer_mobile.toString();
+              phone = phone.replace(/\D/g, "");
+              if (phone.length === 10) {
+                  phone = phone.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
+              }
+              $("#telefono_cliente").val(phone);
+          } else {
+              $("#telefono_cliente").val("");
+          }
 
-      // Configurar fecha y hora actual por defecto
-      var now = new Date();
-      var formattedDate =
-        now.getFullYear() +
-        "-" +
-        String(now.getMonth() + 1).padStart(2, "0") +
-        "-" +
-        String(now.getDate()).padStart(2, "0") +
-        " " +
-        String(now.getHours()).padStart(2, "0") +
-        ":" +
-        String(now.getMinutes()).padStart(2, "0");
+          var now = new Date();
+          var formattedDate = now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0") + "-" + String(now.getDate()).padStart(2, "0") + " " + String(now.getHours()).padStart(2, "0") + ":" + String(now.getMinutes()).padStart(2, "0");
 
-      $("#dh_instore").val(formattedDate);
-    },
-    error: function () {
-      alert("Error al cargar los datos del cliente");
-      $("#nombre_cliente").val("");
-      $("#telefono_cliente").val("");
-      $("#invoice_discount").val("");
-    },
+          $("#dh_instore").val(formattedDate);
+      },
+      error: function () {
+          alert("Error al cargar los datos del cliente");
+          $("#nombre_cliente").val("");
+          $("#telefono_cliente").val("");
+          $("#invoice_discount").val("");
+      },
   });
 }
 
-function getProductById(product_id) {
-  var base_url = $("#base_url").val();
-  $.ajax({
-    type: "POST",
-    method: "POST",
-    dataType: "JSON",
-    url: base_url + "invoice/invoice/getProductDetailsById",
-    data: { product_id: product_id },
-    success: function (response) {
-      if (!response.error) {
-        $("#product_image").attr("src", response.image);
-        $("#product_name_card").text(response.name);
-      }
-    },
-    error: function () {
-      alert("Request Failed, Please check your code and try again!");
-    },
-  });
-}
+
+
 
 //});

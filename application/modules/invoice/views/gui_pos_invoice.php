@@ -84,9 +84,12 @@
 										<label>Buscar producto:</label>
 										<!--<input type="text" class="form-control" id="add_item_m" placeholder="Ingreso manual de Código de barras">-->
 										<select class="form-control" id="prlist">
-											<option>Seleccionar producto</option>
 											<?php foreach ($itemlist as $item) { ?>
-												<option value="<?php echo $item->product_id ?>"><?php echo  $text = html_escape($item->product_name); ?> (<?php echo  $text = html_escape($item->product_model); ?>)</option>
+												<option 
+													value="<?php echo $item->product_id ?>" 
+													data-category-id="<?php echo $item->category_id ?>">
+													<?php echo html_escape($item->product_name); ?> (<?php echo html_escape($item->product_model); ?>)
+												</option>
 											<?php } ?>
 										</select>
 									</div>
@@ -127,7 +130,7 @@
 
 								<div class="row" style="margin-bottom:20px;">
 									<div class="col-sm-4">
-										<label>Últimos clientes:</label><br>
+										<label>Últimos clientes:</label><br> 
 										<select id="list_bases" class="form-control" onchange="check_customer(this.value)" style="padding-top:8px; padding-bottom:8px; font-size:11px;">
 											<option>Seleccionar opción</option>
 											<?php foreach ($items_customer as $customer) { ?>
@@ -236,13 +239,7 @@
 										<!--<th class="text-center"><?php echo display('available_qnty') ?></th>-->
 										<th class="text-center"><?php echo display('quantity') ?> <i class="text-danger">*</i></th>
 										<th class="text-center"><?php echo display('rate') ?> <i class="text-danger">*</i></th>
-										<?php if ($discount_type == 1) { ?>
-											<th class="text-center"><?php echo display('discount') ?></th>
-										<?php } elseif ($discount_type == 2) { ?>
-											<th class="text-center"><?php echo display('discount') ?> </th>
-										<?php } elseif ($discount_type == 3) { ?>
-											<th class="text-center"><?php echo display('fixed_dis') ?> </th>
-										<?php } ?>
+										<th class="text-center"><?php echo display('discount') ?></th>
 										<th class="text-center"><?php echo display('total') ?></th>
 										<th class="text-center"><?php echo display('action') ?></th>
 									</tr>
@@ -251,7 +248,7 @@
 								</tbody>
 							</table>
 							<table class="table" id="arr_insumos">
-								<tbody id="addinvoiceItem"></tbody>
+								<tbody id="addInsumoItem"></tbody>
 							</table>
 						</div>
 						<div class="footer">
@@ -857,7 +854,11 @@
 		var id_product = $(this).val();
 		if (id_product != null) {
 			onselectimage(id_product);
-			getProductById(id_product)
+			// getProductById(id_product);
+			// Nueva línea para aplicar el descuento por categoría
+			setTimeout(function() {
+				applyCategoryDiscount(id_product);
+			}, 500);
 		}
 	});
 	$(document).ready(function() {
@@ -970,12 +971,17 @@
 		});
 	});
 
-	// 4. Parche para onselectimage (si es necesario)
+	// 4. Parche para onselectimage (CORREGIDO)
 	var originalOnselectimage = onselectimage;
 	onselectimage = function(id_product) {
-		var instoreState = $('#instore').is(':checked'); // Guardar estado
-		originalOnselectimage(id_product); // Llamar a la función original
-		$('#instore').prop('checked', instoreState).trigger('change'); // Restaurar estado
+		if ($('#instore').length > 0) { // <-- Solo si existe #instore
+			var instoreState = $('#instore').is(':checked'); // Guardar estado
+			originalOnselectimage(id_product); // Llamar a la función original
+			$('#instore').prop('checked', instoreState).trigger('change'); // Restaurar estado
+		} else {
+			// Si no existe #instore, solo ejecuta normalmente
+			originalOnselectimage(id_product);
+		}
 	};
 
 	$(document).ready(function() {
