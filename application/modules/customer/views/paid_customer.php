@@ -15,7 +15,7 @@
                             <th><?php echo display('address1'); ?></th>
                             <th><?php echo display('mobile_no') ?></th>
                             <th><?php echo display('email'); ?></th>
-                            <th><?php echo display('custom_discount'); ?> (%)</th>
+                            <!-- <th><?php echo display('custom_discount'); ?> (%)</th> -->
                             <th><?php echo display('city'); ?></th>
                             <th><?php echo display('zip'); ?></th>
                             <th><?php echo display('country'); ?></th>

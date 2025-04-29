@@ -1981,7 +1981,7 @@ $(document).ready(function () {
     responsive: true,
 
     aaSorting: [[1, "asc"]],
-    columnDefs: [{ bSortable: false, aTargets: [0, 2, 3, 4, 5, 6, 7, 8, 9] }],
+    columnDefs: [{ bSortable: false, aTargets: [0, 2, 3, 4, 5, 6, 7, 8] }],
     processing: true,
     serverSide: true,
 
@@ -2010,12 +2010,12 @@ $(document).ready(function () {
       { data: "address" }, // Asegúrate que coincide con el nombre en $data[]
       { data: "mobile" }, // Cambiado de "customer_mobile" a "mobile"
       { data: "email" },
-      {
-        data: "custom_discount",
-        render: function (data, type, row) {
-          return data ? data + "%" : "0%";
-        },
-      },
+      // {
+      //   data: "custom_discount",
+      //   render: function (data, type, row) {
+      //     return data ? data + "%" : "0%";
+      //   },
+      // },
       { data: "city" },
       // { data: "state" },
       { data: "zip" },

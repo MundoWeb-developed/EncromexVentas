@@ -510,7 +510,7 @@ class Customer_model extends CI_Model
         // 'state'            => $record->state,
         'zip'              => $record->zip,
         'country'          => $record->country,
-        'custom_discount'  => $record->custom_discount, // Campo del descuento a clientes
+        // 'custom_discount'  => $record->custom_discount, // Campo del descuento a clientes
         'balance'          => (!empty($record->balance) ? $record->balance : 0),
         'button'           => $button,
 

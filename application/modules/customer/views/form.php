@@ -79,7 +79,7 @@
                              <input type="text" name="city" class="form-control" id="city" placeholder="<?php echo display('city') ?>" value="<?php echo $customer->city ?>">
                          </div>
                      </div>
-                     <div class="form-group row">
+                     <!-- <div class="form-group row">
                          <label for="custom_discount" class="col-sm-2 text-right col-form-label"><?php echo display('custom_discount') ?> (%):</label>
                          <div class="col-sm-4">
                              <div class="">
@@ -90,7 +90,7 @@
                                      data-inputmask="'alias': 'decimal', 'groupSeparator': '', 'autoGroup': true" im-insert="true">
                              </div>
                          </div>
-                     </div>
+                     </div> -->
                  </div>
                  <div class="form-group row">
                      <label for="state" class="col-sm-2 text-right col-form-label" style="display:none;"><?php echo display('state') ?>:</label>
