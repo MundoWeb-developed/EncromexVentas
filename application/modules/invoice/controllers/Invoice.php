@@ -2053,7 +2053,13 @@ class Invoice extends MX_Controller
     public function gui_pos_invoice()
     {
         $product_id = $this->input->post('product_id', TRUE);
+        $tipo_precio = $this->input->post('tipo_precio', TRUE); // 1, 2, 3 o 4
         $product_details = $this->invoice_model->pos_invoice_setup($product_id);
+        // echo "<pre>";
+        // var_dump($product_details);
+        // echo "</pre>";
+        // exit;
+
         $category_id = $this->db
             ->select('category_id')
             ->from('product_information')
@@ -2065,6 +2071,18 @@ class Invoice extends MX_Controller
             ->get()
             ->result_array();
         $prinfo = $this->db->select('*')->from('product_information')->where('product_id', $product_id)->get()->result_array();
+        $precio_campo = 'price'; // Default
+        $precio_valor = $product_details->price; // Default
+        if ($tipo_precio && in_array($tipo_precio, [2, 3, 4])) {
+            $precio_campo = 'price_' . $tipo_precio;
+            $precio_valor = property_exists($product_details, $precio_campo) ? $product_details->$precio_campo : null;
+
+            if ($precio_valor === null || $precio_valor === '') {
+                $precio_valor = $product_details->price;
+                // Comentado para evitar problemas visuales en la tabla
+                // echo "<script>alert('⚠️ El producto \"" . $product_details->product_name . "\" no tiene definido el Precio $tipo_precio. Se usará el Precio 1.');</script>";
+            }
+        }
         $tr = " ";
         if (!empty($product_details)) {
             // $product_id = $this->generator(5);
@@ -2089,15 +2107,11 @@ class Invoice extends MX_Controller
                             <input type=\"hidden\" class=\"form-control autocomplete_hidden_value product_id_" . $product_details->product_id . "\" name=\"product_id[]\" id=\"SchoolHiddenId_" . $product_details->product_id . "\" value=\"" . $product_details->product_id . "\"/>
                             <input type=\"hidden\" id=\"SchoolHiddenCatId_" . $product_details->product_id . "\" value=\"" . $category_id . "\"/>
                         </td>
-                        <td style=\"display:none;\">" . $html . "</td>
-                        <td style=\"display:none;\">
-                            <input type=\"text\" name=\"available_quantity[]\" class=\"form-control text-right available_quantity_" . $product_details->product_id . "\" value='" . $product_details->total_product . "' readonly=\"\" id=\"available_quantity_" . $product_details->product_id . "\"/>
-                        </td>
                         <td>
                             <input type=\"text\" name=\"product_quantity[]\" onkeyup=\"quantity_calculate('" . $product_details->product_id . "');\" onchange=\"quantity_calculate('" . $product_details->product_id . "');\" class=\"total_qntt_" . $product_details->product_id . " form-control text-right item_product_invoice \" id=\"total_qntt_" . $product_details->product_id . "\" placeholder=\"0.00\" min=\"0\" value='" . $qty . "' required=\"required\"  np=\"" . $product_details->product_name . "\"  idp=\"" . $product_details->product_id . "\" />
                         </td>
                         <td style=\"width:85px\">
-                            <input type=\"text\" name=\"product_rate[]\" onkeyup=\"quantity_calculate('" . $product_details->product_id . "');\" onchange=\"quantity_calculate('" . $product_details->product_id . "');\" value='" . $product_details->price . "' id=\"price_item_" . $product_details->product_id . "\" class=\"price_item1 form-control text-right\" required placeholder=\"0.00\" min=\"0\"/>
+                            <input type=\"text\" name=\"product_rate[]\" onkeyup=\"quantity_calculate('" . $product_details->product_id . "');\" onchange=\"quantity_calculate('" . $product_details->product_id . "');\" value='" . $precio_valor . "' id=\"price_item_" . $product_details->product_id . "\" class=\"price_item1 form-control text-right\" required placeholder=\"0.00\" min=\"0\"/>
                         </td>
 
                         <td class=\"\">
@@ -2107,7 +2121,7 @@ class Invoice extends MX_Controller
                         </td>
 
                         <td class=\"text-right\" style=\"width:100px\">
-                            <input class=\"total_price form-control text-right\" type=\"text\" name=\"total_price[]\" id=\"total_price_" . $product_details->product_id . "\" value='" . $product_details->price . "' tabindex=\"-1\" readonly=\"readonly\"/>
+                            <input class=\"total_price form-control text-right\" type=\"text\" name=\"total_price[]\" id=\"total_price_" . $product_details->product_id . "\" value='" . $precio_valor . "' tabindex=\"-1\" readonly=\"readonly\"/>
                         </td>
 
                         <td>";
@@ -2116,17 +2130,17 @@ class Invoice extends MX_Controller
             foreach ($taxfield as $taxes) {
                 $txs = 'tax' . $sl;
                 $tr .= "<input type=\"hidden\" id=\"total_tax" . $sl . "_" . $product_details->product_id . "\" class=\"total_tax" . $sl . "_" . $product_details->product_id . "\" value='" . $prinfo[0][$txs] . "'/>
-                            <input type=\"hidden\" id=\"all_tax" . $sl . "_" . $product_details->product_id . "\" class=\" total_tax" . $sl . "\" value='" . $prinfo[0][$txs] * $product_details->price . "' name=\"tax[]\"/>";
+                            <input type=\"hidden\" id=\"all_tax" . $sl . "_" . $product_details->product_id . "\" class=\" total_tax" . $sl . "\" value='" . ($prinfo[0][$txs] * $precio_valor) . "' name=\"tax[]\"/>";
                 $sl++;
             }
 
             $tr .= "<input type=\"hidden\" id=\"total_discount_" . $product_details->product_id . "\" />
                             <input type=\"hidden\" id=\"all_discount_" . $product_details->product_id . "\" class=\"total_discount dppr\"/>
                             <a style=\"text-align: right;\" class=\"btn btn-danger btn-xs\" href=\"#\"  onclick=\"deleteRow(this)\">" . '<i class="fa fa-close"></i>' . "</a>
-                             <a style=\"text-align: right;\" class=\"btn btn-success btn-xs\" href=\"#\"  onclick=\"detailsmodal('" . $product_details->product_name . "','" . $product_details->total_product . "','" . $product_details->product_model . "','" . $product_details->unit . "','" . $product_details->price . "','" . $product_details->image . "')\">" . '<i class="fa fa-eye"></i>' . "</a>
+                            <a style=\"text-align: right;\" class=\"btn btn-success btn-xs\" href=\"#\"  onclick=\"detailsmodal('" . $product_details->product_name . "','" . $product_details->total_product . "','" . $product_details->product_model . "','" . $product_details->unit . "','" . $precio_valor . "','" . $product_details->image . "')\">" . '<i class="fa fa-eye"></i>' . "</a>
                         </td>
                     </tr>";
-            echo $tr;
+                echo trim($tr);
         } else {
             return false;
         }
@@ -2137,12 +2151,23 @@ class Invoice extends MX_Controller
     public function insert_pos_invoice()
     {
         $product_id      = $this->input->post('product_id', TRUE);
+        $tipo_precio = $this->input->post('tipo_precio', TRUE); // 1, 2, 3 o 4
         $product_details = $this->invoice_model->pos_invoice_setup($product_id);
         $taxfield = $this->db->select('tax_name,default_value')
             ->from('tax_settings')
             ->get()
             ->result_array();
         $prinfo = $this->db->select('*')->from('product_information')->where('product_id', $product_id)->get()->result_array();
+        $precio_valor = $product_details->price; // por defecto
+        if ($tipo_precio && in_array($tipo_precio, [2, 3, 4])) {
+            $campo_precio = 'price_' . $tipo_precio;
+            $precio_valor = isset($product_details->$campo_precio) ? $product_details->$campo_precio : null;
+
+            if ($precio_valor === null || $precio_valor === 0) {
+                $precio_valor = $product_details->price;
+                echo "<script>alert('⚠️ El producto \"" . $product_details->product_name . "\" no tiene definido el Precio $tipo_precio. Se usará el Precio 1.');</script>";
+            }
+        }
         $tr = " ";
         if (!empty($product_details)) {
             $product_id = $this->generator(5);
@@ -2177,7 +2202,7 @@ class Invoice extends MX_Controller
                          <td>
                              <input type=\"text\" name=\"desc[]\" class=\"form-control text-right \"  />
                                         </td>
-                                        <td>" . $html . "</td>
+                                        <td style=\"display:none;\">" . $html . "</td>
                         <td>
                             <input type=\"text\" name=\"available_quantity[]\" class=\"form-control text-right available_quantity_" . $product_details->product_id . "\" value='" . $product_details->total_product . "' readonly=\"\" id=\"available_quantity_" . $product_details->product_id . "\"/>
                         </td>
@@ -2191,7 +2216,7 @@ class Invoice extends MX_Controller
                         </td>
 
                         <td style=\"width:85px\">
-                            <input type=\"text\" name=\"product_rate[]\" onkeyup=\"quantity_calculate('" . $product_details->product_id . "');\" onchange=\"quantity_calculate('" . $product_details->product_id . "');\" value='" . $product_details->price . "' id=\"price_item_" . $product_details->product_id . "\" class=\"price_item1 form-control text-right\" required placeholder=\"0.00\" min=\"0\"/>
+                            <input type=\"text\" name=\"product_rate[]\" onkeyup=\"quantity_calculate('" . $product_details->product_id . "');\" onchange=\"quantity_calculate('" . $product_details->product_id . "');\" value='" . $precio_valor . "' id=\"price_item_" . $product_details->product_id . "\" class=\"price_item1 form-control text-right\" required placeholder=\"0.00\" min=\"0\"/>
                         </td>
 
                         <td class=\"\">
@@ -2201,7 +2226,7 @@ class Invoice extends MX_Controller
                         </td>
 
                         <td class=\"text-right\" style=\"width:100px\">
-                            <input class=\"total_price form-control text-right\" type=\"text\" name=\"total_price[]\" id=\"total_price_" . $product_details->product_id . "\" value='" . $product_details->price . "' tabindex=\"-1\" readonly=\"readonly\"/>
+                            <input class=\"total_price form-control text-right\" type=\"text\" name=\"total_price[]\" id=\"total_price_" . $product_details->product_id . "\" value='" . $precio_valor . "' tabindex=\"-1\" readonly=\"readonly\"/>
                         </td>
 
                         <td>";
@@ -2209,7 +2234,7 @@ class Invoice extends MX_Controller
             foreach ($taxfield as $taxes) {
                 $txs = 'tax' . $sl;
                 $tr .= "<input type=\"hidden\" id=\"total_tax" . $sl . "_" . $product_details->product_id . "\" class=\"total_tax" . $sl . "_" . $product_details->product_id . "\" value='" . $prinfo[0][$txs] . "'/>
-                            <input type=\"hidden\" id=\"all_tax" . $sl . "_" . $product_details->product_id . "\" class=\" total_tax" . $sl . "\" value='" . $prinfo[0][$txs] * $product_details->price . "' name=\"tax[]\"/>";
+                            <input type=\"hidden\" id=\"all_tax" . $sl . "_" . $product_details->product_id . "\" class=\" total_tax" . $sl . "\" value='" . $prinfo[0][$txs] * $precio_valor . "' name=\"tax[]\"/>";
                 $sl++;
             }
 

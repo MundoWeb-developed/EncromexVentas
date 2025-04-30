@@ -713,12 +713,18 @@ function onselectimage(id) {
     document.getElementById("add_item").value = "";
     document.getElementById("add_item").focus();
   } else {
+    var tipo_precio = $("#precio_tipo").val(); // ← obtenemos el valor del select
     $.ajax({
       type: "post",
       async: false,
       url: base_url + "invoice/invoice/gui_pos_invoice",
-      data: { product_id: product_id, csrf_test_name: csrf_test_name },
+      data: {
+        product_id: product_id,
+        tipo_precio: tipo_precio,
+        csrf_test_name: csrf_test_name
+      },
       success: function (data) {
+        console.log(data); // 👈 pega esto para ver el HTML que está devolviendo
         if (data == false) {
           alert("This Product Not Found !");
           document.getElementById("add_item").value = "";
@@ -2163,53 +2169,6 @@ function check_insumo(id_insumo) {
   $("#list_flores").val("");
   $("#list_categories").val("");
 }
-
-// function applyCategoryDiscount(productId) {
-//     var selected_customer_id = $("#autocomplete_customer_id").val();
-//     var base_url = $("#baseurl").val();
-//     var category_id = $("#SchoolHiddenCatId_" + productId).val();
-
-//     console.log("Cliente seleccionado:", selected_customer_id);
-//     console.log("Producto seleccionado:", productId);
-//     console.log("Categoría detectada:", category_id);
-
-//     if (!selected_customer_id || !category_id) {
-//         console.warn("⚠️ Cliente o categoría no definidos.");
-//         return;
-//     }
-
-//     $.ajax({
-//         url: base_url + "invoice/invoice/get_customer_category_discount",
-//         type: "POST",
-//         dataType: "json",
-//         data: {
-//             customer_id: selected_customer_id,
-//             category_id: category_id
-//         },
-//         success: function(response) {
-//             console.log("Respuesta del descuento:", response);
-//             if (response && response.discount !== undefined) {
-//                 var discountInput = $("#discount_" + productId);
-//                 if (discountInput.length) {
-//                     discountInput.val(response.discount);
-
-//                     // Primero aplicar el descuento por categoría
-//                     applyCategoryDiscount(productId);
-
-//                     // Después recalcular los totales
-//                     quantity_calculate(productId); // Recalcular solo este producto
-//                     calculateSum(); // Actualizar total
-//                     invoice_paidamount(); // Actualizar monto a pagar
-//                 }
-//             } else {
-//                 console.log("No hay descuento especial para este cliente/categoría.");
-//             }
-//         },
-//         error: function(xhr, status, error) {
-//             console.error("Error al consultar el descuento por categoría:", error);
-//         }
-//     });
-// }
 
 $("#prlist").change(function (event) {
   var id_product = $(this).val();

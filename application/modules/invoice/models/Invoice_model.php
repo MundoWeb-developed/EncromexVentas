@@ -2484,6 +2484,9 @@ class Invoice_model extends CI_Model
                 'total_product'  => $available_quantity,
                 'supplier_price' => $product_information->supplier_price,
                 'price'          => $product_information->price,
+                'price_2'        => $product_information->price_2, // ← Agregado
+                'price_3'        => $product_information->price_3, // ← Agregado
+                'price_4'        => $product_information->price_4, // ← Agregado
                 'supplier_id'    => $product_information->supplier_id,
                 'product_id'     => $product_id, //$product_information->product_id,
                 'product_name'   => $product_information->product_name,

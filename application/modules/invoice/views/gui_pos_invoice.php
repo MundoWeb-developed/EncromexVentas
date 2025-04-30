@@ -94,7 +94,15 @@
 											<?php } ?>
 										</select>
 									</div>
-
+									<div class="col-sm-2">
+										<label>Tipo de precio:</label>
+										<select id="precio_tipo" class="form-control">
+											<option value="1">Precio 1</option>
+											<option value="2">Precio 2</option>
+											<option value="3">Precio 3</option>
+											<option value="4">Precio 4</option>
+										</select>
+									</div>
 
 									<div class="col-sm-3">
 										<label>Sucursal:</label><br>
