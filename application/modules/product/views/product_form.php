@@ -331,7 +331,7 @@
                         <div class="form-group row">
                             <label for="sell_price_p_2" class="col-sm-4 col-form-label">Precio 2 </label>
                             <div class="col-sm-8">
-                                <input class="form-control text-right" id="sell_price_p_2" name="price_2" type="text" placeholder="0.00" value="<?php echo $product->price_2 ?>" readonly>
+                                <input class="form-control text-right" id="sell_price_p_2" name="price_2" type="text" placeholder="No calculado" value="<?php echo ($product->utilidad_2 > 0) ? $product->price_2 : '' ?>" readonly <?php echo ($product->utilidad_2 == 0) ? 'disabled' : '' ?>>
                             </div>
                         </div>
                     </div>
@@ -350,7 +350,7 @@
                         <div class="form-group row">
                             <label for="sell_price_p_3" class="col-sm-4 col-form-label">Precio 3 </label>
                             <div class="col-sm-8">
-                                <input class="form-control text-right" id="sell_price_p_3" name="price_3" type="text" placeholder="0.00" value="<?php echo $product->price_3 ?>" readonly>
+                                <input class="form-control text-right" id="sell_price_p_3" name="price_3" type="text" placeholder="No calculado" value="<?php echo ($product->utilidad_3 > 0) ? $product->price_3 : '' ?>" readonly <?php echo ($product->utilidad_3 == 0) ? 'disabled' : '' ?>>
                             </div>
                         </div>
                     </div>
@@ -369,7 +369,7 @@
                         <div class="form-group row">
                             <label for="sell_price_p_4" class="col-sm-4 col-form-label">Precio 4 </label>
                             <div class="col-sm-8">
-                                <input class="form-control text-right" id="sell_price_p_4" name="price_4" type="text" placeholder="0.00" value="<?php echo $product->price_4 ?>" readonly>
+                                <input class="form-control text-right" id="sell_price_p_4" name="price_4" type="text" placeholder="No calculado" value="<?php echo ($product->utilidad_4 > 0) ? $product->price_4 : '' ?>" readonly <?php echo ($product->utilidad_4 == 0) ? 'disabled' : '' ?>>
                             </div>
                         </div>
                     </div>
@@ -391,8 +391,6 @@
         </div>
         <!-- <input type="hidden" id="supplier_list" value='<?php if ($supplier) { ?><?php foreach ($supplier as $suppliers) { ?><option value="<?php echo $suppliers['supplier_id'] ?>"><?php echo $suppliers['supplier_name'] ?></option><?php }
                                                                                                                                                                                                                                     } ?>' name=""> -->
-
-
         <!-- <input type="hidden" id="insumo_list" value='<?php if ($insumos) { ?><?php foreach ($insumos as $insumo) { ?><option value="<?php echo $insumo['id'] ?>"><?php echo $insumo['product_name'] ?> (<?php echo $insumo['product_model'] ?>)</option><?php }
                                                                                                                                                                                                                                                         } ?>' name=""> -->
     </div>

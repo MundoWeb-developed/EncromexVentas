@@ -62,10 +62,19 @@
 							<input name="url" type="hidden" id="posurl_productname" value="<?php echo base_url("invoice/invoice/getitemlist_byname") ?>" />
 							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 " id="style-3">
 								<div class="row search-bar" style="margin-bottom:20px;">
-									<div class="col-sm-3">
+									<div class="col-sm-2">
+										<label>Tipo de precio:</label>
+										<select id="precio_tipo" class="form-control">
+											<option value="1">Precio 1</option>
+											<option value="2">Precio 2</option>
+											<option value="3">Precio 3</option>
+											<option value="4">Precio 4</option>
+										</select>
+									</div>
+									<div class="col-sm-2">
 										<label>Categorías:</label>
 										<select id="list_categories" class="" onchange="check_category(this.value)" style="padding-top:8px; padding-bottom:8px;">
-											<option value="">- Categoría -</option>
+											<option value="">Seleccionar categoría</option>
 
 											<?php if ($categorylist) { ?>
 												<?php foreach ($categorylist as $categories) { ?>
@@ -80,20 +89,11 @@
 											});
 										</script>
 									</div>
-									<div class="col-sm-2">
-										<label>Tipo de precio:</label>
-										<select id="precio_tipo" class="form-control">
-											<option value="1">Precio 1</option>
-											<option value="2">Precio 2</option>
-											<option value="3">Precio 3</option>
-											<option value="4">Precio 4</option>
-										</select>
-									</div>
 									<div class="col-sm-3">
 										<label>Buscar producto:</label>
 										<!--<input type="text" class="form-control" id="add_item_m" placeholder="Ingreso manual de Código de barras">-->
 										<select class="form-control" id="prlist">
-											<option>Seleccionar opción</option>
+											<option>Seleccionar producto</option>
 											<?php foreach ($itemlist as $item) { ?>
 												<option
 													value="<?php echo $item->product_id ?>"
@@ -141,7 +141,7 @@
 									<div class="col-sm-4">
 										<label>Últimos clientes:</label><br>
 										<select id="list_bases" class="form-control" onchange="check_customer(this.value)" style="padding-top:8px; padding-bottom:8px; font-size:11px;">
-											<option>Seleccionar opción</option>
+											<option>Seleccionar cliente</option>
 											<?php foreach ($items_customer as $customer) { ?>
 												<option value="<?php echo $customer['invoice_id']; ?>">
 													Registrado: <?php echo date('d/m/Y', strtotime($customer['date'])); ?> | <?php echo $customer['nombre_cliente']; ?>

@@ -10,23 +10,39 @@ function calcular_precios() {
     total_ip += tip;
   });
   // Calcular cada precio basado en su utilidad correspondiente
-  calcular_precio_individual(total_ip, "utilidad", "sell_price_p");
-  calcular_precio_individual(total_ip, "utilidad_2", "sell_price_p_2");
-  calcular_precio_individual(total_ip, "utilidad_3", "sell_price_p_3");
-  calcular_precio_individual(total_ip, "utilidad_4", "sell_price_p_4");
+  calcular_precio_individual(total_ip, "utilidad", "sell_price_p", "price");
+  
+  // Solo calcular precios 2, 3 y 4 si su utilidad es mayor que 0
+  if (parseFloat($("#utilidad_2").val()) > 0) {
+    calcular_precio_individual(total_ip, "utilidad_2", "sell_price_p_2", "price_2");
+  } else {
+    $("#sell_price_p_2").val('').prop('disabled', true);
+  }
+  
+  if (parseFloat($("#utilidad_3").val()) > 0) {
+    calcular_precio_individual(total_ip, "utilidad_3", "sell_price_p_3", "price_3");
+  } else {
+    $("#sell_price_p_3").val('').prop('disabled', true);
+  }
+  
+  if (parseFloat($("#utilidad_4").val()) > 0) {
+    calcular_precio_individual(total_ip, "utilidad_4", "sell_price_p_4", "price_4");
+  } else {
+    $("#sell_price_p_4").val('').prop('disabled', true);
+  }
 }
-function calcular_precio_individual(total_ip, utilidad_id, precio_id) {
+
+function calcular_precio_individual(total_ip, utilidad_id, precio_id, name_field) {
   var p_util = $("#" + utilidad_id).val();
   p_util = parseFloat(p_util) || 0;
-  var utilidad = p_util / 100 + 1;
+  
+  if (p_util > 0) {
+    var utilidad = p_util / 100 + 1;
+    var precio_final = total_ip * utilidad;
+    precio_final = Math.round(precio_final);
 
-  var precio_final = total_ip * utilidad;
-  precio_final = Math.round(precio_final);
-
-  if (!isNaN(precio_final)) {
-    $("#" + precio_id).val(precio_final);
-  } else {
-    $("#" + precio_id).val(0);
+    $("#" + precio_id).val(precio_final).prop('disabled', false);
+    $("[name='" + name_field + "']").val(precio_final); // Actualizar el campo hidden si existe
   }
 }
 // Actualizar precios cuando cambia cualquier utilidad
