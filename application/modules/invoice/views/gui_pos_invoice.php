@@ -80,6 +80,15 @@
 											});
 										</script>
 									</div>
+									<div class="col-sm-2">
+										<label>Tipo de precio:</label>
+										<select id="precio_tipo" class="form-control">
+											<option value="1">Precio 1</option>
+											<option value="2">Precio 2</option>
+											<option value="3">Precio 3</option>
+											<option value="4">Precio 4</option>
+										</select>
+									</div>
 									<div class="col-sm-3">
 										<label>Buscar producto:</label>
 										<!--<input type="text" class="form-control" id="add_item_m" placeholder="Ingreso manual de Código de barras">-->
@@ -92,15 +101,6 @@
 													<?php echo html_escape($item->product_name); ?> (<?php echo html_escape($item->product_model); ?>)
 												</option>
 											<?php } ?>
-										</select>
-									</div>
-									<div class="col-sm-2">
-										<label>Tipo de precio:</label>
-										<select id="precio_tipo" class="form-control">
-											<option value="1">Precio 1</option>
-											<option value="2">Precio 2</option>
-											<option value="3">Precio 3</option>
-											<option value="4">Precio 4</option>
 										</select>
 									</div>
 

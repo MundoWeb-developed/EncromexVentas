@@ -737,6 +737,11 @@ function onselectimage(id) {
           document.getElementById("add_item").value = "";
           document.getElementById("add_item").focus();
           $("#addinvoice tbody").append(data); // ⬅️ Aquí se añade el producto a la tabla
+          let alerta = $("#addinvoice tbody .missing_price_alert").last().val();
+          if (alerta) {
+              alert("⚠️ " + alerta);
+              $(".missing_price_alert").remove(); // limpia para no repetir
+          }
 
           // 🔽 Obtener category_id del producto
           var category_id = $("#SchoolHiddenCatId_" + product_id).val();

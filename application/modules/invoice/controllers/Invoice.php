@@ -2072,15 +2072,16 @@ class Invoice extends MX_Controller
             ->result_array();
         $prinfo = $this->db->select('*')->from('product_information')->where('product_id', $product_id)->get()->result_array();
         $precio_campo = 'price'; // Default
+        $mensaje_alerta = "";
         $precio_valor = $product_details->price; // Default
         if ($tipo_precio && in_array($tipo_precio, [2, 3, 4])) {
             $precio_campo = 'price_' . $tipo_precio;
-            $precio_valor = property_exists($product_details, $precio_campo) ? $product_details->$precio_campo : null;
-
-            if ($precio_valor === null || $precio_valor === '') {
+            $precio_especifico = property_exists($product_details, $precio_campo) ? $product_details->$precio_campo : null;   
+            if ($precio_especifico !== null && $precio_especifico !== '') {
+                $precio_valor = $precio_especifico;
+            } else {
                 $precio_valor = $product_details->price;
-                // Comentado para evitar problemas visuales en la tabla
-                // echo "<script>alert('⚠️ El producto \"" . $product_details->product_name . "\" no tiene definido el Precio $tipo_precio. Se usará el Precio 1.');</script>";
+                $mensaje_alerta = "El producto &quot;" . $product_details->product_name . "&quot; no tiene Precio $tipo_precio definido. Se usará Precio 1.";
             }
         }
         $tr = " ";
@@ -2101,8 +2102,12 @@ class Invoice extends MX_Controller
                 $html .= "</select>";
             }
 
-            $tr .= "<tr id=\"row_" . $product_details->product_id . "\" >
-                        <td class=\"\" style=\"width:220px\">
+            $tr .= "<tr id=\"row_" . $product_details->product_id . "\">";
+            // Aquí va el input oculto, si aplica
+            if ($mensaje_alerta != "") {
+                $tr .= "<td style='display:none'><input type='hidden' class='missing_price_alert' value=\"$mensaje_alerta\"></td>";
+            }
+            $tr .= "<td class=\"\" style=\"width:220px\">
                             <input type=\"text\" name=\"product_name\" onkeypress=\"invoice_productList('" . $product_details->product_id . "');\" class=\"form-control productSelection\" value=\"" . $product_details->product_name . "- (" . $product_details->product_model . ")\" placeholder=\"" . display('product_name') . "\" required readonly>
                             <input type=\"hidden\" class=\"form-control autocomplete_hidden_value product_id_" . $product_details->product_id . "\" name=\"product_id[]\" id=\"SchoolHiddenId_" . $product_details->product_id . "\" value=\"" . $product_details->product_id . "\"/>
                             <input type=\"hidden\" id=\"SchoolHiddenCatId_" . $product_details->product_id . "\" value=\"" . $category_id . "\"/>
