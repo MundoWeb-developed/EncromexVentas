@@ -1,4 +1,12 @@
 <!-- Sales report -->
+<style>
+    .form-inline .form-group {
+        margin-right: 15px;
+    }
+    label.control-label {
+        text-align: right;
+    }
+</style>
 <div class="row">
     <div class="col-sm-12">
         <div class="panel panel-default">
@@ -15,8 +23,22 @@
                     <label class="" for="to_date"><?php echo display('end_date') ?></label>
                     <input type="text" name="to_date" class="form-control datepicker" id="to_date" placeholder="<?php echo display('end_date') ?>" value="<?php echo $today ?>">
                 </div>
-                <button type="submit" class="btn btn-success"><?php echo display('search') ?></button>
-                <a class="btn btn-warning" href="#" onclick="printDiv('purchase_div')"><?php echo display('print') ?></a>
+
+                <label for="date_filter" class="control-label"><?php echo display('filter') ?></label>
+                <div class="form-group">
+                    <!-- <label for="date_filter" class="control-label"><?php echo display('filter') ?></label> -->
+                    <select name="date_filter" id="date_filter" class="datepicker form-control">
+                        <option value="#">-- Seleccionar --</option>
+                        <option value="today">Hoy</option>
+                        <option value="yesterday">Ayer</option>
+                        <option value="last_week">Última semana</option>
+                        <option value="last_month">Último mes</option>
+                        <option value="last_3_months">Últimos 3 meses</option>
+                        <option value="last_6_months">Últimos 6 meses</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success">Buscar</button>
+                <a class="btn btn-warning" href="#" onclick="printDiv('purchase_div')">Imprimir</a>
                 <?php echo form_close() ?>
             </div>
         </div>

@@ -245,8 +245,36 @@ class Report extends MX_Controller
     }
     public function bdtask_datewise_sales_report()
     {
-        $from_date = $this->input->get('from_date');
-        $to_date  = $this->input->get('to_date');
+        $date_filter = $this->input->get('date_filter', true);
+        $from_date = $this->input->get('from_date', true);
+        $to_date = $this->input->get('to_date', true);
+
+        if (!empty($date_filter)) {
+            switch ($date_filter) {
+                case 'today':
+                    $from_date = $to_date = date('Y-m-d');
+                    break;
+                case 'yesterday':
+                    $from_date = $to_date = date('Y-m-d', strtotime('-1 day'));
+                    break;
+                case 'last_week':
+                    $from_date = date('Y-m-d', strtotime('-7 days'));
+                    $to_date = date('Y-m-d');
+                    break;
+                case 'last_month':
+                    $from_date = date('Y-m-d', strtotime('-1 month'));
+                    $to_date = date('Y-m-d');
+                    break;
+                case 'last_3_months':
+                    $from_date = date('Y-m-d', strtotime('-3 months'));
+                    $to_date = date('Y-m-d');
+                    break;
+                case 'last_6_months':
+                    $from_date = date('Y-m-d', strtotime('-6 months'));
+                    $to_date = date('Y-m-d');
+                    break;
+            }
+        }
         $sales_report = $this->report_model->retrieve_dateWise_SalesReports($from_date, $to_date);
         $sales_amount = 0;
         if (!empty($sales_report)) {
