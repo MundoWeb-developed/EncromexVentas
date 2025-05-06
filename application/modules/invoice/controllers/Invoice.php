@@ -266,6 +266,7 @@ class Invoice extends MX_Controller
             'phone'         => $this->input->post('phone', true),
             'email'         => $this->input->post('email', true),
             'address' => $this->input->post('address', true),
+            'comision'      => $this->input->post('comision', true),
         ];
 
         #-------------------------------#
@@ -2076,7 +2077,7 @@ class Invoice extends MX_Controller
         $precio_valor = $product_details->price; // Default
         if ($tipo_precio && in_array($tipo_precio, [2, 3, 4])) {
             $precio_campo = 'price_' . $tipo_precio;
-            $precio_especifico = property_exists($product_details, $precio_campo) ? $product_details->$precio_campo : null;   
+            $precio_especifico = property_exists($product_details, $precio_campo) ? $product_details->$precio_campo : null;
             if ($precio_especifico !== null && $precio_especifico !== '') {
                 $precio_valor = $precio_especifico;
             } else {
@@ -2145,7 +2146,7 @@ class Invoice extends MX_Controller
                             <a style=\"text-align: right;\" class=\"btn btn-success btn-xs\" href=\"#\"  onclick=\"detailsmodal('" . $product_details->product_name . "','" . $product_details->total_product . "','" . $product_details->product_model . "','" . $product_details->unit . "','" . $precio_valor . "','" . $product_details->image . "')\">" . '<i class="fa fa-eye"></i>' . "</a>
                         </td>
                     </tr>";
-                echo trim($tr);
+            echo trim($tr);
         } else {
             return false;
         }

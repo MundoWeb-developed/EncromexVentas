@@ -50,7 +50,7 @@
                             <a href="<?php echo base_url('accumulated') ?>">Venta acumulada</a>
                         </li>
 
-                        <?php if ($this->permission1->method('new_invoice', 'create')->access()) { ?>
+                        <!-- <?php if ($this->permission1->method('new_invoice', 'create')->access()) { ?>
                             <li class="treeview <?php
                                                 if ($this->uri->segment('1') == ("add_invoice")) {
                                                     echo "active";
@@ -58,7 +58,7 @@
                                                     echo " ";
                                                 }
                                                 ?>"><a href="<?php echo base_url('add_invoice') ?>"><?php echo display('new_invoice') ?></a></li>
-                        <?php } ?>
+                        <?php } ?> -->
 
 
                         <?php if ($this->permission1->method('manage_invoice', 'read')->access()) { ?>
@@ -229,24 +229,24 @@
                         <?php } ?>
 
                         <?php if ($this->permission1->method('supplier_ledger', 'read')->access()) { ?>
-                            <li class="<?php echo (($this->uri->segment(1) == "supplier_ledger" || $this->uri->segment(1) == "supplier_ledgerdata") ? "active" : '') ?>">
+                            <!-- <li class="<?php echo (($this->uri->segment(1) == "supplier_ledger" || $this->uri->segment(1) == "supplier_ledgerdata") ? "active" : '') ?>">
                                 <a href="<?php echo base_url('supplier_ledger') ?>">
 
                                     <?php echo display('supplier_ledger') ?>
 
                                 </a>
 
-                            </li>
+                            </li> -->
                         <?php } ?>
                         <?php if ($this->permission1->method('supplier_advance', 'create')->access()) { ?>
-                            <li class="<?php echo (($this->uri->segment(1) == "supplier_advance") ? "active" : '') ?>">
+                            <!-- <li class="<?php echo (($this->uri->segment(1) == "supplier_advance") ? "active" : '') ?>">
                                 <a href="<?php echo base_url('supplier_advance') ?>">
 
                                     <?php echo display('supplier_advance') ?>
 
                                 </a>
 
-                            </li>
+                            </li> -->
                         <?php } ?>
                     </ul>
 
@@ -424,26 +424,26 @@
                         </a>
                     </li>
 
-                    <li class="<?php echo (($this->uri->segment(1) == "add_zona") ? "active" : '') ?>">
+                    <!-- <li class="<?php echo (($this->uri->segment(1) == "add_zona") ? "active" : '') ?>">
                         <a href="<?php echo base_url('add_zona') ?>">
                             Agregar zona
                         </a>
-                    </li>
-                    <li class="<?php echo (($this->uri->segment(1) == "zona_list") ? "active" : '') ?>">
+                    </li> -->
+                    <!-- <li class="<?php echo (($this->uri->segment(1) == "zona_list") ? "active" : '') ?>">
                         <a href="<?php echo base_url('zona_list') ?>">
                             Ver zonas
                         </a>
-                    </li>
-                    <li class="<?php echo (($this->uri->segment(1) == "addsubzone") ? "active" : '') ?>">
+                    </li> -->
+                    <!-- <li class="<?php echo (($this->uri->segment(1) == "addsubzone") ? "active" : '') ?>">
                         <a href="<?php echo base_url('addsubzone') ?>">
                             Agregar subzona
                         </a>
-                    </li>
-                    <li class="<?php echo (($this->uri->segment(1) == "subzones") ? "active" : '') ?>">
+                    </li> -->
+                    <!-- <li class="<?php echo (($this->uri->segment(1) == "subzones") ? "active" : '') ?>">
                         <a href="<?php echo base_url('subzones') ?>">
                             Ver subzonas
                         </a>
-                    </li>
+                    </li> -->
                 </ul>
 
             </li>
@@ -491,13 +491,13 @@
                         </span>
                     </a>
                     <ul class="treeview-menu">
-                        <?php if ($this->permission1->method('add_closing', 'create')->access()) { ?>
+                        <!-- <?php if ($this->permission1->method('add_closing', 'create')->access()) { ?>
                             <li class="treeview <?php if ($this->uri->segment('1') == ("closing_form")) {
                                                     echo "active";
                                                 } else {
                                                     echo " ";
                                                 } ?>"><a href="<?php echo base_url('closing_form') ?>"><?php echo display('closing') ?></a></li>
-                        <?php } ?>
+                        <?php } ?> -->
                         <?php if ($this->permission1->method('closing_report', 'read')->access()) { ?>
                             <li class="treeview <?php if ($this->uri->segment('1') == ("closing_report")) {
                                                     echo "active";
@@ -512,13 +512,13 @@
                                                     echo " ";
                                                 } ?>"><a href="<?php echo base_url('todays_report') ?>"><?php echo display('todays_report') ?></a></li>
                         <?php } ?>
-                        <?php if ($this->permission1->method('todays_customer_receipt', 'read')->access()) { ?>
+                        <!-- <?php if ($this->permission1->method('todays_customer_receipt', 'read')->access()) { ?>
                             <li class="treeview <?php if ($this->uri->segment('1') == ("todays_customer_received")) {
                                                     echo "active";
                                                 } else {
                                                     echo " ";
                                                 } ?>"><a href="<?php echo base_url('todays_customer_received') ?>"><?php echo display('todays_customer_receipt') ?></a></li>
-                        <?php } ?>
+                        <?php } ?> -->
                         <?php if ($this->permission1->method('todays_sales_report', 'read')->access()) { ?>
                             <li class="treeview <?php if ($this->uri->segment('1') == ("sales_report")) {
                                                     echo "active";
@@ -526,27 +526,27 @@
                                                     echo " ";
                                                 } ?>"><a href="<?php echo base_url('sales_report') ?>"><?php echo display('sales_report') ?></a></li>
                         <?php } ?>
-                        <?php if ($this->permission1->method('user_wise_sales_report', 'read')->access()) { ?>
+                        <!-- <?php if ($this->permission1->method('user_wise_sales_report', 'read')->access()) { ?>
                             <li class="treeview <?php if ($this->uri->segment('1') == ("userwise_sales_report")) {
                                                     echo "active";
                                                 } else {
                                                     echo " ";
                                                 } ?>"><a href="<?php echo base_url('userwise_sales_report') ?>"><?php echo display('user_wise_sales_report') ?></a></li>
-                        <?php } ?>
-                        <?php if ($this->permission1->method('due_report', 'read')->access()) { ?>
+                        <?php } ?> -->
+                        <!-- <?php if ($this->permission1->method('due_report', 'read')->access()) { ?>
                             <li class="treeview <?php if ($this->uri->segment('1') == ("invoice_wise_due_report")) {
                                                     echo "active";
                                                 } else {
                                                     echo " ";
                                                 } ?>"><a href="<?php echo base_url('invoice_wise_due_report') ?>"><?php echo display('due_report'); ?></a></li>
-                        <?php } ?>
-                        <?php if ($this->permission1->method('shipping_cost_report', 'read')->access()) { ?>
+                        <?php } ?> -->
+                        <!-- <?php if ($this->permission1->method('shipping_cost_report', 'read')->access()) { ?>
                             <li class="treeview <?php if ($this->uri->segment('1') == ("shipping_cost_report")) {
                                                     echo "active";
                                                 } else {
                                                     echo " ";
                                                 } ?>"><a href="<?php echo base_url('shipping_cost_report') ?>"><?php echo display('shipping_cost_report'); ?></a></li>
-                        <?php } ?>
+                        <?php } ?> -->
                         <?php if ($this->permission1->method('purchase_report', 'read')->access()) { ?>
                             <li class="treeview <?php if ($this->uri->segment('1') == ("purchase_report")) {
                                                     echo "active";
@@ -554,7 +554,7 @@
                                                     echo " ";
                                                 } ?>"><a href="<?php echo base_url('purchase_report') ?>"><?php echo display('purchase_report') ?></a></li>
                         <?php } ?>
-                        <?php if ($this->permission1->method('purchase_report_category_wise', 'read')->access()) { ?>
+                        <!-- <?php if ($this->permission1->method('purchase_report_category_wise', 'read')->access()) { ?>
                             <li class="treeview <?php if ($this->uri->segment('1') == ("purchase_report_categorywise")) {
                                                     echo "active";
                                                 } else {
@@ -574,8 +574,8 @@
                                                 } else {
                                                     echo " ";
                                                 } ?>"><a href="<?php echo base_url('category_sales_report') ?>"><?php echo display('sales_report_category_wise') ?></a></li>
-                        <?php } ?>
-                        <?php if ($this->permission1->method('invoice_return', 'read')->access()) { ?>
+                        <?php } ?> -->
+                        <!-- <?php if ($this->permission1->method('invoice_return', 'read')->access()) { ?>
                             <li class="treeview <?php if ($this->uri->segment('1') == ("sales_return")) {
                                                     echo "active";
                                                 } else {
@@ -602,14 +602,14 @@
                                                 } else {
                                                     echo " ";
                                                 } ?>"><a href="<?php echo base_url('profit_report') ?>"><?php echo display('profit_report') ?></a></li>
-                        <?php } ?>
+                        <?php } ?> -->
                     </ul>
                 </li>
             <?php } ?>
             <!-- Report menu end -->
 
             <!-- Comission start -->
-            <?php if ($this->permission1->method('commission', 'create')->access() || $this->permission1->method('commission', 'read')->access()) { ?>
+            <!-- <?php if ($this->permission1->method('commission', 'create')->access() || $this->permission1->method('commission', 'read')->access()) { ?>
                 <li class="treeview <?php
                                     if ($this->uri->segment('1') == ("commission") || $this->uri->segment('1') == ("commission_generate")) {
                                         echo "active";
@@ -633,7 +633,7 @@
                         <?php } ?>
                     </ul>
                 </li>
-            <?php } ?>
+            <?php } ?> -->
             <!-- Comission end -->
 
             <!-- Software Settings menu start -->
