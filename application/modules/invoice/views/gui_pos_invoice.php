@@ -103,11 +103,21 @@
 											<?php } ?>
 										</select>
 									</div>
-
+									<!-- <div class="col-sm-3">
+										<label>Sucursal:</label><br>
+										<select id="boff" name="boff" style="padding-top:8px; padding-bottom:8px;">
+										<?php if ($branchoffice) { ?>
+											<?php foreach ($branchoffice as $bo) { ?>
+											<option value="<?php echo $bo->branchoffice; ?>"><?php echo $bo->branchoffice; ?></option>
+											<?php } ?>
+											<?php } else { ?>
+											<option>No hay sucursales</option>
+											<?php } ?>
+										</select>		
+									</div> -->
 									<div class="col-sm-3">
 										<label>Sucursal:</label><br>
 										<?php
-										// Obtener la sucursal del usuario actual
 										$user_branch = $this->db->select('c.branchoffice, c.id')
 											->from('users a')
 											->join('branchoffice c', 'a.branchoffice_id = c.id', 'left')
@@ -115,14 +125,12 @@
 											->get()
 											->row();
 
-										// Mostrar como texto si no hay sucursal
 										if (empty($user_branch) || empty($user_branch->branchoffice)) {
-											echo '<div class="form-control" style="padding-top:8px; padding-bottom:8px;">Sin sucursal asignada</div>';
+											echo '<div class="form-control">Sin sucursal asignada</div>';
+											echo '<input type="hidden" id="boff" name="boff" value="">';
 										} else {
-											// Mostrar el nombre de la sucursal y guardar el ID en un campo oculto
 											echo '<div class="form-control" style="padding-top:8px; padding-bottom:8px;">' . $user_branch->branchoffice . '</div>';
 											echo '<input type="hidden" id="boff" name="boff" value="' . $user_branch->branchoffice . '">';
-											echo '<input type="hidden" name="branchoffice_id" value="' . $user_branch->id . '">';
 										}
 										?>
 									</div>
@@ -173,7 +181,7 @@
 					<div class="col-sm-12 col-md-12">
 						<?php echo form_open_multipart('invoice/invoice/bdtask_manual_sales_insert', array('class' => 'form-vertical', 'id' => 'gui_sale_insert', 'name' => 'insert_pos_invoice')) ?>
 						<input class="form-control" type="hidden" name="invoice_no" id="invoice_no" required value="<?php echo html_escape($invoice_no); ?>" readonly />
-						<input class="form-control" type="hidden" name="branchoffice" id="branchoffice" value="ENCROMEX" />
+						<input class="form-control" type="hidden" name="branchoffice" id="branchoffice" value="<?php echo isset($user_branch->branchoffice) ? $user_branch->branchoffice : 'SSSS'; ?>" />
 						<div class="col-sm-3" style="display:none;">
 							<label>Clientes:</label>
 							<div class="input-group mr-3">
@@ -871,12 +879,14 @@
 		}
 	});
 	$(document).ready(function() {
-		$('#branchoffice').val('ENCROMEX');
-	});
-	$('#boff').change(function(event) {
-		var value = $(this).val();
-		$('#branchoffice').val(value);
-	});
+    // Actualiza el valor del campo branchoffice con el valor de boff
+    $('#branchoffice').val($('#boff').val());
+    
+    // También puedes agregar un listener por si cambia
+    $('#boff').change(function() {
+        $('#branchoffice').val($(this).val());
+    });
+});
 	$('.phone').mask('(000) 000-0000');
 
 	$('.product-grid').each(function() {
