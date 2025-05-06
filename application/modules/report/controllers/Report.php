@@ -276,13 +276,22 @@ class Report extends MX_Controller
             }
         }
         $sales_report = $this->report_model->retrieve_dateWise_SalesReports($from_date, $to_date);
-        $branchoffices = $this->report_model->get_all_branchoffices();
-        $sales_amount = 0;
+
+        // Obtener sucursales con comisión
+        $branchoffices_full = $this->db->select('branchoffice, comision')->from('branchoffice')->get()->result_array();
+
+        // Mapeo de comisiones
+        $branch_comisiones = [];
+        $branchoffices = []; // Solo nombres
+        foreach ($branchoffices_full as $b) {
+            $branchoffices[] = $b['branchoffice'];
+            $branch_comisiones[$b['branchoffice']] = $b['comision'];
+        }
         $grouped_sales = [];
         $sales_amount = 0;
-        // Prepara estructura para cada sucursal, incluso vacías
-        foreach ($branchoffices as $branch) {
-            $grouped_sales[$branch] = [];
+        // Inicializar estructura vacía para cada sucursal
+        foreach ($branchoffices as $branch_name) {
+            $grouped_sales[$branch_name] = [];
         }
         if (!empty($sales_report)) {
             $i = 0;
@@ -293,19 +302,24 @@ class Report extends MX_Controller
                 $sales_amount += $sale['total_amount'];
 
                 $branch = $sale['branchoffice'] ?? 'Sin sucursal';
+                if (!isset($grouped_sales[$branch])) {
+                    $grouped_sales[$branch] = [];
+                }
                 $grouped_sales[$branch][] = $sale;
             }
         }
         $data = array(
-            'title'          => display('sales_report'),
-            'sales_amount'   => $sales_amount,
-            'grouped_sales'  => $grouped_sales,
-            'branchoffices'  => $branchoffices,
-            'from_date'      => $from_date,
-            'to_date'        => $to_date,
-        );            
-        $data['module']   = "report";
-        $data['page']     = "sales_report";
+            'title'               => display('sales_report'),
+            'sales_amount'        => $sales_amount,
+            'grouped_sales'       => $grouped_sales,
+            'branchoffices'       => $branchoffices,
+            'from_date'           => $from_date,
+            'to_date'             => $to_date,
+            'branch_comisiones'   => $branch_comisiones
+        );
+        $data['module'] = "report";
+        $data['page']   = "sales_report";
+
         echo modules::run('template/layout', $data);
     }
     public function bdtask_userwise_sales_report()
