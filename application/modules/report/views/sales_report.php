@@ -1,8 +1,8 @@
-<!-- Sales report -->
 <style>
     .form-inline .form-group {
         margin-right: 15px;
     }
+
     label.control-label {
         text-align: right;
     }
@@ -68,7 +68,6 @@
                 <div id="purchase_div">
                     <div class="paddin5ps">
                         <table class="print-table " width="100%">
-
                             <tr>
                                 <td align="left" class="print-table-tr">
                                     <img src="<?php echo base_url() . $setting->logo; ?>" alt="logo">
@@ -95,56 +94,55 @@
                         </table>
                     </div>
                     <div class="table-responsive paddin5ps">
-                        <table class="table table-bordered table-striped table-hover ">
-                            <thead>
-                                <tr>
-                                    <th><?php echo display('sales_date') ?></th>
-                                    <th><?php echo display('invoice_no') ?></th>
-                                    <th><?php echo display('customer_name') ?></th>
-                                    <th><?php echo display('total_amount') ?></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                $subtotal = 0;
-                                if ($sales_report) {
-                                ?>
+                        <?php foreach ($branchoffices as $branch): ?>
+                            <h4 style="margin-top: 20px;"><?php echo $branch ?: 'Sin sucursal'; ?></h4>
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th><?php echo display('sales_date') ?></th>
+                                        <th><?php echo display('invoice_no') ?></th>
+                                        <th><?php echo display('customer_name') ?></th>
+                                        <th><?php echo display('total_amount') ?></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                                     <?php
-                                    $subtotal = 0;
-                                    foreach ($sales_report as $sales) { ?>
+                                    $branch_total = 0;
+                                    if (!empty($grouped_sales[$branch])) {
+                                        foreach ($grouped_sales[$branch] as $sale) {
+                                            $branch_total += $sale['total_amount'];
+                                    ?>
+                                            <tr>
+                                                <td><?php echo $sale['sales_date'] ?></td>
+                                                <td><?php echo $sale['invoice'] ?></td>
+                                                <td><?php echo $sale['customer_name'] ?? 'Venta general'; ?></td>
+                                                <td class="text-right">
+                                                    <?php echo ($position == 0) ? "$currency " . number_format($sale['total_amount'], 2) : number_format($sale['total_amount'], 2) . " $currency"; ?>
+                                                </td>
+                                            </tr>
+                                        <?php }
+                                    } else { ?>
                                         <tr>
-                                            <td><?php echo $sales['sales_date'] ?></td>
-                                            <td>
-                                                <?php echo $sales['invoice'] ?></td>
-                                            <td><?php echo $sales['customer_name'] ?></td>
-                                            <td class="text-right">
-                                                <?php
-                                                if ($position == 0) {
-                                                    echo $currency . ' ' . number_format($sales['total_amount'], 2);
-                                                } else {
-                                                    echo number_format($sales['total_amount'], 2) . ' ' . $currency;
-                                                }
-                                                $subtotal += $sales['total_amount']; ?>
-                                            </td>
+                                            <td colspan="4" class="text-center">No hay ventas en esta sucursal</td>
                                         </tr>
                                     <?php } ?>
-                                <?php } else {
-                                ?>
+                                </tbody>
+                                <tfoot>
                                     <tr>
-                                        <th class="text-center" colspan="6"><?php echo display('not_found'); ?></th>
+                                        <td colspan="3" class="text-right"><b>Total sucursal</b></td>
+                                        <td class="text-right"><b>
+                                                <?php echo ($position == 0) ? "$currency " . number_format($branch_total, 2) : number_format($branch_total, 2) . " $currency"; ?>
+                                            </b></td>
                                     </tr>
-                                <?php } ?>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="3" class="text-right"><b><?php echo display('total_seles') ?></b></td>
-                                    <td class="text-right"><b><?php echo (($position == 0) ? "$currency " . number_format($subtotal) : number_format($subtotal) . " $currency") ?></b></td>
-                                </tr>
-                            </tfoot>
-                        </table>
+                                </tfoot>
+                            </table>
+                        <?php endforeach; ?>
+                        <hr>
+                        <h4>Total general de ventas:
+                            <?php echo ($position == 0) ? "$currency " . number_format($sales_amount, 2) : number_format($sales_amount, 2) . " $currency"; ?>
+                        </h4>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

@@ -252,10 +252,10 @@ class Report extends MX_Controller
         if (!empty($date_filter)) {
             switch ($date_filter) {
                 case 'today':
-                    $from_date = $to_date = date('Y-m-d');
+                    $from_date = $to_date = date('Y-m-d', strtotime('-1 day'));
                     break;
                 case 'yesterday':
-                    $from_date = $to_date = date('Y-m-d', strtotime('-1 day'));
+                    $from_date = $to_date = date('Y-m-d', strtotime('-2 day'));
                     break;
                 case 'last_week':
                     $from_date = date('Y-m-d', strtotime('-7 days'));
@@ -276,23 +276,34 @@ class Report extends MX_Controller
             }
         }
         $sales_report = $this->report_model->retrieve_dateWise_SalesReports($from_date, $to_date);
+        $branchoffices = $this->report_model->get_all_branchoffices();
         $sales_amount = 0;
+        $grouped_sales = [];
+        $sales_amount = 0;
+        // Prepara estructura para cada sucursal, incluso vacías
+        foreach ($branchoffices as $branch) {
+            $grouped_sales[$branch] = [];
+        }
         if (!empty($sales_report)) {
             $i = 0;
-            foreach ($sales_report as $k => $v) {
+            foreach ($sales_report as $sale) {
                 $i++;
-                $sales_report[$k]['sl'] = $i;
-                $sales_report[$k]['sales_date'] = $this->occational->dateConvert($sales_report[$k]['date']);
-                $sales_amount = $sales_amount + $sales_report[$k]['total_amount'];
+                $sale['sl'] = $i;
+                $sale['sales_date'] = $this->occational->dateConvert($sale['date']);
+                $sales_amount += $sale['total_amount'];
+
+                $branch = $sale['branchoffice'] ?? 'Sin sucursal';
+                $grouped_sales[$branch][] = $sale;
             }
         }
         $data = array(
-            'title'        => display('sales_report'),
-            'sales_amount' => $sales_amount,
-            'sales_report' => $sales_report,
-            'from_date'    => $from_date,
-            'to_date'      => $to_date,
-        );
+            'title'          => display('sales_report'),
+            'sales_amount'   => $sales_amount,
+            'grouped_sales'  => $grouped_sales,
+            'branchoffices'  => $branchoffices,
+            'from_date'      => $from_date,
+            'to_date'        => $to_date,
+        );            
         $data['module']   = "report";
         $data['page']     = "sales_report";
         echo modules::run('template/layout', $data);

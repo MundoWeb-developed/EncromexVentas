@@ -333,17 +333,29 @@ class Report_model extends CI_Model
     //Retrieve all Report
     public function retrieve_dateWise_SalesReports($from_date, $to_date)
     {
-        $this->db->select("a.*,b.*");
+        $this->db->select("a.*, b.*");
         $this->db->from('invoice a');
         $this->db->join('customer_information b', 'b.customer_id = a.customer_id');
         $this->db->where('a.date >=', $from_date);
         $this->db->where('a.date <=', $to_date);
-        $this->db->order_by('a.date', 'desc');
+        $this->db->order_by('a.branchoffice', 'asc'); // Ordenar por sucursal
+        $this->db->order_by('a.date', 'desc');        // Luego por fecha descendente
         $query = $this->db->get();
         if ($query->num_rows() > 0) {
             return $query->result_array();
         }
         return false;
+    }
+    public function get_all_branchoffices()
+    {
+        $this->db->select('DISTINCT(branchoffice)');
+        $this->db->from('invoice');
+        $this->db->order_by('branchoffice', 'asc');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            return array_column($query->result_array(), 'branchoffice');
+        }
+        return [];
     }
     //Retrieve todays_purchase_report
     public function todays_purchase_report()
