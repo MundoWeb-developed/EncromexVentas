@@ -140,9 +140,9 @@
                             </tfoot>
                         </table>
                         <hr>
-                        <h4>Total general de ventas:
+                        <!-- <h4>Total general de ventas:
                             <?php echo ($position == 0) ? "$currency " . number_format($sales_amount, 2) : number_format($sales_amount, 2) . " $currency"; ?>
-                        </h4>
+                        </h4> -->
                     </div>
                 </div>
             </div>

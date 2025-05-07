@@ -247,15 +247,15 @@ class Report extends MX_Controller
     {
         $sales_report = $this->report_model->todays_sales_report();
         $sales_amount = 0;
-        if (!empty($sales_report)) {
-            $i = 0;
-            foreach ($sales_report as $k => $v) {
-                $i++;
-                $sales_report[$k]['sl'] = $i;
-                $sales_report[$k]['sales_date'] = $this->occational->dateConvert($sales_report[$k]['date']);
-                $sales_amount = $sales_amount + $sales_report[$k]['total_amount'];
-            }
-        }
+        // if (!empty($sales_report)) {
+        //     $i = 0;
+        //     foreach ($sales_report as $k => $v) {
+        //         $i++;
+        //         $sales_report[$k]['sl'] = $i;
+        //         $sales_report[$k]['sales_date'] = $this->occational->dateConvert($sales_report[$k]['date']);
+        //         $sales_amount = $sales_amount + $sales_report[$k]['total_amount'];
+        //     }
+        // }
         $data = array(
             'title'        => display('sales_report_general'),
             'sales_amount' => number_format($sales_amount, 2, '.', ','),
@@ -305,12 +305,12 @@ class Report extends MX_Controller
         // Mapeo de comisiones
         $branch_comisiones = [];
         $branchoffices = []; // Solo nombres
+        $sales_amount = 0;
         foreach ($branchoffices_full as $b) {
             $branchoffices[] = $b['branchoffice'];
             $branch_comisiones[$b['branchoffice']] = $b['comision'];
         }
         $grouped_sales = [];
-        $sales_amount = 0;
         // Inicializar estructura vacía para cada sucursal
         foreach ($branchoffices as $branch_name) {
             $grouped_sales[$branch_name] = [];
@@ -346,7 +346,6 @@ class Report extends MX_Controller
     }
     public function bdtask_datewise_sales_report_by_branch()
     {
-        
         $user_id = $this->session->userdata('id');
 
         $user_branch = $this->db->select('c.branchoffice')
@@ -389,10 +388,9 @@ class Report extends MX_Controller
             }
         }
         $sales_report = $this->report_model->retrieve_dateWise_SalesReports($from_date, $to_date);
-        $sales_report = array_filter($sales_report, function($sale) use ($branch_name) {
+        $sales_report = array_filter($sales_report, function ($sale) use ($branch_name) {
             return $sale['branchoffice'] === $branch_name;
-        });        
-
+        });
         // Obtener sucursales con comisión
         $branchoffices_full = $this->db->select('branchoffice, comision')->from('branchoffice')->get()->result_array();
 

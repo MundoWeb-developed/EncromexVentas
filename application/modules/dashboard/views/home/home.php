@@ -214,7 +214,7 @@ $searchdate =(!empty($postdate)?$postdate:date('F Y'));
                                                     <td><?php echo $sl; ?></td>
                                                     <td>
                                                         
-                                                            <?php echo html_escape($single->customer_name); ?>
+                                                            <?php echo html_escape($single->nombre_cliente); ?>
                                                         
                                                     </td>
                                                     <td>
