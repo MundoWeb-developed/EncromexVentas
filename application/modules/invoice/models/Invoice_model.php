@@ -278,9 +278,9 @@ class Invoice_model extends CI_Model
                     $button .= '  <a href="' . $base_url . 'invoice_details_cs/' . $record->invoice_id . '" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="left" title="Ticket Cliente"><i class="fa fa-window-restore" aria-hidden="true"></i></a>';
                 }
 
-                $button .= '  <a href="' . $base_url . 'invoice_details_del/' . $record->invoice_id . '" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="left" title="Ticket Reparto"><i class="fa fa-window-restore" aria-hidden="true"></i></a>';
+                // $button .= '  <a href="' . $base_url . 'invoice_details_del/' . $record->invoice_id . '" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="left" title="Ticket Reparto"><i class="fa fa-window-restore" aria-hidden="true"></i></a>';
 
-                $button .= '  <a href="' . $base_url . 'invoice_details/' . $record->invoice_id . '" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="left" title="Ticket Taller"><i class="fa fa-window-restore" aria-hidden="true"></i></a>';
+                // $button .= '  <a href="' . $base_url . 'invoice_details/' . $record->invoice_id . '" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="left" title="Ticket Taller"><i class="fa fa-window-restore" aria-hidden="true"></i></a>';
 
                 $button .= '  <a href="' . $base_url . 'invoice_pad_print/' . $record->invoice_id . '" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="left" title="' . display('pad_print') . '"><i class="fa fa-fax" aria-hidden="true"></i></a>';
 
