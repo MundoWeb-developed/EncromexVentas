@@ -37,7 +37,7 @@
                         <option value="last_6_months">Últimos 6 meses</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-success">Buscar</button>
+                <button type="submit" class="btn btn-success">Generar</button>
                 <a class="btn btn-warning" href="#" onclick="printDiv('purchase_div')">Imprimir</a>
                 <?php echo form_close() ?>
             </div>
