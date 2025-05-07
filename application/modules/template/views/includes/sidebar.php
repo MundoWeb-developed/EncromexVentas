@@ -422,7 +422,14 @@
                                                     echo "active";
                                                 } else {
                                                     echo " ";
-                                                } ?>"><a href="<?php echo base_url('sales_report') ?>"><?php echo display('sales_report') ?></a></li>
+                                                } ?>"><a href="<?php echo base_url('sales_report') ?>">Reporte de ventas de sucursal</a></li>
+                        <?php } ?>
+                        <?php if ($this->permission1->method('todays_sales_report', 'read')->access()) { ?>
+                            <li class="treeview <?php if ($this->uri->segment('1') == ("sales_report_general")) {
+                                                    echo "active";
+                                                } else {
+                                                    echo " ";
+                                                } ?>"><a href="<?php echo base_url('sales_report_general') ?>">Reporte de ventas general</a></li>
                         <?php } ?>
                         <!-- <?php if ($this->permission1->method('user_wise_sales_report', 'read')->access()) { ?>
                             <li class="treeview <?php if ($this->uri->segment('1') == ("userwise_sales_report")) {

@@ -243,6 +243,28 @@ class Report extends MX_Controller
         $data['page']     = "sales_report";
         echo modules::run('template/layout', $data);
     }
+    public function bdtask_todays_sales_report_general()
+    {
+        $sales_report = $this->report_model->todays_sales_report();
+        $sales_amount = 0;
+        if (!empty($sales_report)) {
+            $i = 0;
+            foreach ($sales_report as $k => $v) {
+                $i++;
+                $sales_report[$k]['sl'] = $i;
+                $sales_report[$k]['sales_date'] = $this->occational->dateConvert($sales_report[$k]['date']);
+                $sales_amount = $sales_amount + $sales_report[$k]['total_amount'];
+            }
+        }
+        $data = array(
+            'title'        => display('sales_report_general'),
+            'sales_amount' => number_format($sales_amount, 2, '.', ','),
+            'sales_report' => $sales_report,
+        );
+        $data['module']   = "report";
+        $data['page']     = "sales_report_general";
+        echo modules::run('template/layout', $data);
+    }
     public function bdtask_datewise_sales_report()
     {
         $date_filter = $this->input->get('date_filter', true);
@@ -283,6 +305,100 @@ class Report extends MX_Controller
         // Mapeo de comisiones
         $branch_comisiones = [];
         $branchoffices = []; // Solo nombres
+        foreach ($branchoffices_full as $b) {
+            $branchoffices[] = $b['branchoffice'];
+            $branch_comisiones[$b['branchoffice']] = $b['comision'];
+        }
+        $grouped_sales = [];
+        $sales_amount = 0;
+        // Inicializar estructura vacía para cada sucursal
+        foreach ($branchoffices as $branch_name) {
+            $grouped_sales[$branch_name] = [];
+        }
+        if (!empty($sales_report)) {
+            $i = 0;
+            foreach ($sales_report as $sale) {
+                $i++;
+                $sale['sl'] = $i;
+                $sale['sales_date'] = $this->occational->dateConvert($sale['date']);
+                $sales_amount += $sale['total_amount'];
+
+                $branch = $sale['branchoffice'] ?? 'Sin sucursal';
+                if (!isset($grouped_sales[$branch])) {
+                    $grouped_sales[$branch] = [];
+                }
+                $grouped_sales[$branch][] = $sale;
+            }
+        }
+        $data = array(
+            'title'               => display('sales_report_general'),
+            'sales_amount'        => $sales_amount,
+            'grouped_sales'       => $grouped_sales,
+            'branchoffices'       => $branchoffices,
+            'from_date'           => $from_date,
+            'to_date'             => $to_date,
+            'branch_comisiones'   => $branch_comisiones
+        );
+        $data['module'] = "report";
+        $data['page']   = "sales_report_general";
+
+        echo modules::run('template/layout', $data);
+    }
+    public function bdtask_datewise_sales_report_by_branch()
+    {
+        
+        $user_id = $this->session->userdata('id');
+
+        $user_branch = $this->db->select('c.branchoffice')
+            ->from('users a')
+            ->join('branchoffice c', 'a.branchoffice_id = c.id', 'left')
+            ->where('a.user_id', $user_id)
+            ->get()
+            ->row();
+
+        $branch_name = $user_branch->branchoffice ?? null;
+
+        $date_filter = $this->input->get('date_filter', true);
+        $from_date = $this->input->get('from_date', true);
+        $to_date = $this->input->get('to_date', true);
+
+        if (!empty($date_filter)) {
+            switch ($date_filter) {
+                case 'today':
+                    $from_date = $to_date = date('Y-m-d');
+                    break;
+                case 'yesterday':
+                    $from_date = $to_date = date('Y-m-d', strtotime('-1 day'));
+                    break;
+                case 'last_week':
+                    $from_date = date('Y-m-d', strtotime('-7 days'));
+                    $to_date = date('Y-m-d');
+                    break;
+                case 'last_month':
+                    $from_date = date('Y-m-d', strtotime('-1 month'));
+                    $to_date = date('Y-m-d');
+                    break;
+                case 'last_3_months':
+                    $from_date = date('Y-m-d', strtotime('-3 months'));
+                    $to_date = date('Y-m-d');
+                    break;
+                case 'last_6_months':
+                    $from_date = date('Y-m-d', strtotime('-6 months'));
+                    $to_date = date('Y-m-d');
+                    break;
+            }
+        }
+        $sales_report = $this->report_model->retrieve_dateWise_SalesReports($from_date, $to_date);
+        $sales_report = array_filter($sales_report, function($sale) use ($branch_name) {
+            return $sale['branchoffice'] === $branch_name;
+        });        
+
+        // Obtener sucursales con comisión
+        $branchoffices_full = $this->db->select('branchoffice, comision')->from('branchoffice')->get()->result_array();
+
+        // Mapeo de comisiones
+        $branch_comisiones = [];
+        $branchoffices = [$branch_name];
         foreach ($branchoffices_full as $b) {
             $branchoffices[] = $b['branchoffice'];
             $branch_comisiones[$b['branchoffice']] = $b['comision'];
