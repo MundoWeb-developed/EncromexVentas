@@ -115,7 +115,7 @@
                                             <tr>
                                                 <td><?php echo $sale['sales_date'] ?></td>
                                                 <td><?php echo $sale['invoice'] ?></td>
-                                                <td><?php echo $sale['customer_name'] ?? 'Venta general'; ?></td>
+                                                <td><?php echo $sale['nombre_cliente'] ?? 'Venta general'; ?></td>
                                                 <td class="text-right">
                                                     <?php echo ($position == 0) ? "$currency " . number_format($sale['total_amount'], 2) : number_format($sale['total_amount'], 2) . " $currency"; ?>
                                                 </td>

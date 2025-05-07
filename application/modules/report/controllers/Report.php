@@ -252,10 +252,10 @@ class Report extends MX_Controller
         if (!empty($date_filter)) {
             switch ($date_filter) {
                 case 'today':
-                    $from_date = $to_date = date('Y-m-d', strtotime('-1 day'));
+                    $from_date = $to_date = date('Y-m-d');
                     break;
                 case 'yesterday':
-                    $from_date = $to_date = date('Y-m-d', strtotime('-2 day'));
+                    $from_date = $to_date = date('Y-m-d', strtotime('-1 day'));
                     break;
                 case 'last_week':
                     $from_date = date('Y-m-d', strtotime('-7 days'));
