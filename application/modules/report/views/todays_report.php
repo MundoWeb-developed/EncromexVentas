@@ -81,7 +81,7 @@
                                                     <?php echo $salereport['invoice_id']?>
                                                 </a>
                                             </td>
-                                            <td><?php echo $salereport['customer_name']?></td>
+                                            <td><?php echo $salereport['nombre_cliente']?></td>
                                             <td class="text-right"><?php
 
                                              echo (($position == 0) ? $currency.' '.$salereport['total_amount'] : $salereport['total_amount'].' '. $currency) ?></td>
