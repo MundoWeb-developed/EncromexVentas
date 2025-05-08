@@ -302,11 +302,11 @@
                 </li>
             <?php } ?>
             <!-- Purchase menu end -->
-            <li class="treeview <?php echo (($this->uri->segment(1) == "add_branchoffice" || $this->uri->segment(1) == "branchoffice_list" || $this->uri->segment(1) == "add_zona" || $this->uri->segment(1) == "zona_list" || $this->uri->segment(1) == "subzones" || $this->uri->segment(1) == "addsubzone") ? "active" : '') ?>">
+            <li class="treeview <?php echo ($this->uri->segment(1) == "add_branchoffice" || $this->uri->segment(1) == "branchoffice_list" || $this->uri->segment(1) == "add_partner" || $this->uri->segment(1) == "partner_list" || $this->uri->segment(1) == "add_zona" || $this->uri->segment(1) == "zona_list" || $this->uri->segment(1) == "subzones" || $this->uri->segment(1) == "addsubzone") ? "active" : '' ?>">
 
                 <a href="javascript:void(0)">
                     <i class="metismenu-icon fa fa-cubes"></i>
-                    <span>Sucursales/Zona</span>
+                    <span>Sucursales/Socios</span>
                     <span class="pull-right-container">
                         <i class="fa fa-angle-left pull-right"></i>
                     </span>
@@ -320,6 +320,16 @@
                     <li class="<?php echo (($this->uri->segment(1) == "branchoffice_list") ? "active" : '') ?>">
                         <a href="<?php echo base_url('branchoffice_list') ?>">
                             Ver sucursales
+                        </a>
+                    </li>
+                    <li class="<?php echo (($this->uri->segment(1) == "add_partner") ? "active" : '') ?>">
+                        <a href="<?php echo base_url('add_partner') ?>">
+                            Agregar socios comerciales
+                        </a>
+                    </li>
+                    <li class="<?php echo (($this->uri->segment(1) == "partner_list") ? "active" : '') ?>">
+                        <a href="<?php echo base_url('partner_list') ?>">
+                            Ver socios comerciales
                         </a>
                     </li>
 

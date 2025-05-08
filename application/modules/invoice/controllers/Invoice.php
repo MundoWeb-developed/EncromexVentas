@@ -241,7 +241,6 @@ class Invoice extends MX_Controller
 
     public function bdtask_branchoffice_list()
     {
-
         $data['title']        = 'Lista de sucursales';
         $data['employee_list'] = $this->invoice_model->branchoffice_list();
         $data['module']       = "invoice";
@@ -249,17 +248,11 @@ class Invoice extends MX_Controller
         echo modules::run('template/layout', $data);
     }
 
-
-
-
     public function bdtask_add_branchoffice($id = null)
     {
-
         $data['title']         = 'Sucursal';
-
         $this->form_validation->set_rules('branchoffice', 'Sucursal', 'required|max_length[100]');
         $this->form_validation->set_rules('phone', display('phone'), 'max_length[20]');
-
         $data['employee'] = (object)$postData = [
             'id'            => $this->input->post('id', true),
             'branchoffice'    => $this->input->post('branchoffice', true),
@@ -268,7 +261,6 @@ class Invoice extends MX_Controller
             'address' => $this->input->post('address', true),
             'comision'      => $this->input->post('comision', true),
         ];
-
         #-------------------------------#
         if ($this->form_validation->run()) {
 
@@ -294,13 +286,65 @@ class Invoice extends MX_Controller
                 $data['employee']    = $this->invoice_model->single_branchoffice_data($id);
                 $data['title']       = 'Sucursal';
             }
-
             $data['module']        = "invoice";
             $data['page']          = "add_branchoffice";
             echo modules::run('template/layout', $data);
         }
     }
 
+    public function bdtask_add_partner($id = null)
+    {
+        $data['title'] = 'Socio Comercial';
+
+        $this->form_validation->set_rules('partner_name', 'Nombre del socio', 'required|max_length[100]');
+        $this->form_validation->set_rules('phone', display('phone'), 'max_length[20]');
+
+        $data['partner'] = (object)$postData = [
+            'id'           => $this->input->post('id', true),
+            'partner_name' => $this->input->post('partner_name', true),
+            'phone'        => $this->input->post('phone', true),
+            'email'        => $this->input->post('email', true),
+            'address'      => $this->input->post('address', true),
+            'comision'     => $this->input->post('comision', true),
+        ];
+
+        if ($this->form_validation->run()) {
+            if (empty($id)) {
+                if ($this->invoice_model->create_partner($postData)) {
+                    $this->session->set_flashdata('message', display('save_successfully'));
+                    redirect("partner_list");
+                } else {
+                    $this->session->set_flashdata('error_message', display('please_try_again'));
+                    redirect("partner_list");
+                }
+            } else {
+                if ($this->invoice_model->update_partner($postData)) {
+                    $this->session->set_flashdata('message', display('update_successfully'));
+                } else {
+                    $this->session->set_flashdata('exception', display('please_try_again'));
+                    redirect("add_partner/" . $id);
+                }
+                redirect("partner_list/");
+            }
+        } else {
+            if (!empty($id)) {
+                $data['partner'] = $this->invoice_model->single_partner_data($id);
+                $data['title']   = 'Socio Comercial';
+            }
+            $data['module'] = "invoice";
+            $data['page']   = "add_partner";
+            echo modules::run('template/layout', $data);
+        }
+    }
+
+    public function bdtask_partner_list()
+    {
+        $data['title'] = 'Lista de socios comerciales';
+        $data['partner_list'] = $this->invoice_model->partner_list(); // Método del modelo que obtiene los datos
+        $data['module'] = "invoice";
+        $data['page'] = "partner_list"; // Vista que mostrará los socios comerciales
+        echo modules::run('template/layout', $data);
+    }
 
 
     public function bdtask_delete_deliveryman($id = null)
@@ -1680,13 +1724,14 @@ class Invoice extends MX_Controller
         }
         //para poder obtener el valor de supplier_rate dado que no existia
         if (!empty($invoice_id)) {
-            $this->db->query("
+            $this->db->query(
+                "
                 UPDATE invoice_details d
                 JOIN product_information p ON d.product_id = p.product_id
                 SET d.supplier_rate = ROUND(d.rate / (1 + (IFNULL(p.utilidad, 0) / 100)), 0)
                 WHERE d.invoice_id = " . $this->db->escape($invoice_id)
             );
-        }           
+        }
         echo json_encode($data);
     }
 

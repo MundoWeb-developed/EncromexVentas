@@ -18,9 +18,7 @@ $route['invoice_details_cs/(:num)'] = 'invoice/invoice/bdtask_invoice_details_cs
 
 $route['invoice_details_del/(:num)'] = 'invoice/invoice/bdtask_invoice_details_del/$1';
 
-
 $route['edit_gui_pos/(:num)']		 = "invoice/invoice/bdtask_edit_gui_pos/$1";
-
 
 $route['invoice_pad_print/(:num)'] = 'invoice/invoice/bdtask_invoice_pad_print/$1';
 $route['pos_print/(:num)']    = 'invoice/invoice/bdtask_invoice_pos_print/$1';
@@ -38,19 +36,20 @@ $route['add_branchoffice']         = "invoice/invoice/bdtask_add_branchoffice";
 $route['add_branchoffice/(:num)']    = 'invoice/invoice/bdtask_add_branchoffice/$1';
 $route['branchoffice_list']        = "invoice/invoice/bdtask_branchoffice_list";
 
+// Socios comerciales (nuevas rutas)
+$route['add_partner']         = "invoice/invoice/bdtask_add_partner";
+$route['add_partner/(:num)']  = 'invoice/invoice/bdtask_add_partner/$1';
+$route['partner_list']        = "invoice/invoice/bdtask_partner_list";
+
 $route['add_zona']         = "invoice/invoice/bdtask_add_zona";
 $route['add_zona/(:num)']  = 'invoice/invoice/bdtask_add_zona/$1';
 $route['zona_list']        = "invoice/invoice/bdtask_zona_list";
-
-
 
 $route['add_florist']         = "invoice/invoice/bdtask_add_florist";
 $route['add_florist/(:num)']    = 'invoice/invoice/bdtask_add_florist/$1';
 $route['florist_list']        = "invoice/invoice/bdtask_florist_list";
 $route['insumos_invoice']        = "invoice/invoice/arr_insumos_invoice";
 
-
 $route['product_form_arrp']         = "invoice/invoice/bdtask_product_form_arrp";
 
 $route['accumulated']         = "invoice/invoice/bdtask_accumulated";
-

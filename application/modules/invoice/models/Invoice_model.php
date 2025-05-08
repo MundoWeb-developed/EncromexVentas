@@ -3092,7 +3092,55 @@ class Invoice_model extends CI_Model
 
 
 
+    public function create_partner($data = [])
+    {
+        return $this->db->insert('partners', $data);
+    }
 
+    public function update_partner($data = [])
+    {
+        return $this->db->where('id', $data['id'])
+            ->update('partners', $data);
+    }
+
+    public function single_partner_data($id)
+    {
+        return $this->db->select('*')
+            ->from('partners')
+            ->where('id', $id)
+            ->get()
+            ->row();
+    }
+
+    public function partner_list()
+    {
+        $this->db->select('*');
+        $this->db->from('partners');
+        $this->db->order_by('id', 'DESC');
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            return $query->result_array();
+        }
+        return false;
+    }
+
+    public function delete_partner($id)
+    {
+        $this->db->where('id', $id)
+            ->delete("partners");
+
+        return $this->db->affected_rows() > 0;
+    }
+
+    public function allpartners()
+    {
+        $this->db->select('*');
+        $this->db->from('partners');
+        $this->db->order_by('id', 'asc');
+        $query = $this->db->get();
+        return $query->result();
+    }
 
 
 
