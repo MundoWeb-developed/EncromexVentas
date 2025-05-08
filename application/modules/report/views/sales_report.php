@@ -51,7 +51,7 @@
                 <div class="panel-title">
                     <span><?php echo display('sales_report') ?> </span>
                     <span class="padding-lefttitle"> <?php if ($this->permission1->method('all_report', 'read')->access()) { ?>
-                            <a class="btn btn-primary m-b-5 m-r-2" href="<?php echo base_url('todays_report') ?>"><?php echo display('todays_report') ?></a>
+                            <a class="btn btn-primary m-b-5 m-r-2" href="<?php echo base_url('report/bdtask_datewise_sales_report_by_branch?date_filter=today') ?>">Reporte del día</a>
                         <?php } ?>
                         <?php if ($this->permission1->method('todays_purchase_report', 'read')->access()) { ?>
                             <a href="<?php echo base_url('purchase_report') ?>" class="btn btn-success m-b-5 m-r-2"><i class="ti-align-justify"> </i> <?php echo display('purchase_report') ?> </a>

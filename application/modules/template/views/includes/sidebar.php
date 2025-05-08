@@ -403,13 +403,13 @@
                                                     echo " ";
                                                 } ?>"><a href="<?php echo base_url('closing_report') ?>"><?php echo display('closing_report') ?></a></li>
                         <?php } ?>
-                        <?php if ($this->permission1->method('todays_report', 'read')->access()) { ?>
+                        <!-- <?php if ($this->permission1->method('todays_report', 'read')->access()) { ?>
                             <li class="treeview <?php if ($this->uri->segment('1') == ("todays_report")) {
                                                     echo "active";
                                                 } else {
                                                     echo " ";
                                                 } ?>"><a href="<?php echo base_url('todays_report') ?>"><?php echo display('todays_report') ?></a></li>
-                        <?php } ?>
+                        <?php } ?> -->
                         <!-- <?php if ($this->permission1->method('todays_customer_receipt', 'read')->access()) { ?>
                             <li class="treeview <?php if ($this->uri->segment('1') == ("todays_customer_received")) {
                                                     echo "active";
