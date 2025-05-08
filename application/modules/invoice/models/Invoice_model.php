@@ -1102,17 +1102,9 @@ class Invoice_model extends CI_Model
                     'motivo_cancelacion' => $this->input->post('motivo', TRUE),
                 );
             }
-
-
-
-
-
-
             $txt_tc = $this->input->post('telefono_cliente', TRUE);
-
             $config_data = $this->db->select('*')->from('sms_settings')->get()->row();
             if ($config_data->isservice == 1) {
-
                 $id_florista = $this->input->post('florista_taller', TRUE);
                 $info_florista = $this->db->select('*')->from('florist')->where('id', $id_florista)->get()->row();
                 $txt_tf = $info_florista->phone;
@@ -1120,9 +1112,7 @@ class Invoice_model extends CI_Model
                 $txt_tf = str_replace(")", "", $txt_tf);
                 $txt_tf = str_replace(" ", "", $txt_tf);
                 $txt_tf = str_replace("-", "", $txt_tf);
-
                 $message_f = 'Acaba de realizarse la venta de un nuevo arreglo, es importante que revises tu bandeja de pedidos y comentar cuando ya lo tengas terminado.';
-
                 if ($txt_tf != '') {
                     $this->smsgateway->send([
                         'apiProvider' => 'nexmo',
@@ -1134,8 +1124,6 @@ class Invoice_model extends CI_Model
                     ]);
                 }
             }
-
-
             if ($config_data->isreceive == 1 && $instore == '0') {
 
                 $id_repartidor = $this->input->post('repartidor_caja', TRUE);
@@ -1145,9 +1133,7 @@ class Invoice_model extends CI_Model
                 $txt_td = str_replace(")", "", $txt_td);
                 $txt_td = str_replace(" ", "", $txt_td);
                 $txt_td = str_replace("-", "", $txt_td);
-
                 $message_d = 'Acaba de realizarse la venta de un nuevo arreglo, por favor revisa tu bandeja de pedidos para enterarte el status del mismo, así como la hora de entrega.';
-
                 if ($txt_td != '') {
                     $this->smsgateway->send([
                         'apiProvider' => 'nexmo',
@@ -1575,8 +1561,6 @@ class Invoice_model extends CI_Model
                 ]);
             }
         }
-
-
         return $invoice_id;
     }
 

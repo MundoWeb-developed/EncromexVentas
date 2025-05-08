@@ -2,7 +2,7 @@
 	<div class="col-sm-12">
 		<div class="panel panel-default">
 			<div class="panel-body">
-				<?php echo form_open('profit_report', array('class' => 'form-inline', 'method' => 'get')) ?>
+				<?php echo form_open('profit_report_general', array('class' => 'form-inline', 'method' => 'get')) ?>
 				<?php date_default_timezone_set("Asia/Dhaka");
 				$today = date('Y-m-d'); ?>
 				<div class="form-group">
@@ -25,7 +25,7 @@
 		<div class="panel panel-bd lobidrag">
 			<div class="panel-heading">
 				<div class="panel-title">
-					<span>Informe de ganancias</span>
+					<span>Informe de gananciasss</span>
 					<span class="padding-lefttitle">
 						<?php if ($this->permission1->method('todays_sales_report', 'read')->access()) { ?>
 							<a href="<?php echo base_url('sales_report') ?>" class="btn btn-info m-b-5 m-r-2"><i class="ti-align-justify"> </i> <?php echo display('sales_report') ?> </a>

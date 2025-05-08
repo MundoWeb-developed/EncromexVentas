@@ -604,17 +604,42 @@ class Report_model extends CI_Model
         return false;
     }
     //Total profit report
-    public function total_profit_report($start_date, $end_date)
+    public function total_profit_report_by_branch($start_date, $end_date, $branch_name)
     {
-        $this->db->select("a.date,a.invoice,b.invoice_id,
-            CAST(sum(total_price) AS DECIMAL(16,2)) as total_sale");
-        $this->db->select('CAST(sum(`quantity`*`supplier_rate`) AS DECIMAL(16,2)) as total_supplier_rate', FALSE);
-        $this->db->select("CAST(SUM(total_price) - SUM(`quantity`*`supplier_rate`) AS DECIMAL(16,2)) AS total_profit");
+        $this->db->select("a.date, a.invoice, a.branchoffice, b.invoice_id,
+        CAST(SUM(b.total_price) AS DECIMAL(16,2)) as total_sale,
+        CAST(SUM(b.quantity * b.supplier_rate) AS DECIMAL(16,2)) as total_supplier_rate,
+        CAST(SUM(b.total_price) - SUM(b.quantity * b.supplier_rate) AS DECIMAL(16,2)) AS total_profit", FALSE);
         $this->db->from('invoice a');
         $this->db->join('invoice_details b', 'b.invoice_id = a.invoice_id');
         $this->db->where('a.date >=', $start_date);
         $this->db->where('a.date <=', $end_date);
-        $this->db->group_by('b.invoice_id');
+
+        // Aquí está el filtro por sucursal
+        if (!empty($branch_name)) {
+            $this->db->where('a.branchoffice', $branch_name);
+        }
+
+        $this->db->group_by(['b.invoice_id', 'a.branchoffice']);
+        $this->db->order_by('a.invoice', 'desc');
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            return $query->result_array();
+        }
+        return false;
+    }
+    public function total_profit_report($start_date, $end_date)
+    {
+        $this->db->select("a.date, a.invoice, a.branchoffice, b.invoice_id,
+            CAST(SUM(b.total_price) AS DECIMAL(16,2)) as total_sale,
+            CAST(SUM(b.quantity * b.supplier_rate) AS DECIMAL(16,2)) as total_supplier_rate,
+            CAST(SUM(b.total_price) - SUM(b.quantity * b.supplier_rate) AS DECIMAL(16,2)) AS total_profit", FALSE);
+        $this->db->from('invoice a');
+        $this->db->join('invoice_details b', 'b.invoice_id = a.invoice_id');
+        $this->db->where('a.date >=', $start_date);
+        $this->db->where('a.date <=', $end_date);
+        $this->db->group_by(['b.invoice_id', 'a.branchoffice']);
         $this->db->order_by('a.invoice', 'desc');
         $query = $this->db->get();
         if ($query->num_rows() > 0) {

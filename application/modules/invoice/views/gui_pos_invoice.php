@@ -35,7 +35,6 @@
 				<span class="sr-only">Toggle navigation</span>
 				<span class="pe-7s-keypad"></span>
 			</a>
-			<a href="" class="topbar-icon" id="keyshortcut" aria-hidden="true" data-toggle="modal" data-target="#cheetsheet"><i class="fa fa-keyboard-o"></i></a>
 		</div>
 	</div>
 	<!-- Tab panes -->
@@ -786,68 +785,6 @@
 				<button type="button" onclick="cancelprint()" class="btn btn-default" data-dismiss="modal"><?php echo display('no') ?></button>
 				<button type="submit" class="btn btn-primary" id="yes"><?php echo display('yes') ?></button>
 				<?php echo form_close() ?>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="modal fade" id="cheetsheet" tabindex="-1" role="dialog" aria-labelledby="cheetsheet" aria-hidden="true">
-	<div class="modal-dialog modal-md">
-		<div class="modal-content">
-			<div class="modal-header">
-				<a href="" class="close" data-dismiss="modal" aria-hidden="true">&times;</a>
-				<h4 class="modal-title">Keyboard Shortcut</h4>
-			</div>
-			<div class="modal-body">
-				<table class="table table-bordered">
-					<thead>
-						<tr>
-							<th>Event</th>
-							<th>key</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td class="text-center">Submit Invoice</td>
-							<td class="text-center">ctrl+s</td>
-						</tr>
-						<tr>
-							<td class="text-center">Add New Customer</td>
-							<td class="text-center">shif+c</td>
-						</tr>
-						<tr>
-							<td class="text-center">Full Paid</td>
-							<td class="text-center">shif+f</td>
-						</tr>
-						<tr>
-							<td class="text-center">Today's Sale List</td>
-							<td class="text-center">shif+l</td>
-						</tr>
-						<tr>
-							<td class="text-center">New Sale</td>
-							<td class="text-center">shif+n</td>
-						</tr>
-						<tr>
-							<td class="text-center">Open Calculator</td>
-							<td class="text-center">alt+c</td>
-						</tr>
-						<tr>
-							<td class="text-center">Search Old Customer</td>
-							<td class="text-center">alt+n</td>
-						</tr>
-						<tr>
-							<td class="text-center">Invoice Discount</td>
-							<td class="text-center">ctrl+d</td>
-						</tr>
-						<tr>
-							<td class="text-center">Shipping Cost</td>
-							<td class="text-center">alt+s</td>
-						</tr>
-						<tr>
-							<td class="text-center">Paid Amount</td>
-							<td class="text-center">alt+p</td>
-						</tr>
-					</tbody>
-				</table>
 			</div>
 		</div>
 	</div>

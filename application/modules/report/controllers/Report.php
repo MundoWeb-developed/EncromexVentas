@@ -695,34 +695,94 @@ class Report extends MX_Controller
     public function bdtask_profit_report()
     {
         $start_date = (!empty($this->input->get('from_date')) ? $this->input->get('from_date') : date('Y-m-d'));
-        $end_date   = (!empty($this->input->get('to_date')) ? $this->input->get('to_date') : date('Y-m-d'));
+        $end_date = (!empty($this->input->get('to_date')) ? $this->input->get('to_date') : date('Y-m-d'));
+
+        // Obtener sucursal del usuario logueado
+        $user_id = $this->session->userdata('id');
+        $user_branch = $this->db->select('c.branchoffice')
+            ->from('users a')
+            ->join('branchoffice c', 'a.branchoffice_id = c.id', 'left')
+            ->where('a.user_id', $user_id)
+            ->get()
+            ->row();
+
+        $branch_name = $user_branch->branchoffice ?? null;
+
+        // Usar el modelo filtrado por sucursal
+        $total_profit_report = $this->report_model->total_profit_report_by_branch($start_date, $end_date, $branch_name);
+
+        $report_grouped = [];
+        $profit_ammount   = 0;
+        $SubTotalSupAmnt  = 0;
+        $SubTotalSaleAmnt = 0;
+
+        if (!empty($total_profit_report)) {
+            foreach ($total_profit_report as $row) {
+                $sucursal = $row['branchoffice'];
+                if (!isset($report_grouped[$sucursal])) {
+                    $report_grouped[$sucursal] = [];
+                }
+                $row['prchse_date'] = $this->occational->dateConvert($row['date']);
+                $report_grouped[$sucursal][] = $row;
+                $profit_ammount += $row['total_profit'];
+                $SubTotalSupAmnt += $row['total_supplier_rate'];
+                $SubTotalSaleAmnt += $row['total_sale'];
+            }
+        }
+
+        $data = array(
+            'title'                    => display('profit_report'),
+            'profit_ammount'           => $profit_ammount,
+            'total_profit_report_grouped' => $report_grouped,
+            'from'                     => $start_date,
+            'to'                       => $end_date,
+            'SubTotalSupAmnt'          => $SubTotalSupAmnt,
+            'SubTotalSaleAmnt'         => $SubTotalSaleAmnt,
+        );
+
+        $data['module']   = "report";
+        $data['page']     = "profit_report";
+
+        echo modules::run('template/layout', $data);
+    }
+
+
+    public function bdtask_profit_report_general()
+    {
+        $start_date = (!empty($this->input->get('from_date')) ? $this->input->get('from_date') : date('Y-m-d'));
+        $end_date = (!empty($this->input->get('to_date')) ? $this->input->get('to_date') : date('Y-m-d'));
         $total_profit_report = $this->report_model->total_profit_report($start_date, $end_date);
+        $report_grouped = [];
         $profit_ammount   = 0;
         $SubTotalSupAmnt  = 0;
         $SubTotalSaleAmnt = 0;
         if (!empty($total_profit_report)) {
-            $i = 0;
-            foreach ($total_profit_report as $k => $v) {
-                $total_profit_report[$k]['sl'] = $i;
-                $total_profit_report[$k]['prchse_date'] = $this->occational->dateConvert($total_profit_report[$k]['date']);
-                $profit_ammount = $profit_ammount + $total_profit_report[$k]['total_profit'];
-                $SubTotalSupAmnt = $SubTotalSupAmnt + $total_profit_report[$k]['total_supplier_rate'];
-                $SubTotalSaleAmnt = $SubTotalSaleAmnt + $total_profit_report[$k]['total_sale'];
+            foreach ($total_profit_report as $row) {
+                $sucursal = $row['branchoffice']; // Asegúrate de que este campo exista y contenga el nombre o ID de la sucursal
+                if (!isset($report_grouped[$sucursal])) {
+                    $report_grouped[$sucursal] = [];
+                }
+                $row['prchse_date'] = $this->occational->dateConvert($row['date']);
+                $report_grouped[$sucursal][] = $row;
+                $profit_ammount += $row['total_profit'];
+                $SubTotalSupAmnt += $row['total_supplier_rate'];
+                $SubTotalSaleAmnt += $row['total_sale'];
             }
         }
         $data = array(
-            'title'               => display('profit_report'),
-            'profit_ammount'      => number_format($profit_ammount, 2, '.', ','),
-            'total_profit_report' => $total_profit_report,
-            'from'                => $start_date,
-            'to'                  => $end_date,
-            'SubTotalSupAmnt'     => number_format($SubTotalSupAmnt, 2, '.', ','),
-            'SubTotalSaleAmnt'    => number_format($SubTotalSaleAmnt, 2, '.', ','),
+            'title'                    => display('profit_report_general'),
+            'profit_ammount'           => $profit_ammount,
+            'total_profit_report_grouped' => $report_grouped,
+            'from'                     => $start_date,
+            'to'                       => $end_date,
+            'SubTotalSupAmnt'          => $SubTotalSupAmnt,
+            'SubTotalSaleAmnt'         => $SubTotalSaleAmnt,
         );
         $data['module']   = "report";
-        $data['page']     = "profit_report";
+        $data['page']     = "profit_report_general";
         echo modules::run('template/layout', $data);
     }
+
     public function get_purchases_insumo()
     {
         $insumo = $this->input->post('insumo', TRUE);

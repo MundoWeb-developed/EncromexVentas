@@ -24,3 +24,4 @@ $route['sales_return']         = "report/report/bdtask_sales_return";
 $route['supplier_returns']      = "report/report/bdtask_supplier_return";
 $route['tax_report']           = "report/report/bdtask_tax_report";
 $route['profit_report']        = "report/report/bdtask_profit_report";
+$route['profit_report_general']        = "report/report/bdtask_profit_report_general";

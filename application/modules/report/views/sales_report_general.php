@@ -60,7 +60,7 @@
                             <a href="<?php echo base_url('product_wise_sales_report') ?>" class="btn btn-primary m-b-5 m-r-2"><i class="ti-align-justify"> </i> <?php echo display('sales_report_product_wise') ?> </a>
                         <?php } ?>
                         <?php if ($this->permission1->method('todays_sales_report', 'read')->access() && $this->permission1->method('todays_purchase_report', 'read')->access()) { ?>
-                            <a href="<?php echo base_url('profit_report') ?>" class="btn btn-warning m-b-5 m-r-2"><i class="ti-align-justify"> </i> <?php echo display('profit_report') ?> </a>
+                            <a href="<?php echo base_url('profit_report_general') ?>" class="btn btn-warning m-b-5 m-r-2"><i class="ti-align-justify"> </i>Informe de ganancial generales</a>
                         <?php } ?></span>
                 </div>
             </div>

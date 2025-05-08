@@ -1678,6 +1678,15 @@ class Invoice extends MX_Controller
             $data['status'] = false;
             $data['exception'] = validation_errors();
         }
+        //para poder obtener el valor de supplier_rate dado que no existia
+        if (!empty($invoice_id)) {
+            $this->db->query("
+                UPDATE invoice_details d
+                JOIN product_information p ON d.product_id = p.product_id
+                SET d.supplier_rate = ROUND(d.rate / (1 + (IFNULL(p.utilidad, 0) / 100)), 0)
+                WHERE d.invoice_id = " . $this->db->escape($invoice_id)
+            );
+        }           
         echo json_encode($data);
     }
 
