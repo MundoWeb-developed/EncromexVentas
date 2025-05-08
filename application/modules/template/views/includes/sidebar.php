@@ -278,7 +278,7 @@
                         </span>
                     </a>
                     <ul class="treeview-menu">
-                        <?php if ($this->permission1->method('add_purchase', 'create')->access()) { ?>
+                        <!-- <?php if ($this->permission1->method('add_purchase', 'create')->access()) { ?>
                             <li class="treeview <?php
                                                 if ($this->uri->segment('1') == ("add_purchase")) {
                                                     echo "active";
@@ -295,7 +295,7 @@
                                                     echo " ";
                                                 }
                                                 ?>"><a href="<?php echo base_url('purchase_list') ?>"><?php echo display('manage_purchase') ?></a></li>
-                        <?php } ?>
+                        <?php } ?> -->
                         <li class="treeview"><a href="<?php echo base_url('add_insumo') ?>">Compra de insumo</a></li>
                         <li class="treeview"><a href="<?php echo base_url('insumo_purchase_list') ?>">Lista de compras de insumo</a></li>
                     </ul>
