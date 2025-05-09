@@ -3,16 +3,16 @@
 		<div class="panel panel-bd lobidrag">
 			<div class="panel-heading">
 				<div class="panel-title">
-                    <h4>Datos del socio comercial</h4>
+					<h4>Datos de los Socios Comerciales</h4>
 				</div>
 			</div>
 			<div class="panel-body">
-                <?php echo form_open_multipart('add_partner/' . $employee->id, 'id="validate"') ?>
+				<?php echo form_open_multipart('add_partner/' . $employee->id, 'id="validate"') ?>
 				<input type="hidden" name="id" id="id" value="<?php echo $employee->id ?>">
 				<div class="form-group row">
-                    <label for="partner_name" class="col-sm-2 col-form-div">Nombre del socio <i class="text-danger">*</i></label>
+					<label for="first_name" class="col-sm-2 col-form-div">Socio Comercial <i class="text-danger">*</i></label>
 					<div class="col-sm-4">
-                        <input name="partner_name" class="form-control" type="text" placeholder="Nombre del socio" required id="partner_name" value="<?php echo $employee->partner_name ?>">
+						<input name="branchoffice" class="form-control" type="text" placeholder="Sucursal" required id="branchoffice" value="<?php echo $employee->branchoffice ?>">
 					</div>
 					<label for="phone" class="col-sm-2 col-form-div"><?php echo display('phone') ?> <i class="text-danger">*</i></label>
 					<div class="col-sm-4">
@@ -28,11 +28,60 @@
 					<div class="col-sm-4">
 						<textarea name="address" class="form-control" placeholder="Dirección" id="address"><?php echo $employee->address ?></textarea>
 					</div>
-					<label for="comision" class="col-sm-2 col-form-div">% de Comisión</label>
-					<div class="col-sm-4">
-						<input name="comision" class="form-control" type="number" min="0" step="0.01" placeholder="%." id="comision" value="<?php echo $employee->comision ?>">
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-2 text-right col-form-label">Comisiones por Categoría:</label>
+					<div class="col-sm-9">
+						<div class="panel panel-default">
+							<div class="panel-heading">Asignar comisiones específicasa a cada categoria</div>
+							<div class="panel-body">
+								<table class="table table-bordered">
+									<thead>
+										<tr>
+											<th>Categoría</th>
+											<th>Comisión (%)</th>
+										</tr>
+									</thead>
+									<tbody>
+										<?php
+										$categories = $this->db->select('*')
+											->from('product_category')
+											->where('status', 1)
+											->get()
+											->result();
+
+										$category_commissions = [];
+										if (!empty($employee->id)) {
+											$commissions = $this->db->select('*')
+												->from('branchoffice_category_commission')
+												->where('branchoffice_id', $employee->id) // ← aquí
+												->get()
+												->result();
+
+											foreach ($commissions as $commission) {
+												$category_commissions[$commission->category_id] = $commission->commission_percentage;
+											}
+										}
+
+										foreach ($categories as $category): ?>
+											<tr>
+												<td><?php echo $category->category_name ?></td>
+												<td>
+													<input type="number"
+														name="category_commissions[<?php echo $category->category_id ?>]"
+														class="form-control text-right"
+														min="0" max="100" step="0.01"
+														value="<?php echo isset($category_commissions[$category->category_id]) ? $category_commissions[$category->category_id] : '' ?>">
+												</td>
+											</tr>
+										<?php endforeach; ?>
+									</tbody>
+								</table>
+							</div>
+						</div>
 					</div>
 				</div>
+
 				<div class="form-group text-right">
 					<button type="reset" class="btn btn-primary w-md m-b-5"><?php echo display('reset') ?></button>
 					<button type="submit" class="btn btn-success w-md m-b-5"><?php echo display('save') ?></button>

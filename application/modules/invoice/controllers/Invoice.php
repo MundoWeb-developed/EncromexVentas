@@ -237,17 +237,17 @@ class Invoice extends MX_Controller
 
         redirect("branchoffice_list");
     }
-
-
     public function bdtask_branchoffice_list()
     {
-        $data['title']        = 'Lista de sucursales';
-        $data['employee_list'] = $this->invoice_model->branchoffice_list();
-        $data['module']       = "invoice";
-        $data['page']         = "branchoffice_list";
+        $data['title'] = 'Lista de sucursales';
+
+        // Filtrar solo las sucursales (tipo = 1)
+        $data['employee_list'] = $this->invoice_model->branchoffice_list(1); // Pasar un parámetro si es necesario
+
+        $data['module'] = "invoice";
+        $data['page'] = "branchoffice_list";
         echo modules::run('template/layout', $data);
     }
-
     public function bdtask_add_branchoffice($id = null)
     {
         $data['title']         = 'Sucursal';
@@ -260,12 +260,14 @@ class Invoice extends MX_Controller
             'email'         => $this->input->post('email', true),
             'address' => $this->input->post('address', true),
             'comision'      => $this->input->post('comision', true),
+            'tipo'         => 1
         ];
         #-------------------------------#
         if ($this->form_validation->run()) {
 
             if (empty($id)) {
                 if ($this->invoice_model->create_branchoffice($postData)) {
+                    $this->save_category_commissions($this->db->insert_id());
                     $this->session->set_flashdata('message', display('save_successfully'));
                     redirect("branchoffice_list");
                 } else {
@@ -274,6 +276,7 @@ class Invoice extends MX_Controller
                 }
             } else {
                 if ($this->invoice_model->update_branchoffice($postData)) {
+                    $this->save_category_commissions($postData['id']);
                     $this->session->set_flashdata('message', display('update_successfully'));
                 } else {
                     $this->session->set_flashdata('exception', display('please_try_again'));
@@ -291,60 +294,94 @@ class Invoice extends MX_Controller
             echo modules::run('template/layout', $data);
         }
     }
+    private function save_category_commissions($branchoffice_id)
+    {
+        $commissions = $this->input->post('category_commissions');
+        if (!empty($commissions)) {
+            // Eliminar las comisiones anteriores
+            $this->db->where('branchoffice_id', $branchoffice_id)
+                ->delete('branchoffice_category_commission');
+
+            // Insertar nuevas comisiones
+            foreach ($commissions as $category_id => $percentage) {
+                if ($percentage !== '') {
+                    $this->db->insert('branchoffice_category_commission', [
+                        'branchoffice_id' => $branchoffice_id,
+                        'category_id' => $category_id,
+                        'commission_percentage' => $percentage,
+                    ]);
+                }
+            }
+        }
+    }
+
+
 
     public function bdtask_add_partner($id = null)
     {
-        $data['title'] = 'Socio Comercial';
-
-        $this->form_validation->set_rules('partner_name', 'Nombre del socio', 'required|max_length[100]');
+        $data['title']         = 'Sucursal';
+        $this->form_validation->set_rules('branchoffice', 'Sucursal', 'required|max_length[100]');
         $this->form_validation->set_rules('phone', display('phone'), 'max_length[20]');
-
-        $data['partner'] = (object)$postData = [
-            'id'           => $this->input->post('id', true),
-            'partner_name' => $this->input->post('partner_name', true),
-            'phone'        => $this->input->post('phone', true),
-            'email'        => $this->input->post('email', true),
-            'address'      => $this->input->post('address', true),
-            'comision'     => $this->input->post('comision', true),
+        $data['employee'] = (object)$postData = [
+            'id'            => $this->input->post('id', true),
+            'branchoffice'    => $this->input->post('branchoffice', true),
+            'phone'         => $this->input->post('phone', true),
+            'email'         => $this->input->post('email', true),
+            'address' => $this->input->post('address', true),
+            'comision'      => $this->input->post('comision', true),
+            'tipo'         => 2
         ];
-
+        #-------------------------------#
         if ($this->form_validation->run()) {
+
             if (empty($id)) {
-                if ($this->invoice_model->create_partner($postData)) {
+                if ($this->invoice_model->create_branchoffice($postData)) {
+                    $this->save_category_commissions($this->db->insert_id());
                     $this->session->set_flashdata('message', display('save_successfully'));
                     redirect("partner_list");
                 } else {
-                    $this->session->set_flashdata('error_message', display('please_try_again'));
+                    $this->session->set_flashdata('error_message',  display('please_try_again'));
                     redirect("partner_list");
                 }
             } else {
-                if ($this->invoice_model->update_partner($postData)) {
+                if ($this->invoice_model->update_branchoffice($postData)) {
+                    $this->save_category_commissions($postData['id']);
                     $this->session->set_flashdata('message', display('update_successfully'));
                 } else {
                     $this->session->set_flashdata('exception', display('please_try_again'));
-                    redirect("add_partner/" . $id);
+                    redirect("partner_list/" . $id);
                 }
                 redirect("partner_list/");
             }
         } else {
             if (!empty($id)) {
-                $data['partner'] = $this->invoice_model->single_partner_data($id);
-                $data['title']   = 'Socio Comercial';
+                $data['employee']    = $this->invoice_model->single_branchoffice_data($id);
+                $data['title']       = 'Sucursal';
             }
-            $data['module'] = "invoice";
-            $data['page']   = "add_partner";
+            $data['module']        = "invoice";
+            $data['page']          = "add_partner";
             echo modules::run('template/layout', $data);
         }
     }
-
     public function bdtask_partner_list()
     {
         $data['title'] = 'Lista de socios comerciales';
-        $data['partner_list'] = $this->invoice_model->partner_list(); // Método del modelo que obtiene los datos
+        $data['employee_list'] = $this->invoice_model->partner_list(2); // Filtrar por tipo = 2
         $data['module'] = "invoice";
-        $data['page'] = "partner_list"; // Vista que mostrará los socios comerciales
+        $data['page'] = "partner_list";
         echo modules::run('template/layout', $data);
     }
+    public function bdtask_delete_partner($id = null)
+    {
+        if ($this->invoice_model->delete_branchoffice($id)) {
+            $this->session->set_flashdata('message', display('delete_successfully'));
+        } else {
+            $this->session->set_flashdata('exception', display('please_try_again'));
+        }
+
+        redirect("partner_list");
+    }
+
 
 
     public function bdtask_delete_deliveryman($id = null)

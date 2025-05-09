@@ -3035,14 +3035,11 @@ class Invoice_model extends CI_Model
         $this->db->insert('branchoffice', $data);
         return true;
     }
-
     public function update_branchoffice($data = [])
     {
         return $this->db->where('id', $data['id'])
             ->update('branchoffice', $data);
     }
-
-
     public function single_branchoffice_data($id)
     {
         return $this->db->select('*')
@@ -3051,13 +3048,12 @@ class Invoice_model extends CI_Model
             ->get()
             ->row();
     }
-
-
     public function branchoffice_list()
     {
         $this->db->select('*');
         $this->db->from('branchoffice');
         $this->db->order_by('id', 'DESC');
+        $this->db->where('tipo', 1); // Mostrar solo sucursales
         $query = $this->db->get();
 
         if ($query->num_rows() > 0) {
@@ -3065,7 +3061,6 @@ class Invoice_model extends CI_Model
         }
         return false;
     }
-
     public function delete_branchoffice($id)
     {
         $this->db->where('id', $id)
@@ -3076,9 +3071,6 @@ class Invoice_model extends CI_Model
             return false;
         }
     }
-
-
-
     public function allbranchoffice()
     {
         $this->db->select('*');
@@ -3092,31 +3084,21 @@ class Invoice_model extends CI_Model
 
 
 
-    public function create_partner($data = [])
-    {
-        return $this->db->insert('partners', $data);
-    }
-
-    public function update_partner($data = [])
-    {
-        return $this->db->where('id', $data['id'])
-            ->update('partners', $data);
-    }
 
     public function single_partner_data($id)
     {
-        return $this->db->select('*')
-            ->from('partners')
+        return $this->db->from('branchoffice')
             ->where('id', $id)
+            ->where('tipo', 2)
             ->get()
             ->row();
     }
-
     public function partner_list()
     {
         $this->db->select('*');
-        $this->db->from('partners');
+        $this->db->from('branchoffice');
         $this->db->order_by('id', 'DESC');
+        $this->db->where('tipo', 2); // Mostrar solo sucursales
         $query = $this->db->get();
 
         if ($query->num_rows() > 0) {
@@ -3124,22 +3106,18 @@ class Invoice_model extends CI_Model
         }
         return false;
     }
-
     public function delete_partner($id)
     {
-        $this->db->where('id', $id)
-            ->delete("partners");
-
-        return $this->db->affected_rows() > 0;
+        return $this->db->where('id', $id)
+            ->where('tipo', 2)
+            ->delete('branchoffice');
     }
-
     public function allpartners()
     {
-        $this->db->select('*');
-        $this->db->from('partners');
-        $this->db->order_by('id', 'asc');
-        $query = $this->db->get();
-        return $query->result();
+        return $this->db->where('tipo', 2)
+            ->order_by('id', 'asc')
+            ->get('branchoffice')
+            ->result();
     }
 
 

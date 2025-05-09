@@ -11,7 +11,6 @@
                                 <th class="text-center"><?php echo display('phone') ?></th>
                                 <th class="text-center"><?php echo display('email') ?></th>
                                 <th class="text-center">Dirección</th>
-                                <th class="text-center">% Comisión</th>
                                 <th class="text-center"><?php echo display('action') ?></th>
                             </tr>
                         </thead>
@@ -28,7 +27,6 @@
                                         <td class="text-center"><?php echo html_escape($employees['phone']); ?></td>
                                         <td class="text-center"><?php echo html_escape($employees['email']); ?></td>
                                         <td class="text-center"><?php echo html_escape($employees['address']); ?></td>
-                                        <td class="text-center"><?php echo html_escape($employees['comision']) . '%'; ?></td>
                                         <td>
                                             <center>
                                                 <?php echo form_open() ?>
