@@ -25,7 +25,7 @@
 		<div class="panel panel-bd lobidrag">
 			<div class="panel-heading">
 				<div class="panel-title">
-					<span>Informe de gananciasss</span>
+					<span>Informe de ganancias</span>
 					<span class="padding-lefttitle">
 						<?php if ($this->permission1->method('todays_sales_report', 'read')->access()) { ?>
 							<a href="<?php echo base_url('sales_report') ?>" class="btn btn-info m-b-5 m-r-2"><i class="ti-align-justify"> </i> <?php echo display('sales_report') ?> </a>
@@ -73,18 +73,30 @@
 								<tr>
 									<th><?php echo display('sales_date') ?></th>
 									<th class="text-center"><?php echo display('invoice_no') ?></th>
-									<th class="text-center">Monto de compra</th class="text-center">
+									<th class="text-center">Monto de compra</th>
 									<th class="text-center">Monto de venta</th>
 									<th class="text-center"><?php echo display('total_profit') ?></th>
 								</tr>
 							</thead>
 							<tbody>
-								<?php if (!empty($total_profit_report_grouped)) {
-									foreach ($total_profit_report_grouped as $sucursal => $report_list) { ?>
+								<?php
+								if (!empty($total_profit_report_grouped)) {
+									foreach ($total_profit_report_grouped as $sucursal => $report_list) {
+										// Variables para subtotales por sucursal
+										$subtotal_sup = 0;
+										$subtotal_sale = 0;
+										$subtotal_profit = 0;
+								?>
 										<tr>
 											<td colspan="5"><strong>Sucursal: <?php echo html_escape($sucursal); ?></strong></td>
 										</tr>
-										<?php foreach ($report_list as $profit) { ?>
+										<?php
+										foreach ($report_list as $profit) {
+											// Acumular subtotales
+											$subtotal_sup += $profit['total_supplier_rate'];
+											$subtotal_sale += $profit['total_sale'];
+											$subtotal_profit += $profit['total_profit'];
+										?>
 											<tr>
 												<td><?php echo $profit['prchse_date'] ?></td>
 												<td><?php echo $profit['invoice'] ?></td>
@@ -93,6 +105,16 @@
 												<td class="text-right"><?php echo (($position == 0) ? $currency . ' ' . $profit['total_profit'] : $profit['total_profit'] . ' ' . $currency) ?></td>
 											</tr>
 										<?php } ?>
+										<!-- Fila de subtotal por sucursal -->
+										<tr style="background-color: #f5f5f5;">
+											<td colspan="2" class="text-right"><strong>Subtotal <?php echo html_escape($sucursal); ?>:</strong></td>
+											<td class="text-right"><strong><?php echo (($position == 0) ? $currency . ' ' . number_format($subtotal_sup, 2) : number_format($subtotal_sup, 2) . ' ' . $currency) ?></strong></td>
+											<td class="text-right"><strong><?php echo (($position == 0) ? $currency . ' ' . number_format($subtotal_sale, 2) : number_format($subtotal_sale, 2) . ' ' . $currency) ?></strong></td>
+											<td class="text-right"><strong><?php echo (($position == 0) ? $currency . ' ' . number_format($subtotal_profit, 2) : number_format($subtotal_profit, 2) . ' ' . $currency) ?></strong></td>
+										</tr>
+										<tr>
+											<td colspan="5" style="border-bottom: 2px solid #000;"></td>
+										</tr>
 									<?php }
 								} else { ?>
 									<tr>
@@ -102,10 +124,10 @@
 							</tbody>
 							<tfoot>
 								<tr>
-									<td colspan="2" align="right">&nbsp; <b><?php echo display('total') ?>: </b></td>
-									<td class="text-right"><b><?php echo (($position == 0) ? $currency . ' ' . $SubTotalSupAmnt : $SubTotalSupAmnt . ' ' . $currency) ?></b></td>
-									<td class="text-right"><b><?php echo (($position == 0) ? $currency . ' ' . $SubTotalSaleAmnt : $SubTotalSaleAmnt . ' ' . $currency) ?></b></td>
-									<td class="text-right"><b><?php echo (($position == 0) ? $currency . ' ' . $profit_ammount : $profit_ammount . ' ' . $currency) ?></b></td>
+									<td colspan="2" class="text-right"><b><?php echo display('total') ?>: </b></td>
+									<td class="text-right"><b><?php echo (($position == 0) ? $currency . ' ' . number_format($SubTotalSupAmnt, 2) : number_format($SubTotalSupAmnt, 2) . ' ' . $currency) ?></b></td>
+									<td class="text-right"><b><?php echo (($position == 0) ? $currency . ' ' . number_format($SubTotalSaleAmnt, 2) : number_format($SubTotalSaleAmnt, 2) . ' ' . $currency) ?></b></td>
+									<td class="text-right"><b><?php echo (($position == 0) ? $currency . ' ' . number_format($profit_ammount, 2) : number_format($profit_ammount, 2) . ' ' . $currency) ?></b></td>
 								</tr>
 							</tfoot>
 						</table>

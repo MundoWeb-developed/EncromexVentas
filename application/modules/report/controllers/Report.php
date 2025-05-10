@@ -270,6 +270,7 @@ class Report extends MX_Controller
         $date_filter = $this->input->get('date_filter', true);
         $from_date = $this->input->get('from_date', true);
         $to_date = $this->input->get('to_date', true);
+        $branch_type = $this->input->get('branch_type', true); // Nuevo filtro
 
         // Lógica para manejar filtros de fecha
         if (!empty($date_filter)) {
@@ -301,6 +302,27 @@ class Report extends MX_Controller
         // Obtener datos de ventas (facturas únicas)
         $sales_report = $this->report_model->retrieve_dateWise_SalesReports($from_date, $to_date);
 
+        // Obtener todas las sucursales con su tipo
+        $this->db->select('id, branchoffice, tipo');
+        $all_branches = $this->db->get('branchoffice')->result_array();
+        $branch_types = array_column($all_branches, 'tipo', 'branchoffice');
+
+        // Filtrar por tipo si se especificó
+        if (!empty($branch_type) && $branch_type != 'all') {
+            $filtered_branches = array();
+            foreach ($all_branches as $branch) {
+                if ($branch['tipo'] == $branch_type) {
+                    $filtered_branches[] = $branch['branchoffice'];
+                }
+            }
+
+            // Filtrar el reporte de ventas
+            $sales_report = array_filter($sales_report, function ($sale) use ($filtered_branches) {
+                return in_array($sale['branchoffice'], $filtered_branches);
+            });
+        }
+
+        // Resto del código permanece igual...
         // Ordenar por branchoffice y número de factura (en PHP)
         usort($sales_report, function ($a, $b) {
             if ($a['branchoffice'] == $b['branchoffice']) {
@@ -316,11 +338,7 @@ class Report extends MX_Controller
         $commissions = $this->report_model->get_category_commissions();
 
         // Mapeo de nombres de sucursal a IDs
-        $branch_id_map = $this->db->select('id, branchoffice')
-            ->from('branchoffice')
-            ->get()
-            ->result_array();
-        $branch_id_map = array_column($branch_id_map, 'id', 'branchoffice');
+        $branch_id_map = array_column($all_branches, 'id', 'branchoffice');
 
         // Organizar comisiones por nombre de sucursal y categoría
         $branch_category_commissions = [];
@@ -378,10 +396,28 @@ class Report extends MX_Controller
 
         // Calcular comisiones totales por sucursal
         $branch_comisiones = [];
+        $filtered_comisiones = 0; // Nuevo: comisiones filtradas por tipo
+
         foreach ($branch_category_totals as $branch => $categories) {
             $branch_comisiones[$branch] = 0;
+
+            // Verificar si la sucursal coincide con el filtro de tipo
+            $include_branch = true;
+            if (!empty($branch_type)) {
+                $branch_info = $this->db->select('tipo')->from('branchoffice')
+                    ->where('branchoffice', $branch)
+                    ->get()->row();
+                if ($branch_info && $branch_type != 'all' && $branch_info->tipo != $branch_type) {
+                    $include_branch = false;
+                }
+            }
+
             foreach ($categories as $category) {
                 $branch_comisiones[$branch] += $category['commission_value'];
+            }
+
+            if ($include_branch) {
+                $filtered_comisiones += $branch_comisiones[$branch];
             }
         }
 
@@ -389,13 +425,15 @@ class Report extends MX_Controller
         $data = array(
             'title'               => display('sales_report_general'),
             'sales_amount'        => $sales_amount,
-            'grouped_sales'      => $grouped_sales,
+            'grouped_sales'       => $grouped_sales,
             'branchoffices'       => $branchoffices,
             'branch_category_totals' => $branch_category_totals,
             'branch_category_commissions' => $branch_category_commissions,
             'branch_comisiones'   => $branch_comisiones,
             'from_date'           => $from_date,
-            'to_date'             => $to_date
+            'to_date'             => $to_date,
+            'branch_type'         => $branch_type,
+            'total_comisiones'    => $filtered_comisiones // Nuevo: total de comisiones filtrado
         );
 
         $data['module'] = "report";

@@ -16,7 +16,7 @@
                 $today = date('Y-m-d');
                 ?>
                 <div class="form-group">
-                    <label class="" for="from_date"><?php echo display('start_date') ?></label>
+                    <label class="" for="from_date">Fecha inicio</label>
                     <input type="text" name="from_date" class="form-control datepicker" id="from_date" placeholder="<?php echo display('start_date') ?>" value="<?php echo $today ?>">
                 </div>
                 <div class="form-group">
@@ -37,8 +37,21 @@
                         <option value="last_6_months">Últimos 6 meses</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-success">Generar</button>
-                <a class="btn btn-warning" href="#" onclick="printDiv('purchase_div')">Imprimir</a>
+                <!-- Nuevo filtro por tipo de sucursal -->
+                <label for="branch_type" class="control-label">Sucursal/Socios</label>
+                <div class="form-group">
+                    <select name="branch_type" id="branch_type" class="form-control">
+                        <option value="all">-- TODAS --</option>
+                        <option value="1" <?php echo (isset($branch_type) && $branch_type == '1' ? 'selected' : ''); ?>>Sucursales</option>
+                        <option value="2" <?php echo (isset($branch_type) && $branch_type == '2' ? 'selected' : ''); ?>>Socios comerciales</option>
+                    </select>
+                </div>
+                <br>
+                <br>
+                <div style="display: flex; justify-content: center; gap: 5px;">
+                    <button type="submit" class="btn btn-success">Generar</button>
+                    <a class="btn btn-warning" href="#" onclick="printDiv('purchase_div')">Imprimir</a>
+                </div>
                 <?php echo form_close() ?>
             </div>
         </div>
@@ -191,7 +204,7 @@
                         <!-- Mantener el resto de la vista igual -->
                         <hr>
                         <?php
-                        $total_comisiones = array_sum($branch_comisiones);
+                        $total_comisiones = isset($total_comisiones) ? $total_comisiones : array_sum($branch_comisiones);
                         ?>
                         <h4>Total general de ventas:
                             <?php echo ($position == 0) ? "$currency " . number_format($sales_amount, 2) : number_format($sales_amount, 2) . " $currency"; ?>
