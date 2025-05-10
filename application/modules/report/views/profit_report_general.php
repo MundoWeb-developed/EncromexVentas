@@ -13,6 +13,17 @@
 					<label for="to_date"><?php echo display('end_date') ?>:</label>
 					<input type="text" name="to_date" class="form-control datepicker" id="to_date" placeholder="<?php echo display('end_date') ?>" value="<?php echo $to ?>">
 				</div>
+
+				<!-- Nuevo filtro por tipo de sucursal -->
+				 <label for="branch_type">Tipo:</label>
+				<div class="form-group">
+					<select name="branch_type" id="branch_type" class="form-control">
+						<option value="all" <?php echo (empty($branch_type) || $branch_type == 'all' ? 'selected' : ''); ?>>-- TODAS --</option>
+						<option value="1" <?php echo ($branch_type == '1' ? 'selected' : ''); ?>>Sucursales</option>
+						<option value="2" <?php echo ($branch_type == '2' ? 'selected' : ''); ?>>Socios Comerciales</option>
+					</select>
+				</div>
+
 				<button type="submit" class="btn btn-success">Generar</button>
 				<a class="btn btn-warning" href="#" onclick="printDiv('purchase_div')"><?php echo display('print') ?></a>
 				<?php echo form_close() ?>

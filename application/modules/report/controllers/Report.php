@@ -845,16 +845,35 @@ class Report extends MX_Controller
 
     public function bdtask_profit_report_general()
     {
-        $start_date = (!empty($this->input->get('from_date')) ? $this->input->get('from_date') : date('Y-m-d'));
-        $end_date = (!empty($this->input->get('to_date')) ? $this->input->get('to_date') : date('Y-m-d'));
+        $start_date = $this->input->get('from_date', true) ?? date('Y-m-d');
+        $end_date = $this->input->get('to_date', true) ?? date('Y-m-d');
+        $branch_type = $this->input->get('branch_type', true); // Nuevo parámetro para el filtro
+
         $total_profit_report = $this->report_model->total_profit_report($start_date, $end_date);
+
+        // Filtrar por tipo de sucursal si se especificó
+        if (!empty($branch_type) && $branch_type != 'all') {
+            // Obtener las sucursales del tipo seleccionado
+            $filtered_branches = $this->db->select('branchoffice')
+                ->from('branchoffice')
+                ->where('tipo', $branch_type)
+                ->get()
+                ->result_array();
+            $filtered_branches = array_column($filtered_branches, 'branchoffice');
+
+            // Filtrar el reporte
+            $total_profit_report = array_filter($total_profit_report, function ($item) use ($filtered_branches) {
+                return in_array($item['branchoffice'], $filtered_branches);
+            });
+        }
+
         $report_grouped = [];
-        $profit_ammount   = 0;
-        $SubTotalSupAmnt  = 0;
+        $profit_ammount = 0;
+        $SubTotalSupAmnt = 0;
         $SubTotalSaleAmnt = 0;
         if (!empty($total_profit_report)) {
             foreach ($total_profit_report as $row) {
-                $sucursal = $row['branchoffice']; // Asegúrate de que este campo exista y contenga el nombre o ID de la sucursal
+                $sucursal = $row['branchoffice'];
                 if (!isset($report_grouped[$sucursal])) {
                     $report_grouped[$sucursal] = [];
                 }
@@ -866,16 +885,18 @@ class Report extends MX_Controller
             }
         }
         $data = array(
-            'title'                    => display('profit_report_general'),
-            'profit_ammount'           => $profit_ammount,
+            'title' => display('profit_report_general'),
             'total_profit_report_grouped' => $report_grouped,
-            'from'                     => $start_date,
-            'to'                       => $end_date,
-            'SubTotalSupAmnt'          => $SubTotalSupAmnt,
-            'SubTotalSaleAmnt'         => $SubTotalSaleAmnt,
+            'profit_ammount' => $profit_ammount,
+            'SubTotalSupAmnt' => $SubTotalSupAmnt,
+            'SubTotalSaleAmnt' => $SubTotalSaleAmnt,
+            'from' => $start_date,
+            'to' => $end_date,
+            'branch_type' => $branch_type // Pasar el tipo seleccionado a la vista
         );
-        $data['module']   = "report";
-        $data['page']     = "profit_report_general";
+
+        $data['module'] = "report";
+        $data['page'] = "profit_report_general";
         echo modules::run('template/layout', $data);
     }
 
