@@ -94,6 +94,8 @@
                         </table>
                     </div>
                     <div class="table-responsive paddin5ps">
+                        <!-- Mantener todo el encabezado igual hasta la tabla -->
+
                         <?php foreach ($branchoffices as $branch): ?>
                             <h4 style="margin-top: 20px;"><?php echo $branch ?: 'Sin sucursal'; ?></h4>
                             <table class="table table-bordered table-striped table-hover">
@@ -115,7 +117,7 @@
                                             <tr>
                                                 <td><?php echo $sale['sales_date'] ?></td>
                                                 <td><?php echo $sale['invoice'] ?></td>
-                                                <td><?php echo $sale['nombre_cliente'] ?? 'Venta general'; ?></td>
+                                                <td><?php echo $sale['customer_name'] ?? 'Venta general'; ?></td>
                                                 <td class="text-right">
                                                     <?php echo ($position == 0) ? "$currency " . number_format($sale['total_amount'], 2) : number_format($sale['total_amount'], 2) . " $currency"; ?>
                                                 </td>
@@ -128,6 +130,7 @@
                                     <?php } ?>
                                 </tbody>
                                 <tfoot>
+                                    <!-- Total por sucursal -->
                                     <tr>
                                         <td colspan="3" class="text-right"><b>Total sucursal</b></td>
                                         <td class="text-right">
@@ -138,13 +141,45 @@
                                             </b>
                                         </td>
                                     </tr>
+
+                                    <!-- Desglose por categorías -->
+                                    <?php if (!empty($branch_category_totals[$branch])): ?>
+                                        <tr>
+                                            <td colspan="4" style="padding: 0!important;">
+                                                <table class="table" style="margin-bottom: 0; border: none;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th colspan="3">Ventas por categoría</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach ($branch_category_totals[$branch] as $category_id => $category): ?>
+                                                            <tr>
+                                                                <td width="60%"><?php echo $category['category_name'] ?></td>
+                                                                <td class="text-right">
+                                                                    <?php echo ($position == 0) ? "$currency " . number_format($category['total_sales'], 2) : number_format($category['total_sales'], 2) . " $currency"; ?>
+                                                                </td>
+                                                                <td class="text-right">
+                                                                    <?php
+                                                                    $commission_rate = $branch_category_commissions[$branch][$category_id]['commission_rate'] ?? 0;
+                                                                    echo $commission_rate . '%';
+                                                                    ?>
+                                                                </td>
+                                                            </tr>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    <?php endif; ?>
+
+                                    <!-- Comisión total por sucursal -->
                                     <tr>
-                                        <td colspan="3" class="text-right"><b>Comisión <?php echo isset($branch_comisiones[$branch]) ? $branch_comisiones[$branch] . '%' : '0%'; ?></b></td>
+                                        <td colspan="3" class="text-right"><b>Comisión Total</b></td>
                                         <td class="text-right">
                                             <b>
                                                 <?php
-                                                $comision = isset($branch_comisiones[$branch]) ? $branch_comisiones[$branch] : 0;
-                                                $comision_valor = ($branch_total * $comision) / 100;
+                                                $comision_valor = $branch_comisiones[$branch] ?? 0;
                                                 echo ($position == 0) ? "$currency " . number_format($comision_valor, 2) : number_format($comision_valor, 2) . " $currency";
                                                 ?>
                                             </b>
@@ -153,24 +188,10 @@
                                 </tfoot>
                             </table>
                         <?php endforeach; ?>
+                        <!-- Mantener el resto de la vista igual -->
                         <hr>
                         <?php
-                        $total_comisiones = 0;
-                        foreach ($branchoffices as $branch) {
-                            $branch_total = 0;
-                            if (!empty($grouped_sales[$branch])) {
-                                foreach ($grouped_sales[$branch] as $sale) {
-                                    $branch_total += $sale['total_amount'];
-                                }
-                            }
-
-                            // Aquí calculamos la comisión para la sucursal
-                            $comision = isset($branch_comisiones[$branch]) ? $branch_comisiones[$branch] : 0;
-                            $comision_valor = ($branch_total * $comision) / 100;
-
-                            // Acumulamos el total de comisiones
-                            $total_comisiones += $comision_valor;
-                        }
+                        $total_comisiones = array_sum($branch_comisiones);
                         ?>
                         <h4>Total general de ventas:
                             <?php echo ($position == 0) ? "$currency " . number_format($sales_amount, 2) : number_format($sales_amount, 2) . " $currency"; ?>

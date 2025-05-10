@@ -316,7 +316,7 @@ class Report_model extends CI_Model
         return $query->result_array();
     }
     //Retrieve todays_sales_report
-    public function todays_sales_report()
+    public function todays_sales_report() //Este
     {
         $today = date('Y-m-d');
         $this->db->select("a.*,b.customer_id,b.customer_name");
@@ -332,20 +332,17 @@ class Report_model extends CI_Model
     }
     //Retrieve all Report
     public function retrieve_dateWise_SalesReports($from_date, $to_date)
-    {
-        $this->db->select("a.*, b.*");
-        $this->db->from('invoice a');
-        $this->db->join('customer_information b', 'b.customer_id = a.customer_id');
-        $this->db->where('a.date >=', $from_date);
-        $this->db->where('a.date <=', $to_date);
-        $this->db->order_by('a.branchoffice', 'asc'); // Ordenar por sucursal
-        $this->db->order_by('a.date', 'desc');        // Luego por fecha descendente
-        $query = $this->db->get();
-        if ($query->num_rows() > 0) {
-            return $query->result_array();
-        }
-        return false;
-    }
+{
+    // Consulta DISTINCT para facturas únicas
+    $this->db->select("DISTINCT(a.invoice_id), a.*, b.customer_name, b.customer_id");
+    $this->db->from('invoice a');
+    $this->db->join('customer_information b', 'b.customer_id = a.customer_id');
+    $this->db->where('a.date >=', $from_date);
+    $this->db->where('a.date <=', $to_date);
+    $this->db->where('a.cancelado', 0);
+    $this->db->order_by('a.branchoffice, a.date', 'desc');
+    return $this->db->get()->result_array();
+}
     public function get_all_branchoffices()
     {
         $this->db->select('DISTINCT(branchoffice)');
@@ -629,7 +626,7 @@ class Report_model extends CI_Model
         }
         return false;
     }
-    public function total_profit_report($start_date, $end_date)
+    public function total_profit_report($start_date, $end_date) //este
     {
         $this->db->select("a.date, a.invoice, a.branchoffice, b.invoice_id,
             CAST(SUM(b.total_price) AS DECIMAL(16,2)) as total_sale,
@@ -686,5 +683,126 @@ class Report_model extends CI_Model
             return $table;
         }
         return 'No existen compras asociadas';
+    }
+
+    public function get_category_commissions()
+    {
+        // Obtener comisiones con nombre de sucursal
+        return $this->db->select('
+        bcc.branchoffice_id, 
+        bo.branchoffice, 
+        bcc.category_id, 
+        bcc.commission_percentage
+    ')
+            ->from('branchoffice_category_commission bcc')
+            ->join('branchoffice bo', 'bo.id = bcc.branchoffice_id')
+            ->get()
+            ->result_array();
+    }
+    /**
+     * Obtener ventas agrupadas por categoría y sucursal
+     */
+    public function get_sales_by_category_branch($from_date, $to_date)
+    {
+        $this->db->select("
+        a.branchoffice,
+        p.category_id,
+        pc.category_name,
+        SUM(id.total_price) as total_sales
+    ");
+        $this->db->from('invoice a');
+        $this->db->join('invoice_details id', 'id.invoice_id = a.invoice_id');
+        $this->db->join('product_information p', 'p.product_id = id.product_id');
+        $this->db->join('product_category pc', 'pc.category_id = p.category_id', 'left');
+        $this->db->where('a.date >=', $from_date);
+        $this->db->where('a.date <=', $to_date);
+        $this->db->where('a.cancelado', 0);
+        $this->db->group_by('a.branchoffice, p.category_id');
+        return $this->db->get()->result_array();
+    }
+    /**
+     * Obtener el reporte consolidado de comisiones
+     */
+    public function get_commission_report($from_date, $to_date)
+    {
+        // 1. Obtener todas las ventas agrupadas
+        $sales_data = $this->get_sales_by_category_branch($from_date, $to_date);
+
+        // 2. Obtener todas las sucursales únicas
+        $branches = array_unique(array_column($sales_data, 'branchoffice'));
+
+        // 3. Obtener todas las comisiones configuradas
+        $commissions = $this->get_category_commissions();
+
+        $report = [];
+        $grand_totals = [
+            'sales' => 0,
+            'commissions' => 0,
+            'invoices' => 0,
+            'quantity' => 0
+        ];
+        foreach ($branches as $branch) {
+            $branch_data = [
+                'branchoffice' => $branch,
+                'categories' => [],
+                'totals' => [
+                    'sales' => 0,
+                    'commissions' => 0,
+                    'invoices' => 0,
+                    'quantity' => 0
+                ]
+            ];
+
+            // Filtrar ventas para esta sucursal
+            $branch_sales = array_filter($sales_data, function ($item) use ($branch) {
+                return $item['branchoffice'] == $branch;
+            });
+
+            foreach ($branch_sales as $sale) {
+                // Buscar comisión para esta categoría y sucursal
+                $commission_rate = 0;
+                foreach ($commissions as $commission) {
+                    if (
+                        $commission['branchoffice'] == $branch &&
+                        $commission['category_id'] == $sale['category_id']
+                    ) {
+                        $commission_rate = $commission['commission_percentage'];
+                        break;
+                    }
+                }
+
+                $commission_value = ($sale['total_sales'] * $commission_rate) / 100;
+
+                $branch_data['categories'][] = [
+                    'category_id' => $sale['category_id'],
+                    'category_name' => $sale['category_name'],
+                    'sales' => $sale['total_sales'],
+                    'commission_rate' => $commission_rate,
+                    'commission_value' => $commission_value,
+                    'invoice_count' => $sale['invoice_count'],
+                    'quantity' => $sale['total_quantity']
+                ];
+
+                // Sumar a totales de sucursal
+                $branch_data['totals']['sales'] += $sale['total_sales'];
+                $branch_data['totals']['commissions'] += $commission_value;
+                $branch_data['totals']['invoices'] += $sale['invoice_count'];
+                $branch_data['totals']['quantity'] += $sale['total_quantity'];
+            }
+
+            // Sumar a totales generales
+            $grand_totals['sales'] += $branch_data['totals']['sales'];
+            $grand_totals['commissions'] += $branch_data['totals']['commissions'];
+            $grand_totals['invoices'] += $branch_data['totals']['invoices'];
+            $grand_totals['quantity'] += $branch_data['totals']['quantity'];
+
+            $report[] = $branch_data;
+        }
+        return [
+            'branches' => $report,
+            'grand_totals' => $grand_totals,
+            'from_date' => $from_date,
+            'to_date' => $to_date
+        ];
     }
 }
