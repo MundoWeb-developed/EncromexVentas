@@ -32,9 +32,9 @@
                 <div class="panel-title">
                     <span><?php echo display('manage_invoice') ?></span>
                     <span class="padding-lefttitle">
-                        <?php if ($this->permission1->method('new_invoice', 'create')->access()) { ?>
+                        <!-- <?php if ($this->permission1->method('new_invoice', 'create')->access()) { ?>
                             <a href="<?php echo base_url('add_invoice') ?>" class="btn btn-info m-b-5 m-r-2"><i class="ti-plus"> </i> <?php echo display('new_invoice') ?> </a>
-                        <?php } ?>
+                        <?php } ?> -->
                         <?php if ($this->permission1->method('gui_pos', 'create')->access()) { ?>
                             <a href="<?php echo base_url('gui_pos') ?>" class="btn btn-success m-b-5 m-r-2"><i class="ti-plus"> </i> <?php echo display('pos_invoice') ?> </a>
                         <?php } ?>
